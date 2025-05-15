@@ -1059,7 +1059,7 @@
 			)
 		)
 	)
-	(footprint "LOGO"
+	(footprint "ayab-library:Polarity_Center_Negative_2mm_SilkScreen"
 		(layer "F.Cu")
 		(uuid "2c14ce9e-3035-4375-b24a-e5b38791046b")
 		(at 180.6 117.4 90)
@@ -1075,7 +1075,7 @@
 				)
 			)
 		)
-		(property "Value" "LOGO"
+		(property "Value" "Polarity_Center_Negative_2mm_SilkScreen"
 			(at 0.75 0 90)
 			(layer "F.SilkS")
 			(hide yes)
@@ -1123,7 +1123,7 @@
 			)
 			(fill yes)
 			(layer "F.SilkS")
-			(uuid "73e436a2-935e-4a82-88fa-8036ee3eb461")
+			(uuid "74335e00-634f-486a-bd95-54b4b5e865e3")
 		)
 		(fp_poly
 			(pts
@@ -1140,7 +1140,7 @@
 			)
 			(fill yes)
 			(layer "F.SilkS")
-			(uuid "9c2259ae-1d7d-4b10-888e-4d5f4cddeff0")
+			(uuid "8470453f-b633-4398-8738-7c92a0a84c89")
 		)
 		(fp_poly
 			(pts
