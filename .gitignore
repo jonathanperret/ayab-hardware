@@ -3,3 +3,4 @@ ayab-esp32/datasheets/*
 */Outputs/*
 */DesignChecks/*
 *.zip
+*.bak
