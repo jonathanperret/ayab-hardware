@@ -1,4 +1,4 @@
-# AYAB Shield v2 Release Changes
+# AYAB Interface (formerly "AYAB Shield v2") Release Changes
 
 
 ## Version F
