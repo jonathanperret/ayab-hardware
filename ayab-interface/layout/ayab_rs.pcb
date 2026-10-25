@@ -1249,6 +1249,8 @@ Via[7785.00mil 415.00mil 65.00mil 20.00mil 0.0000 35.00mil "" ""]
 Via[9065.00mil 680.00mil 65.00mil 20.00mil 0.0000 35.00mil "" ""]
 Via[8200.00mil 430.00mil 65.00mil 20.00mil 0.0000 35.00mil "" ""]
 Via[1100.00mil 920.00mil 46.00mil 20.00mil 0.0000 20.00mil "" ""]
+Via[2055.00mil 1120.00mil 46.00mil 20.00mil 0.0000 20.00mil "" ""]
+Via[2055.00mil 1370.00mil 46.00mil 20.00mil 0.0000 20.00mil "" ""]
 
 Element["" "DO214AA_HSMB" "D1" "unknown" 6800.00mil 870.00mil -50.00mil 150.00mil 2 121 ""]
 (
@@ -3282,7 +3284,6 @@ Element["hidename" "Woolly Logic logo 800x800mil" "" "" 9905.00mil 480.00mil 0.0
 	ElementArc [0.0008mm 0.0239mm 377.00mil 377.00mil 90.000000 360.000000 8.00mil]
 
 	)
-Rat[204.3900mm 1390.00mil 4 1650.00mil 1120.00mil 0  ""]
 Layer(1 "top" "copper")
 (
 	Line[950.00mil 1620.00mil 850.00mil 1620.00mil 25.00mil 20.00mil "clearline"]
@@ -4071,6 +4072,7 @@ Layer(1 "top" "copper")
 	Line[950.00mil 820.00mil 850.00mil 820.00mil 25.00mil 20.00mil "clearline"]
 	Line[950.00mil 920.00mil 850.00mil 920.00mil 25.00mil 20.00mil "clearline"]
 	Line[1650.00mil 1020.00mil 1650.00mil 1120.00mil 15.00mil 20.00mil "clearline"]
+	Line[2055.00mil 1370.00mil 2055.00mil 1120.00mil 15.00mil 20.00mil "clearline"]
 	Text[10090.00mil 45.00mil 0 160 "Woolly Logic KI01" "clearline"]
 	Polygon("clearpoly")
 	(
@@ -4379,6 +4381,28 @@ Layer(2 "bottom" "copper")
 	Line[3915.00mil 770.00mil 4230.00mil 770.00mil 15.00mil 20.00mil "clearline"]
 	Line[4230.00mil 770.00mil 4235.00mil 775.00mil 15.00mil 20.00mil "clearline"]
 	Line[4235.00mil 775.00mil 4305.00mil 775.00mil 15.00mil 20.00mil "clearline"]
+	Line[2100.00mil 1530.00mil 2055.00mil 1475.00mil 15.00mil 20.00mil "clearline"]
+	Line[2055.00mil 1475.00mil 2055.00mil 1370.00mil 15.00mil 20.00mil "clearline"]
+	Line[5030.00mil 1605.00mil 5175.00mil 1750.00mil 15.00mil 20.00mil "clearline"]
+	Line[8010.00mil 1295.00mil 8045.00mil 1330.00mil 15.00mil 20.00mil "clearline"]
+	Line[204.3900mm 1390.00mil 8047.50mil 35.2895mm 15.00mil 20.00mil "clearline"]
+	Line[8047.50mil 35.2895mm 8047.50mil 1332.50mil 15.00mil 20.00mil "clearline"]
+	Line[5175.00mil 1750.00mil 7230.00mil 1750.00mil 15.00mil 20.00mil "clearline"]
+	Line[7230.00mil 1750.00mil 7320.00mil 1660.00mil 15.00mil 20.00mil "clearline"]
+	Line[7320.00mil 1660.00mil 7320.00mil 1370.00mil 15.00mil 20.00mil "clearline"]
+	Line[7320.00mil 1370.00mil 7395.00mil 1295.00mil 15.00mil 20.00mil "clearline"]
+	Line[7395.00mil 1295.00mil 8010.00mil 1295.00mil 15.00mil 20.00mil "clearline"]
+	Line[5030.00mil 1605.00mil 4885.00mil 1605.00mil 15.00mil 20.00mil "clearline"]
+	Line[4885.00mil 1605.00mil 4790.00mil 1605.00mil 15.00mil 20.00mil "clearline"]
+	Line[4750.00mil 1645.00mil 4750.00mil 1720.00mil 15.00mil 20.00mil "clearline"]
+	Line[4750.00mil 1720.00mil 4720.00mil 1750.00mil 15.00mil 20.00mil "clearline"]
+	Line[4720.00mil 1750.00mil 4420.00mil 1750.00mil 15.00mil 20.00mil "clearline"]
+	Line[4420.00mil 1750.00mil 4200.00mil 1530.00mil 15.00mil 20.00mil "clearline"]
+	Line[4200.00mil 1530.00mil 2100.00mil 1530.00mil 15.00mil 20.00mil "clearline"]
+	Line[4790.00mil 1605.00mil 4750.00mil 1645.00mil 15.00mil 20.00mil "clearline"]
+	Line[2055.00mil 1120.00mil 1895.00mil 1120.00mil 15.00mil 20.00mil "clearline"]
+	Line[1895.00mil 1120.00mil 1795.00mil 1020.00mil 15.00mil 20.00mil "clearline"]
+	Line[1795.00mil 1020.00mil 1650.00mil 1020.00mil 15.00mil 20.00mil "clearline"]
 )
 Layer(3 "v-score" "copper")
 (
@@ -4816,8 +4840,8 @@ Layer(10 "top silk" "silk")
 	Text[1730.00mil 685.00mil 0 114 "D4/ENCC" "clearline"]
 	Text[1730.00mil 785.00mil 0 114 "D5/LED5" "clearline"]
 	Text[1730.00mil 885.00mil 0 114 "D6/LED6" "clearline"]
-	Text[1730.00mil 985.00mil 0 114 "D7" "clearline"]
-	Text[1730.00mil 1085.00mil 0 114 "D8" "clearline"]
+	Text[1730.00mil 985.00mil 0 114 "D7/EOLRL" "clearline"]
+	Text[1730.00mil 1085.00mil 0 114 "D8/DET" "clearline"]
 	Text[1730.00mil 1185.00mil 0 114 "D9/BUZZER" "clearline"]
 	Text[1730.00mil 1285.00mil 0 114 "D10" "clearline"]
 	Text[1730.00mil 1385.00mil 0 114 "D11" "clearline"]
