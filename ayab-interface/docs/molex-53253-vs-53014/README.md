@@ -156,62 +156,82 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 
 ## 5. Implications for the AYAB interface
 
-- **J2C/J6C (3-pin, populated): keep the 53014-0310.** As the current BOM update already does, source new old stock. A 53253 on the board would not accept the existing MicroBlade cable housing.
+- **J2C/J6C (3-pin, populated): keep the 53014-0310.** As the current BOM update already does, source new old stock; brokers still hold tens of thousands (see [section 6](#6-third-party-microblade-compatible-headers)). A 53253 on the board would not accept the existing MicroBlade cable housing.
 - **To migrate to Micro-Latch, change the cable as well.** The machine-side cable needs 51065 housings with 50212 terminals: a re-crimp, or an adapter cable. Only then can 53253 headers be fitted.
   - The hole pattern is compatible: single row, 2 mm pitch, Ø0.8 mm holes fit the 0.5 mm square tails.
   - The body outline differs: 3.65 mm deep with an open front, versus 4.35 mm closed. The pin row also sits at a different offset within the outline: on the 53253 it is 1.5 mm from the back face; on the 53014 the kinked tail is 1.65 mm from datum face A. So silkscreen and courtyard need updating, and orientation must be checked against the cable.
-- **Third-party MicroBlade-compatible headers.** These would keep the existing cables. Two of them look like real MicroBlade copies on paper, and one widely stocked "2002" part is not. See [section 6](#6-third-party-microblade-compatible-headers).
+- **Third-party MicroBlade-compatible headers.** These would keep the existing cables. The best candidate, CJT A2004WV, matches the Molex drawing dimension for dimension and is stocked at LCSC. See [section 6](#6-third-party-microblade-compatible-headers).
 
 ---
 
 ## 6. Third-party MicroBlade-compatible headers
 
-*Added 26 October 2026. Availability as found on that date.*
+*Added 26 October 2026. Availability and prices as found on that date, by browsing LCSC and Octopart.*
 
-### Genuine 53014 is drying up
+### Genuine 53014-0310: gone from authorised distributors, plentiful at brokers
 
-- [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks 53014-0310 *"Obsolete and no longer manufactured"* and shows no stock or prices.
-  - Its suggested substitutes are 53253-0370, which does not mate (section 3), and TE 292132-3. The TE part is AMP CT 2 mm with 0.6 mm round pins, a different system.
-- [TME](https://www.tme.eu/en/details/mx-53014-0310/raster-signal-connectors-2-00mm/molex/53014-0310/) lists it as *"Product withdrawn from the offer"*.
-- Genuine 53014 in other circuit counts still turns up in surplus lots, for example a [50-pack of 53014-0210 on eBay](https://www.ebay.com/itm/126980767944). I found none for the 3-circuit part.
+- **Authorised distributors are out.**
+  - [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks it *"Obsolete and no longer manufactured"*, with no stock or prices.
+  - [TME](https://www.tme.eu/en/details/mx-53014-0310/raster-signal-connectors-2-00mm/molex/53014-0310/) lists it as *"Product withdrawn from the offer"*.
+  - LCSC's own listing ([C588262](https://www.lcsc.com/product-detail/C588262.html)) is **out of stock**. Its reference price was $0.27 each, or $0.10 at 200+.
+- **DigiKey's suggested substitutes don't work.** 53253-0370 does not mate (section 3). TE 292132-3 is AMP CT 2 mm with 0.6 mm round pins, a different system.
+- **Independent brokers still hold large stocks.** These are listed on [Octopart](https://octopart.com/search?q=53014-0310):
 
-### Candidates, compared against the Molex drawing
+| Broker | Stock | Minimum | Price (approx.) |
+|---|---|---|---|
+| Anlinkda | 66,937 | 1 | €0.13 |
+| Worldway Electronics | 24,702 | 7 | €0.12 |
+| Win Source | 34,335 | 35 | €0.88–1.08 |
+| UnikeyIC | 28 | 10 | €0.15 |
+
+Brokers are not authorised Molex channels, but a moulded header is a low-risk part to buy this way. The BOM note *"Obsolete: source new old stock"* is therefore practical today at about €0.12 a part. LCSC also lists other 53014 circuit counts (for example 53014-1010) through its "Other Suppliers" broker channel.
+
+### Copies, compared against the Molex drawing
 
 The Chinese "2.0 mm wafer" market sells several families under similar names. The only reliable way to tell them apart is the drawing: a MicroBlade header has a **flat blade about 0.3 mm thick in a 4.35 mm-deep, four-wall shroud**, while the common Micro-Latch-style and JST-style parts have **0.5–0.64 mm square pins**.
 
-| Part (3-circuit) | Maker | Depth × height | Length | Contact | Mating housing | Verdict from the drawing |
-|---|---|---|---|---|---|---|
-| **Molex 53014-0310** (reference) | Molex | 4.35 × 5.85 mm | 8.0 mm | Flat blade, 0.32 mm thick, phosphor bronze | 51004: 3.35 mm deep, 5.80 mm tall | — |
-| **A2002WV-NP-N0NAT**, 03 positions | [LDZY](https://ldzycon.com/products/a2002-connector-series/) (Dongguan) | 4.35 × 5.90 mm | 8.00 mm | Tails 0.30 × 0.60 mm, brass | A2002H: 3.35 mm deep (3.80 mm over the latch), 5.90 mm tall | **MicroBlade copy.** Same latch holes and circuit-1 box. LDZY cross-references it to Molex 53014. |
-| **L-KLS1-XL3M-2.00-03-S** | [KLS](https://www.klsconnector.com/2-00mm-pitch-molex-51004-53014-53015-type-wire-to-board-connector/) (Ningbo) | 4.35 × 5.90 mm | 8.00 mm | Tails 0.30 × 0.60 mm, brass | KLS1-XL3M-H: 3.35 × 5.80 mm (same envelope as 51004), 2-circuit length 4.90 mm | **MicroBlade copy.** KLS titles it "51004 type". |
-| A2002WV-3P | [CJT](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf) (Changjiang) | 4.70 × 6.10 mm | 8.00 mm | **0.5 mm square pin** | CJT A2002H | **Not MicroBlade**, despite sharing LDZY's series name. This is the "A2002WV" that distributors actually stock. |
-| SCT2002WV-03B2BE103 | [Scondar](https://www.scondar.com/wire-to-board/microblade-2-0mm-pitch-connector/microblade-53014/) | not published | — | not published | SCT2002H, said to match 51004 | Claimed 53014 equivalent. No drawing, so ask for one, especially given the CJT name clash. |
-| "Model 2000" | [Eshine / connectorwire](https://www.connectorwire.com/sale-9199762-alternative-molex-51004-0800-2-00mm-pitch-microblade-wire-to-board.html) | not published | — | not published | — | Claimed alternative to 53014-0310. No drawing. |
-| (unnamed) | [Zeakka](https://zeakka.com/connectors/molex-microblade-connector/) | not published | — | not published | — | Claimed MicroBlade alternative. Drawing available on request. |
+| Part (3-circuit) | Maker | Depth × height | Length | Contact | PCB hole | Verdict from the drawing | Availability |
+|---|---|---|---|---|---|---|---|
+| **Molex 53014-0310** (reference) | Molex | 4.35 × 5.85 mm | 8.0 mm | Flat blade, 0.32 mm thick, phosphor bronze; tail 3.5 mm | Ø0.9 mm drilled (0.8 mm punched) | — | Brokers only, see above |
+| **A2004WV-3P** | [CJT](https://www.lcsc.com/datasheet/C225241.pdf) (Changjiang) | 4.35 × **5.85** mm | 8.00 mm | 0.30 × 0.60 mm, **phosphor bronze**; tail 3.45 mm | **Ø0.90 mm** | **Closest MicroBlade copy.** Every dimension shown matches Molex, including the 5.85 mm height and Ø0.9 mm hole. CJT also makes an A2004 housing and a right-angle header (A2004WR). | **LCSC [C225241](https://www.lcsc.com/product-detail/C225241.html): 765 in stock, $0.086 at 5+.** LCSC lists it as "Similar" to 530140310. |
+| **X2012WV-03-N0SN** | [XKB](https://www.lcsc.com/datasheet/C571289.pdf) | 4.35 × 5.90 mm | 8.00 mm | 0.30 × 0.60 mm, brass; tail 3.50 mm | Ø0.80 mm | **MicroBlade copy.** Mates with XKB X2012H. | **LCSC [C571289](https://www.lcsc.com/product-detail/C571289.html): 785 in stock, $0.09 at 5+.** Also "Similar" to 530140310. |
+| A2002WV-NP-N0NAT, 03 positions | [LDZY](https://ldzycon.com/products/a2002-connector-series/) (Dongguan) | 4.35 × 5.90 mm | 8.00 mm | 0.30 × 0.60 mm, brass | Ø0.80 mm | MicroBlade copy. LDZY cross-references it to 53014. | No distributor listing found; [Alibaba store](https://ldzyconn.en.alibaba.com/) or direct quote |
+| L-KLS1-XL3M-2.00-03-S | [KLS](https://www.klsconnector.com/2-00mm-pitch-molex-51004-53014-53015-type-wire-to-board-connector/) (Ningbo) | 4.35 × 5.90 mm | 8.00 mm | 0.30 × 0.60 mm, brass | Ø0.80 mm | MicroBlade copy. KLS titles it "51004 type". | Not on LCSC (searched); direct from KLS |
+| A2002WV-3P | [CJT](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf) (Changjiang) | 4.70 × 6.10 mm | 8.00 mm | **0.5 mm square pin** | Ø0.80 mm | **Not MicroBlade.** Don't confuse it with CJT's A2004 or LDZY's A2002. | Widely stocked |
+| SCT2002WV-03B2BE103 | [Scondar](https://www.scondar.com/wire-to-board/microblade-2-0mm-pitch-connector/microblade-53014/) | not published | — | not published | — | Claimed 53014 equivalent. No drawing. | Quote only |
+| "Model 2000" | [Eshine / connectorwire](https://www.connectorwire.com/sale-9199762-alternative-molex-51004-0800-2-00mm-pitch-microblade-wire-to-board.html) | not published | — | not published | — | Claimed alternative to 53014-0310. No drawing. | 1000-piece minimum, about 0.005 each |
+| (unnamed) | [Zeakka](https://zeakka.com/connectors/molex-microblade-connector/) | not published | — | not published | — | Claimed MicroBlade alternative. | Quote only |
 
 | LDZY A2002WV-NP | KLS1-XL3M-2.00-xx-S | CJT A2002WV (not a copy) |
 |---|---|---|
 | ![LDZY A2002WV](img/clone_ldzy_a2002wv.png) | ![KLS1-XL3M S](img/clone_kls1_xl3m_s.png) | ![CJT A2002WV](img/notclone_cjt_a2002wv.png) |
 
-The drawings leave three things open:
-- **Blade width at the mating zone.** Molex's is about 1.0 mm, and this is what has to fit the 51004 / Brother housing slot. Neither LDZY nor KLS dimensions it; they only give the 0.30 × 0.60 mm tail.
-- **Contact material.** Both copies use brass, where Molex uses phosphor bronze. For a fixed header blade this matters less than for the spring side.
+*The CJT A2004 and XKB X2012 drawings are on LCSC (linked in the table) and are not reproduced here.*
+
+The drawings leave two things open for every copy:
+- **Blade width at the mating zone.** Molex's is about 1.0 mm, and this is what has to fit the 51004 / Brother housing slot. None of the drawings dimensions it; they only give the 0.30 × 0.60 mm tail.
 - **Mating with a genuine housing.** None of the vendors states that its header mates with a genuine Molex 51004 or with the Brother machine cable.
 
 ### Sourcing at AYAB volumes (under 100 boards, two 3-pin headers each)
 
-- **Price isn't the issue.** Eshine quotes 1000 pieces minimum at about 0.005 each, with free samples. Even a full 1000-piece minimum costs a few dollars.
-- **The ordering channel is.** As of this writing I found no catalogue distributor listing for the LDZY or KLS MicroBlade copies at LCSC, DigiKey, Mouser or AliExpress. LCSC's search could not be queried automatically, so the KLS series may still be there. LDZY sells through an [Alibaba store](https://ldzyconn.en.alibaba.com/) and direct quotes. KLS sells direct.
-- **Fit is unverified.** Every option needs a sample check before it goes into the BOM.
+Parts cost a few cents either way, so the question is how easy each one is to order.
+
+| Route | Cost for about 200 parts | Ordering | Risk |
+|---|---|---|---|
+| Genuine 53014-0310 from a broker | ~€25 | Broker order (Anlinkda: minimum 1, Worldway: minimum 7) | Non-franchised source, and stock will eventually run out |
+| CJT A2004WV-3P from LCSC | ~$12 | Ordinary LCSC cart, can share an order with other parts | Fit with the Brother cable not yet verified |
+| XKB X2012WV-03 from LCSC | ~$12 | Same | Same, plus brass contacts and a 5.90 mm height |
+| LDZY / KLS | — | Direct quote, Alibaba | Not worth it while CJT A2004 is stocked |
 
 ### Recommendation
 
-1. Keep **53014-0310** as the primary part while new old stock can be found.
-2. Order samples of **LDZY A2002WV-NP-N0NAT (03)** and **L-KLS1-XL3M-2.00-03-S**, and test-fit them against:
+1. Keep **Molex 53014-0310** as the primary part, bought from a broker such as Worldway or Anlinkda.
+2. Add **5 × CJT A2004WV-3P (C225241)**, and optionally 5 × XKB X2012WV-03-N0SN (C571289), to the next LCSC order.
+3. Test-fit them against:
    - a real KH-900 / CK-35 machine cable
    - a genuine 51004-0300 housing, if one is available
-3. List whichever copy fits and can be bought most easily as the BOM alternate.
-4. **Do not list** CJT A2002WV or any Molex 53253.
+4. If A2004WV fits, list it as the BOM alternate. The series covers every circuit count the board uses (A2004WV-3P / -5P / -8P / -10P), and it gives a sourcing path that doesn't depend on brokers.
+5. **Do not list** CJT A2002WV or any Molex 53253.
 
 ## Limitations
 
@@ -230,5 +250,5 @@ The drawings leave three things open:
 - [Mouser 53014-0710](https://www.mouser.com/ProductDetail/Molex/53014-0710?qs=rew4TcUmwq9d3ROd99smSw%3D%3D) ("possible replacement" 53253-0670).
 - [KONNRA MicroBlade guide](https://konnra.com/molex-microblade-2-0-connector-complete-guide/).
 - Molex kit datasheet [76650-0237](https://www.farnell.com/datasheets/525627.pdf).
-- Third-party drawings: [LDZY A2002](https://ldzycon.com/downloads/drawings/a2002/a2002.pdf), [KLS1-XL3M-2.00](https://www.klsconnector.com/wp-content/uploads/20220615111736L-KLS1-XL3M-2.00.pdf), [CJT A2002](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf).
+- Third-party drawings: [CJT A2004 (LCSC C225241)](https://www.lcsc.com/datasheet/C225241.pdf), [XKB X2012WV (LCSC C571289)](https://www.lcsc.com/datasheet/C571289.pdf), [LDZY A2002](https://ldzycon.com/downloads/drawings/a2002/a2002.pdf), [KLS1-XL3M-2.00](https://www.klsconnector.com/wp-content/uploads/20220615111736L-KLS1-XL3M-2.00.pdf), [CJT A2002](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf).
 - 3D models: Molex 532530370.stp and 510650300.stp (molex.com); 530140310 (repo `ayab-library/packages3D/53014-0310.stp`); 510040200 (SamacSys LIB_51004-0200).
