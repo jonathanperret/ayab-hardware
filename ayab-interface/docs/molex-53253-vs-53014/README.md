@@ -156,7 +156,8 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 
 ## 5. Implications for the AYAB interface
 
-- **J2C/J6C (3-pin, populated): keep the 53014-0310.** As the current BOM update already does, source new old stock; brokers still hold tens of thousands (see [section 6](#6-third-party-microblade-compatible-headers)). A 53253 on the board would not accept the existing MicroBlade cable housing.
+- **J2C–J6C (3, 5, 8 and 10-pin; all may be populated): keep the 53014 series.** As the current BOM update already does, source new old stock. Brokers still hold thousands of every size (see [section 6](#6-third-party-microblade-compatible-headers)). A 53253 on the board would not accept the existing MicroBlade cable housing.
+  - The BOM's "DO NOT POPULATE" on J3C/J4C/J5C only reflects that these parts are sourced outside automated assembly.
 - **To migrate to Micro-Latch, change the cable as well.** The machine-side cable needs 51065 housings with 50212 terminals: a re-crimp, or an adapter cable. Only then can 53253 headers be fitted.
   - The hole pattern is compatible: single row, 2 mm pitch, Ø0.8 mm holes fit the 0.5 mm square tails.
   - The body outline differs: 3.65 mm deep with an open front, versus 4.35 mm closed. The pin row also sits at a different offset within the outline: on the 53253 it is 1.5 mm from the back face; on the 53014 the kinked tail is 1.65 mm from datum face A. So silkscreen and courtyard need updating, and orientation must be checked against the cable.
@@ -168,23 +169,40 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 
 *Added 26 October 2026. Availability and prices as found on that date, by browsing LCSC and Octopart.*
 
-### Genuine 53014-0310: gone from authorised distributors, plentiful at brokers
+### Genuine 53014: mostly gone from authorised distributors, plentiful at brokers
 
-- **Authorised distributors are out.**
-  - [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks it *"Obsolete and no longer manufactured"*, with no stock or prices.
+The board uses four sizes: 53014-0310 (J2C, J6C), -0510 (J3C), -0810 (J4C) and -1010 (J5C). All of them may be populated. The BOM's "DO NOT POPULATE" on the larger three only means they are sourced outside automated assembly.
+
+- **Authorised distributors.**
+  - [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks 53014-0310 *"Obsolete and no longer manufactured"*, with no stock or prices.
   - [TME](https://www.tme.eu/en/details/mx-53014-0310/raster-signal-connectors-2-00mm/molex/53014-0310/) lists it as *"Product withdrawn from the offer"*.
   - LCSC's own listing ([C588262](https://www.lcsc.com/product-detail/C588262.html)) is **out of stock**. Its reference price was $0.27 each, or $0.10 at 200+.
+  - Only the 10-pin is still held by authorised channels, and only in reel-sized minimums (see the table).
 - **DigiKey's suggested substitutes don't work.** 53253-0370 does not mate (section 3). TE 292132-3 is AMP CT 2 mm with 0.6 mm round pins, a different system.
-- **Independent brokers still hold large stocks.** These are listed on [Octopart](https://octopart.com/search?q=53014-0310):
 
-| Broker | Stock | Minimum | Price (approx.) |
-|---|---|---|---|
-| Anlinkda | 66,937 | 1 | €0.13 |
-| Worldway Electronics | 24,702 | 7 | €0.12 |
-| Win Source | 34,335 | 35 | €0.88–1.08 |
-| UnikeyIC | 28 | 10 | €0.15 |
+Stock on [Octopart](https://octopart.com/search?q=53014-0310) on 26 October 2026. "Auth." marks an authorised distributor; everyone else is an independent broker.
 
-Brokers are not authorised Molex channels, but a moulded header is a low-risk part to buy this way. The BOM note *"Obsolete: source new old stock"* is therefore practical today at about €0.12 a part. LCSC also lists other 53014 circuit counts (for example 53014-1010) through its "Other Suppliers" broker channel.
+| Part | Seller | Stock | Minimum | Price (approx.) |
+|---|---|---|---|---|
+| **53014-0310** (3-pin) | Anlinkda | 66,937 | 1 | €0.13 |
+| | Worldway Electronics | 24,702 | 7 | €0.12 |
+| | Win Source | 34,335 | 35 | €0.88–1.08 |
+| | UnikeyIC | 28 | 10 | €0.15 |
+| **53014-0510** (5-pin) | Anlinkda | 32,542 | 1 | €0.18 (€0.14 at 100) |
+| | Win Source | 2,000 | 405 | €0.09 |
+| | UnikeyIC | 3 | 20 | €0.48 |
+| **53014-0810** (8-pin) | CoreStaff | 3,000 | 1 | €0.26 (€0.17 at 100) |
+| | Classic Components | 3,060 | — | €0.31 |
+| | Win Source | 7,000 | 245 | €0.15 |
+| | UnikeyIC | 79 | 10 | €0.43 |
+| **53014-1010** (10-pin) | Farnell (auth.) | 6,426 | 1,000 | €0.28 |
+| | Verical (auth.) | 7,140 | 337 | €0.17 |
+| | Concentric | 7,140 | 358 | €0.16 |
+| | LCSC "Other Suppliers" | ~7,000 | — | — |
+
+Brokers are not authorised Molex channels, but a moulded header is a low-risk part to buy this way. The BOM note *"Obsolete: source new old stock"* is practical today for every size:
+- **Small minimums:** Anlinkda for 3 and 5-pin, CoreStaff for 8-pin.
+- **10-pin:** the smallest order is about 340 pieces (about €57) at Verical or Concentric.
 
 ### Copies, compared against the Molex drawing
 
@@ -212,25 +230,49 @@ The drawings leave two things open for every copy:
 - **Blade width at the mating zone.** Molex's is about 1.0 mm, and this is what has to fit the 51004 / Brother housing slot. None of the drawings dimensions it; they only give the 0.30 × 0.60 mm tail.
 - **Mating with a genuine housing.** None of the vendors states that its header mates with a genuine Molex 51004 or with the Brother machine cable.
 
-### Sourcing at AYAB volumes (under 100 boards, two 3-pin headers each)
+### Copies stocked at LCSC, by size
 
-Parts cost a few cents either way, so the question is how easy each one is to order.
+Stock on LCSC on 26 October 2026:
 
-| Route | Cost for about 200 parts | Ordering | Risk |
+| Pins | CJT A2004WV | CNJM CNJMA2004WV | XKB X2012WV |
 |---|---|---|---|
-| Genuine 53014-0310 from a broker | ~€25 | Broker order (Anlinkda: minimum 1, Worldway: minimum 7) | Non-franchised source, and stock will eventually run out |
-| CJT A2004WV-3P from LCSC | ~$12 | Ordinary LCSC cart, can share an order with other parts | Fit with the Brother cable not yet verified |
-| XKB X2012WV-03 from LCSC | ~$12 | Same | Same, plus brass contacts and a 5.90 mm height |
-| LDZY / KLS | — | Direct quote, Alibaba | Not worth it while CJT A2004 is stocked |
+| 3 | **765** ([C225241](https://www.lcsc.com/product-detail/C225241.html), $0.086) | 0 (C2834599) | **785** ([C571289](https://www.lcsc.com/product-detail/C571289.html), $0.09) |
+| 5 | **905** ([C225243](https://www.lcsc.com/product-detail/C225243.html)) | 0 (C2834601) | 20 (C571291) |
+| 8 | **1,455** ([C225246](https://www.lcsc.com/product-detail/C225246.html)) | 0 (C2834604) | 0 (C571294) |
+| 10 | not listed | **585** ([C2834606](https://www.lcsc.com/product-detail/C2834606.html), $0.13) | 0 (C571296) |
+
+**CNJM CNJMA2004WV** (Joint More Precision, [datasheet](https://www.lcsc.com/datasheet/C2834606.pdf)) is another A2004-pattern copy:
+- 4.35 × 5.85 mm body, 3.50 mm tail, 22.00 mm long for 10P
+- PA66 with 15 % glass fibre, 2 A / 125 V
+- Ø0.80 mm PCB hole, where CJT specifies Ø0.90 mm
+
+It fills the one size CJT doesn't list at LCSC, but it is a second maker and needs its own fit check.
+
+### Sourcing at AYAB volumes
+
+Under 100 boards, each with two 3-pin headers and one each of 5, 8 and 10-pin, means up to about 200 + 100 + 100 + 100 headers. The parts cost cents either way; what differs is how easy they are to order.
+
+| Route | Approximate cost for one run | Ordering | Risk |
+|---|---|---|---|
+| Genuine 53014 from brokers | ~€25 (3P) + ~€15 (5P) + ~€20 (8P) + ~€57 for the 340-piece 10P minimum | Three or four broker orders | Non-franchised sources for 3/5/8-pin; stock will eventually run out |
+| CJT A2004WV-3/5/8P + CNJM 10P from LCSC | ~$45 | One LCSC cart, can share an order with other parts | Fit with the Brother cable not yet verified, for two makers |
+| XKB X2012WV | — | — | Only 3-pin is in stock |
+| LDZY / KLS | — | Direct quote, Alibaba | Not worth it while the A2004 copies are stocked |
 
 ### Recommendation
 
-1. Keep **Molex 53014-0310** as the primary part, bought from a broker such as Worldway or Anlinkda.
-2. Add **5 × CJT A2004WV-3P (C225241)**, and optionally 5 × XKB X2012WV-03-N0SN (C571289), to the next LCSC order.
+1. Keep **Molex 53014** as the primary part for all four sizes, bought from brokers:
+   - Anlinkda or Worldway for 3-pin
+   - Anlinkda for 5-pin
+   - CoreStaff for 8-pin
+   - Verical or Concentric for 10-pin
+2. Add **5 × CJT A2004WV-3P (C225241)** and **5 × CNJM CNJMA2004WV-10P (C2834606)** to the next LCSC order. These cover both makers of the LCSC alternates.
 3. Test-fit them against:
    - a real KH-900 / CK-35 machine cable
-   - a genuine 51004-0300 housing, if one is available
-4. If A2004WV fits, list it as the BOM alternate. The series covers every circuit count the board uses (A2004WV-3P / -5P / -8P / -10P), and it gives a sourcing path that doesn't depend on brokers.
+   - a genuine 51004 housing, if one is available
+4. If both fit, list them as BOM alternates:
+   - CJT A2004WV-3P / -5P / -8P for J2C, J6C, J3C and J4C
+   - CNJM CNJMA2004WV-10P for J5C
 5. **Do not list** CJT A2002WV or any Molex 53253.
 
 ## Limitations
