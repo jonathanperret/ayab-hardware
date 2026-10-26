@@ -1,7 +1,7 @@
 Line,QTY,Reference,Type,Value,Footprint,Pin Count,Side,Manf,Manf PN,Alt. Manf,Alt Manf PN,DIGI-KEY #,Mouser #,Fabrication note
 1,1,U1,Microcontroller,Adafruit Metro Mini,,28,BOT,Adafruit,2590,,,1528-1374-ND,485-2590,
 2,2,U1,Header,"Header, 0.1"", 14-pin, male, short both sides",PTH,14,BOT,Samtec,TSW-114-05-T-S,,,612-TSW-114-05-T-S-ND,200-TSW11405TS,Optional: header supplied with the Metro Mini can be used instead
-3,1,S1,Switch,Tactile button switch,SMT Switch,4,TOP,TE Connectivity,FSM4JSMATR,,,450-1759-1-ND,506-FSM4JSMATR,
+3,1,S1,Switch,Tactile button switch,SMT Switch,4,TOP,TE Connectivity,FSM4JSMATR,,,450-1759-1-ND,506-FSM4JSMATR,"Optional: inaccessible when installed, Metro Mini has its own reset button"
 4,1,L1,Buzzer,BUZZER MAGN 5V 2.4KHZ PCB,PTH,2,TOP,PUI,AT-1224-TWT-5V-2-R,Soberton,WT-1205,668-1470-ND,665-AT1224TWT5V2R,
 5,4,"C1,C4,C5,C6",Capacitor,1 uF Ceramic 1206,1206,2,TOP,Kemet,C1206C105M3RACTU,,,399-C1206C105M3RACTUCT-ND,80-C1206C105M3R,
 6,1,C2,Capacitor,0.1 uF Ceramic 0603,603,2,TOP,Kemet,C0603C104K3RACTU,,,399-C0603C104K3RACTUCT-ND,80-C0603C104K3R,
