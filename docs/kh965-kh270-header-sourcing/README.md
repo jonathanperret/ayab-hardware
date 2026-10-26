@@ -1,8 +1,8 @@
 # Sourcing 2 mm headers for KH-965 / KH-270 machine cables
 
-*AYAB interface, connectors J2C–J6C · research notes, 26 October 2026*
+*All AYAB hardware for Brother machines (`ayab-interface`, `ayab-shield`, `ayab-esp32`) · research notes, 26 October 2026*
 
-The AYAB interface board connects to the knitting machine's own cables through 2 mm-pitch headers (J2C–J6C). The board was designed around **Molex 53014 MicroBlade** headers, which Molex made obsolete in 2021. This document looks at how to keep sourcing headers that mate with the machine cables' housings.
+Every AYAB board in this repository installs into a Brother knitting machine and connects to the machine's own cables. For the KH-965 / KH-270 cables (and the KH-900 ones, which use the same family), that means 2 mm-pitch headers with 3, 5, 8 and 10 pins. All three boards were designed around **Molex 53014 MicroBlade** headers, which Molex made obsolete in 2021. This document looks at how to keep sourcing headers that mate with the machine cables' housings.
 
 ## Summary
 
@@ -18,18 +18,22 @@ What to do next is in [section 5](#5-sourcing-comparison-and-recommendation).
 
 ---
 
-## 1. The connectors on the board
+## 1. The 2 mm machine connectors on AYAB boards
 
-| Ref | Pins | Schematic label | Footprint |
-|---|---|---|---|
-| J2C, J6C | 3 | KH-965 | Molex53014-0310 |
-| J3C | 5 | KH-965 | Molex53014-0510 |
-| J4C | 8 | KH-900 | Molex53014-0810 |
-| J5C | 10 | KH-900 | Molex53014-1010 |
+| Pins | `ayab-interface` (gEDA) | `ayab-shield` (KiCad) | `ayab-esp32` (KiCad) | Molex part |
+|---|---|---|---|---|
+| 3 | J2C, J6C ("KH-965") | JPB2 | J411, J412 ("900.965 EOL L/R"), footprint `CONN-TH_3P-P2.00_A2004WV-3P` | 53014-0310 |
+| 5 | J3C ("KH-965") | JPB8 | J413 ("900.965 ENCODERS") | 53014-0510 |
+| 8 | J4C ("KH-900") | JPB3 | J402 ("900.965.CK35 SOLENOIDS B") | 53014-0810 |
+| 10 | J5C ("KH-900") | JPB4 | J401 ("900.965.CK35 SOLENOIDS A") | 53014-1010 |
 
-**All of these may be populated.** The BOM's "DO NOT POPULATE" on J3C/J4C/J5C only reflects that these parts are sourced outside automated assembly.
+*Labels in quotes are the schematic's own. The shield's 3-pin JPA7 is a 2.5 mm SPOX position on a combined footprint and is out of scope here.*
 
-The header has to accept the housing on the machine cable. Since the board was designed around the 53014, that housing is a **MicroBlade 51004-type** receptacle with box terminals that grip a flat blade. Any replacement header must therefore reproduce the 53014's mating interface: a flat blade about 0.32 mm thick and about 1.0 mm wide, in a 4.35 mm-deep, four-wall shroud, with the latch window in the same place.
+**All of these positions may be populated.** On `ayab-interface`, the BOM's "DO NOT POPULATE" on J3C/J4C/J5C only reflects that these parts are sourced outside automated assembly.
+
+**The A2004WV footprint is already in the repo.** `ayab-esp32` already uses a CJT A2004WV-3P footprint for its 3-pin positions (`ayab-library/Library.pretty/CONN-TH_3P-P2.00_A2004WV-3P.kicad_mod`, plus a 5-pin `CONN-TH_A2004WV-5P`). So the copy recommended in [section 3](#3-third-party-microblade-copies) has already been chosen once in this project.
+
+The header has to accept the housing on the machine cable. Since the boards were designed around the 53014, that housing is a **MicroBlade 51004-type** receptacle with box terminals that grip a flat blade. Any replacement header must therefore reproduce the 53014's mating interface: a flat blade about 0.32 mm thick and about 1.0 mm wide, in a 4.35 mm-deep, four-wall shroud, with the latch window in the same place.
 
 The two Molex 2 mm families involved, and Molex's naming for them:
 
@@ -58,7 +62,7 @@ The 53014's mating interface, from Molex drawing SD-53014-001, is shown below ne
 ## 2. Genuine Molex 53014
 
 - **Authorised distributors.**
-  - [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks 53014-0310 *"Obsolete and no longer manufactured"*, with no stock or prices.
+  - [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the `ayab-interface` BOM's distributor part) marks 53014-0310 *"Obsolete and no longer manufactured"*, with no stock or prices.
   - [TME](https://www.tme.eu/en/details/mx-53014-0310/raster-signal-connectors-2-00mm/molex/53014-0310/) lists it as *"Product withdrawn from the offer"*.
   - LCSC's own listing ([C588262](https://www.lcsc.com/product-detail/C588262.html)) is **out of stock**. Its reference price was $0.27 each, or $0.10 at 200+.
   - Only the 10-pin is still held by authorised channels, and only in reel-sized minimums (see the table).
@@ -84,7 +88,7 @@ Stock on [Octopart](https://octopart.com/search?q=53014-0310) on 26 October 2026
 | | Concentric | 7,140 | 358 | €0.16 |
 | | LCSC "Other Suppliers" | ~7,000 | — | — |
 
-Brokers are not authorised Molex channels, but a moulded header is a low-risk part to buy this way. The BOM note *"Obsolete: source new old stock"* is practical today for every size:
+Brokers are not authorised Molex channels, but a moulded header is a low-risk part to buy this way. The `ayab-interface` BOM note *"Obsolete: source new old stock"* is practical today for every size:
 - **Small minimums:** Anlinkda for 3 and 5-pin, CoreStaff for 8-pin.
 - **10-pin:** the smallest order is about 340 pieces (about €57) at Verical or Concentric.
 
@@ -138,7 +142,7 @@ It fills the one size CJT doesn't list at LCSC, but it is a second maker and nee
 
 ## 4. Molex's successor, Micro-Latch 53253, does not mate
 
-**A 53253 cannot replace a 53014 on this board.** A MicroBlade cable housing (51004) does not fit onto a Micro-Latch header (53253). A Micro-Latch housing (51065) does not fit onto a MicroBlade header (53014) either.
+**A 53253 cannot replace a 53014 on any of these boards.** A MicroBlade cable housing (51004) does not fit onto a Micro-Latch header (53253). A Micro-Latch housing (51065) does not fit onto a MicroBlade header (53014) either.
 
 Molex's own obsolescence notice agrees: it lists 53253 as the successor to 53014, but as a *"Replacement with differences"*, not a *"Drop in replacement"*, and it moves the cable housing to Micro-Latch at the same time. Three independent lines of evidence agree:
 
@@ -169,7 +173,7 @@ No first-hand report of anyone mating these parts turned up ([4.4](#44-first-han
 
 Molex's spreadsheet offered three options: "Drop in replacement", "Replacement with differences" and "No replacement part". None of the MicroBlade parts are classed as drop-in.
 
-The original PCN 509450 list was off by one circuit (for example, 53014-0310 → 53253-0270). PCN 509547 exists only to correct that. The old AYAB BOM alternates were also mismatched: it listed 53253-0870 against the 3-pin 53014-0310. The current 53014-0310 product page adds: *"Replacement p/n 532530370 … has different size, use with and mate with parts"*.
+The original PCN 509450 list was off by one circuit (for example, 53014-0310 → 53253-0270). PCN 509547 exists only to correct that. The old `ayab-interface` BOM alternates were also mismatched: it listed 53253-0870 against the 3-pin 53014-0310. The current 53014-0310 product page adds: *"Replacement p/n 532530370 … has different size, use with and mate with parts"*.
 
 Each part's spec sheet names only its own system as a mate:
 - **53014 header:** "Mates with 51004". Drawing SD-53014-001 rev J, note 1.
@@ -191,7 +195,7 @@ The cable-side entries are sized to match:
 - **51004:** blade slot **0.5 × 1.3 mm**
 - **51065:** square entry **0.62 × 0.62 mm** (510650000-SD)
 
-*The MicroBlade drawings are shown in [section 1](#1-the-connectors-on-the-board).*
+*The MicroBlade drawings are shown in [section 1](#1-the-2-mm-machine-connectors-on-ayab-boards).*
 
 What this means for each direction:
 
@@ -249,7 +253,7 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 - **Distributor cross-references.** Mouser lists 53253-xx70 as a *"possible replacement"* for obsolete 53014 headers (for example 53014-0710 → 53253-0670), with no claim of intermating.
 - **Vendor guides.** KONNRA, which sells a competing MicroBlade clone, quotes Molex: *"Replacement part is not a drop in replacement… crimp terminal/50011, housing/51004 and header/53014 & 53015 need to be replaced"*. The PCN files above confirm this.
 - **Kit datasheets.** Molex's 76650-0237 kit ships 51004 MicroBlade housings and 53253 Micro-Latch headers side by side as separate families, which suggests nothing about them mating.
-- **This repo.** The 53253 alternates were added to the BOM in `d368f23` (2019-11-22, "updated BOM with Mouser part numbers"). Their circuit counts don't match the primary parts, and nothing indicates they were ever tested. That suggests they came from a distributor cross-reference rather than a fit check.
+- **This repo.** The 53253 alternates were added to the `ayab-interface` BOM in `d368f23` (2019-11-22, "updated BOM with Mouser part numbers"). Their circuit counts don't match the primary parts, and nothing indicates they were ever tested. That suggests they came from a distributor cross-reference rather than a fit check.
 
 ### 4.5 Switching to Micro-Latch anyway
 
@@ -262,7 +266,7 @@ To use Micro-Latch, the cable has to change as well. The machine-side cable need
 
 ## 5. Sourcing comparison and recommendation
 
-Under 100 boards, each with two 3-pin headers and one each of 5, 8 and 10-pin, means up to about 200 + 100 + 100 + 100 headers. The parts cost cents either way; what differs is how easy they are to order.
+AYAB boards are built in small runs, under 100 at a time. Each board takes up to two 3-pin headers and one each of 5, 8 and 10-pin, so a run needs up to about 200 + 100 + 100 + 100 headers. The parts cost cents either way; what differs is how easy they are to order.
 
 | Route | Approximate cost for one run | Ordering | Risk |
 |---|---|---|---|
@@ -283,8 +287,9 @@ Under 100 boards, each with two 3-pin headers and one each of 5, 8 and 10-pin, m
    - a real KH-965 / KH-270 machine cable
    - a genuine 51004 housing, if one is available
 4. If both fit, list them as BOM alternates:
-   - CJT A2004WV-3P / -5P / -8P for J2C, J6C, J3C and J4C
-   - CNJM CNJMA2004WV-10P for J5C
+   - CJT A2004WV-3P / -5P / -8P for the 3, 5 and 8-pin positions
+   - CNJM CNJMA2004WV-10P for the 10-pin position
+   - in each board's BOM: `ayab-interface` (J2C–J6C), `ayab-shield` (JPB2/3/4/8) and `ayab-esp32` (J401, J402, J411–J413)
 5. **Do not list** CJT A2002WV or any Molex 53253.
 
 ---
