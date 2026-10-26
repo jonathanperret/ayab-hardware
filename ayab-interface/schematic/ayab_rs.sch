@@ -1184,7 +1184,7 @@ footprint=0805_reflow_solder_2
 T 67100 47300 5 10 1 1 0 0 1
 refdes=R3
 T 67100 47000 5 10 1 1 0 0 1
-value=320
+value=330
 }
 N 66900 47900 66900 47700 4
 C 68100 47800 1 0 1 terminal-1.sym

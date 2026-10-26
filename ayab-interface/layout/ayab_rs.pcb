@@ -1495,7 +1495,7 @@ Element["" "JUMPER1" "GND" "unknown" 1990.00mil 1720.00mil -65.00mil 65.00mil 0 
 
 	)
 
-Element["" "0805_reflow_solder_2" "R3" "320" 4525.00mil 1680.00mil -27.99mil 60.79mil 0 121 ""]
+Element["" "0805_reflow_solder_2" "R3" "330" 4525.00mil 1680.00mil -27.99mil 60.79mil 0 121 ""]
 (
 	Pad[-37.40mil -3.93mil -37.40mil 3.93mil 51.18mil 20.00mil 63.18mil "1" "1" "square"]
 	Pad[37.40mil -3.93mil 37.40mil 3.93mil 51.18mil 20.00mil 63.18mil "2" "2" "square"]
