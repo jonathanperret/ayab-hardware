@@ -160,7 +160,58 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 - **To migrate to Micro-Latch, change the cable as well.** The machine-side cable needs 51065 housings with 50212 terminals: a re-crimp, or an adapter cable. Only then can 53253 headers be fitted.
   - The hole pattern is compatible: single row, 2 mm pitch, Ø0.8 mm holes fit the 0.5 mm square tails.
   - The body outline differs: 3.65 mm deep with an open front, versus 4.35 mm closed. The pin row also sits at a different offset within the outline: on the 53253 it is 1.5 mm from the back face; on the 53014 the kinked tail is 1.65 mm from datum face A. So silkscreen and courtyard need updating, and orientation must be checked against the cable.
-- **Third-party MicroBlade-compatible headers.** Scondar SCT2002, LDZY A2002 and others are offered as 53014 equivalents. They would keep the existing cables, but they are vendor claims that I have not verified. The same check could be run on them if a STEP model is available.
+- **Third-party MicroBlade-compatible headers.** These would keep the existing cables. Two of them look like real MicroBlade copies on paper, and one widely stocked "2002" part is not. See [section 6](#6-third-party-microblade-compatible-headers).
+
+---
+
+## 6. Third-party MicroBlade-compatible headers
+
+*Added 26 October 2026. Availability as found on that date.*
+
+### Genuine 53014 is drying up
+
+- [DigiKey](https://www.digikey.com/en/products/detail/molex/0530140310/1785064) (WM18967-ND, the BOM's distributor part) marks 53014-0310 *"Obsolete and no longer manufactured"* and shows no stock or prices.
+  - Its suggested substitutes are 53253-0370, which does not mate (section 3), and TE 292132-3. The TE part is AMP CT 2 mm with 0.6 mm round pins, a different system.
+- [TME](https://www.tme.eu/en/details/mx-53014-0310/raster-signal-connectors-2-00mm/molex/53014-0310/) lists it as *"Product withdrawn from the offer"*.
+- Genuine 53014 in other circuit counts still turns up in surplus lots, for example a [50-pack of 53014-0210 on eBay](https://www.ebay.com/itm/126980767944). I found none for the 3-circuit part.
+
+### Candidates, compared against the Molex drawing
+
+The Chinese "2.0 mm wafer" market sells several families under similar names. The only reliable way to tell them apart is the drawing: a MicroBlade header has a **flat blade about 0.3 mm thick in a 4.35 mm-deep, four-wall shroud**, while the common Micro-Latch-style and JST-style parts have **0.5–0.64 mm square pins**.
+
+| Part (3-circuit) | Maker | Depth × height | Length | Contact | Mating housing | Verdict from the drawing |
+|---|---|---|---|---|---|---|
+| **Molex 53014-0310** (reference) | Molex | 4.35 × 5.85 mm | 8.0 mm | Flat blade, 0.32 mm thick, phosphor bronze | 51004: 3.35 mm deep, 5.80 mm tall | — |
+| **A2002WV-NP-N0NAT**, 03 positions | [LDZY](https://ldzycon.com/products/a2002-connector-series/) (Dongguan) | 4.35 × 5.90 mm | 8.00 mm | Tails 0.30 × 0.60 mm, brass | A2002H: 3.35 mm deep (3.80 mm over the latch), 5.90 mm tall | **MicroBlade copy.** Same latch holes and circuit-1 box. LDZY cross-references it to Molex 53014. |
+| **L-KLS1-XL3M-2.00-03-S** | [KLS](https://www.klsconnector.com/2-00mm-pitch-molex-51004-53014-53015-type-wire-to-board-connector/) (Ningbo) | 4.35 × 5.90 mm | 8.00 mm | Tails 0.30 × 0.60 mm, brass | KLS1-XL3M-H: 3.35 × 5.80 mm (same envelope as 51004), 2-circuit length 4.90 mm | **MicroBlade copy.** KLS titles it "51004 type". |
+| A2002WV-3P | [CJT](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf) (Changjiang) | 4.70 × 6.10 mm | 8.00 mm | **0.5 mm square pin** | CJT A2002H | **Not MicroBlade**, despite sharing LDZY's series name. This is the "A2002WV" that distributors actually stock. |
+| SCT2002WV-03B2BE103 | [Scondar](https://www.scondar.com/wire-to-board/microblade-2-0mm-pitch-connector/microblade-53014/) | not published | — | not published | SCT2002H, said to match 51004 | Claimed 53014 equivalent. No drawing, so ask for one, especially given the CJT name clash. |
+| "Model 2000" | [Eshine / connectorwire](https://www.connectorwire.com/sale-9199762-alternative-molex-51004-0800-2-00mm-pitch-microblade-wire-to-board.html) | not published | — | not published | — | Claimed alternative to 53014-0310. No drawing. |
+| (unnamed) | [Zeakka](https://zeakka.com/connectors/molex-microblade-connector/) | not published | — | not published | — | Claimed MicroBlade alternative. Drawing available on request. |
+
+| LDZY A2002WV-NP | KLS1-XL3M-2.00-xx-S | CJT A2002WV (not a copy) |
+|---|---|---|
+| ![LDZY A2002WV](img/clone_ldzy_a2002wv.png) | ![KLS1-XL3M S](img/clone_kls1_xl3m_s.png) | ![CJT A2002WV](img/notclone_cjt_a2002wv.png) |
+
+The drawings leave three things open:
+- **Blade width at the mating zone.** Molex's is about 1.0 mm, and this is what has to fit the 51004 / Brother housing slot. Neither LDZY nor KLS dimensions it; they only give the 0.30 × 0.60 mm tail.
+- **Contact material.** Both copies use brass, where Molex uses phosphor bronze. For a fixed header blade this matters less than for the spring side.
+- **Mating with a genuine housing.** None of the vendors states that its header mates with a genuine Molex 51004 or with the Brother machine cable.
+
+### Sourcing at AYAB volumes (under 100 boards, two 3-pin headers each)
+
+- **Price isn't the issue.** Eshine quotes 1000 pieces minimum at about 0.005 each, with free samples. Even a full 1000-piece minimum costs a few dollars.
+- **The ordering channel is.** As of this writing I found no catalogue distributor listing for the LDZY or KLS MicroBlade copies at LCSC, DigiKey, Mouser or AliExpress. LCSC's search could not be queried automatically, so the KLS series may still be there. LDZY sells through an [Alibaba store](https://ldzyconn.en.alibaba.com/) and direct quotes. KLS sells direct.
+- **Fit is unverified.** Every option needs a sample check before it goes into the BOM.
+
+### Recommendation
+
+1. Keep **53014-0310** as the primary part while new old stock can be found.
+2. Order samples of **LDZY A2002WV-NP-N0NAT (03)** and **L-KLS1-XL3M-2.00-03-S**, and test-fit them against:
+   - a real KH-900 / CK-35 machine cable
+   - a genuine 51004-0300 housing, if one is available
+3. List whichever copy fits and can be bought most easily as the BOM alternate.
+4. **Do not list** CJT A2002WV or any Molex 53253.
 
 ## Limitations
 
@@ -179,4 +230,5 @@ I found **no first-hand report** of anyone trying either cross-mating. I searche
 - [Mouser 53014-0710](https://www.mouser.com/ProductDetail/Molex/53014-0710?qs=rew4TcUmwq9d3ROd99smSw%3D%3D) ("possible replacement" 53253-0670).
 - [KONNRA MicroBlade guide](https://konnra.com/molex-microblade-2-0-connector-complete-guide/).
 - Molex kit datasheet [76650-0237](https://www.farnell.com/datasheets/525627.pdf).
+- Third-party drawings: [LDZY A2002](https://ldzycon.com/downloads/drawings/a2002/a2002.pdf), [KLS1-XL3M-2.00](https://www.klsconnector.com/wp-content/uploads/20220615111736L-KLS1-XL3M-2.00.pdf), [CJT A2002](https://file.huaqiu.com/web1/M00/BD/0A/pIYBAF7EplqAdi0VAARvYF8Z3SU480.pdf).
 - 3D models: Molex 532530370.stp and 510650300.stp (molex.com); 530140310 (repo `ayab-library/packages3D/53014-0310.stp`); 510040200 (SamacSys LIB_51004-0200).
