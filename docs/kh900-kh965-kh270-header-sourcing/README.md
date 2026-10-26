@@ -1,8 +1,8 @@
-# Sourcing 2 mm headers for KH-965 / KH-270 machine cables
+# Sourcing 2 mm headers for KH-900 / KH-965 / KH-270 machine cables
 
 *All AYAB hardware for Brother machines (`ayab-interface`, `ayab-shield`, `ayab-esp32`) · research notes, 26 October 2026*
 
-Every AYAB board in this repository installs into a Brother knitting machine and connects to the machine's own cables. For the KH-965 / KH-270 cables (and the KH-900 ones, which use the same family), that means 2 mm-pitch headers with 3, 5, 8 and 10 pins. All three boards were designed around **Molex 53014 MicroBlade** headers, which Molex made obsolete in 2021. This document looks at how to keep sourcing headers that mate with the machine cables' housings.
+Every AYAB board in this repository installs into a Brother knitting machine and connects to the machine's own cables. On the KH-900, KH-965 and KH-270, those cables end in 2 mm-pitch housings with 3, 5, 8 and 10 positions, so the boards need matching 2 mm headers. All three boards were designed around **Molex 53014 MicroBlade** headers, which Molex made obsolete in 2021. This document looks at how to keep sourcing headers that mate with the machine cables' housings.
 
 ## Summary
 
@@ -284,7 +284,7 @@ AYAB boards are built in small runs, under 100 at a time. Each board takes up to
    - Verical or Concentric for 10-pin
 2. Add **5 × CJT A2004WV-3P (C225241)** and **5 × CNJM CNJMA2004WV-10P (C2834606)** to the next LCSC order. These cover both makers of the LCSC alternates.
 3. Test-fit them against:
-   - a real KH-965 / KH-270 machine cable
+   - a real KH-900 / KH-965 / KH-270 machine cable
    - a genuine 51004 housing, if one is available
 4. If both fit, list them as BOM alternates:
    - CJT A2004WV-3P / -5P / -8P for the 3, 5 and 8-pin positions
