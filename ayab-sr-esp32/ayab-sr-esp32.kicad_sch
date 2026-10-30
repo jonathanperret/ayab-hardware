@@ -7627,7 +7627,7 @@
 		)
 		(uuid "5d684b77-2fa9-4fab-bf91-d363b725dcdf")
 	)
-	(text "Vout = 0.596 * (RV1+R5+R4) / (RV1+R5)\nVout_min = 0.596 * (10+4.7+100) / (10+4.7) = 4.65V\nVout_max = 0.596 * (0+4.7+100) / (0+4.7) = 13.28V\nDefault: Q1 on holds FB low, Vout ~ VIN (~15 V bypass)\nOvercurrent: Q1 off, U6 regulates at the RV1 setpoint"
+	(text "Vout = 0.596 * (R24+R5+R4) / (R24+R5)\n  = 0.596 * (3.3+4.7+100) / (3.3+4.7) = 8.05V\n  (0.9 A in a 7 ohm solenoid = 6.3 V, plus the carriage\n  Darlington VCE and the DIN cable: ~8 V)\nDefault: Q1 on holds FB low, Vout ~ VIN (~15 V bypass)\nOvercurrent: Q1 off, U6 regulates at 8 V"
 		(exclude_from_sim no)
 		(at 40.64 176.53 0)
 		(effects
@@ -7684,7 +7684,7 @@
 		(uuid "365b4333-fcb3-4c5e-ae0d-b8f95aaee6da")
 	)
 	(junction
-		(at 100.33 166.37)
+		(at 245.11 176.53)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5dd4b837-8c19-47f3-a374-1bf9b00eb8d5")
@@ -8192,16 +8192,6 @@
 	)
 	(wire
 		(pts
-			(xy 250.19 172.72) (xy 248.92 172.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2d6d2d2c-621e-44fa-bd0e-c2aacedf9f0a")
-	)
-	(wire
-		(pts
 			(xy 214.63 48.26) (xy 219.71 48.26)
 		)
 		(stroke
@@ -8399,16 +8389,6 @@
 			(type default)
 		)
 		(uuid "4cb76264-3a9b-4dee-ae5a-d728b8f257a3")
-	)
-	(wire
-		(pts
-			(xy 104.14 166.37) (xy 100.33 166.37)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4e65fd32-2f6b-424c-9134-0fe40206a628")
 	)
 	(wire
 		(pts
@@ -9339,16 +9319,6 @@
 			(type default)
 		)
 		(uuid "df957f1c-264d-4d77-b855-4c821e7d0fe3")
-	)
-	(wire
-		(pts
-			(xy 104.14 171.45) (xy 104.14 166.37)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dfef236c-993d-4419-bd59-a67ed658064f")
 	)
 	(wire
 		(pts
@@ -11585,7 +11555,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 245.11 185.42 0)
+		(at 245.11 193.04 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -11597,7 +11567,7 @@
 		(fields_autoplaced yes)
 		(uuid "3fd68f2e-3905-4d1c-a993-d929d0474464")
 		(property "Reference" "#PWR033"
-			(at 245.11 191.77 0)
+			(at 245.11 199.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11608,7 +11578,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 245.11 190.5 0)
+			(at 245.11 198.12 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11618,7 +11588,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 245.11 185.42 0)
+			(at 245.11 193.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11629,7 +11599,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 245.11 185.42 0)
+			(at 245.11 193.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11640,7 +11610,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 245.11 185.42 0)
+			(at 245.11 193.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12096,8 +12066,7 @@
 		)
 	)
 	(symbol
-		(lib_name "R_Potentiometer_Trim_1")
-		(lib_id "Device:R_Potentiometer_Trim")
+		(lib_id "Device:R")
 		(at 100.33 171.45 0)
 		(unit 1)
 		(body_style 1)
@@ -12106,31 +12075,31 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "59fa2b60-ec53-46ae-83af-3b73b8325b96")
-		(property "Reference" "RV1"
-			(at 109.22 170.18 0)
+		(uuid "5f6f3ee6-622e-58c4-8e6a-8ec04bc708ae")
+		(property "Reference" "R24"
+			(at 102.87 170.18 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
-		(property "Value" "10k"
-			(at 109.22 172.72 0)
+		(property "Value" "3.3k"
+			(at 102.87 172.72 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
-		(property "Footprint" "Library:Potentiometer_Bourns_TC33X_Vertical"
-			(at 100.33 171.45 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 102.108 171.45 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12151,40 +12120,7 @@
 				)
 			)
 		)
-		(property "Description" "Trim-potentiometer"
-			(at 100.33 171.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Device" "R"
-			(at 100.33 171.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Type" "POT"
-			(at 100.33 171.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Pins" "1=r0 2=wiper 3=r1"
+		(property "Description" "Resistor"
 			(at 100.33 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -12217,7 +12153,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C719176"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 100.33 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -12228,7 +12164,7 @@
 				)
 			)
 		)
-		(property "FT Rotation Offset" "180"
+		(property "LCSC" "C22978"
 			(at 100.33 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -12240,18 +12176,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "7e6f8425-09a0-417f-b7ac-cf196347674a")
+			(uuid "ff61aeeb-f206-563c-90c1-dc9cc88dc070")
 		)
 		(pin "2"
-			(uuid "1bf77eda-a4f8-4d72-b0be-41ed503fc98b")
-		)
-		(pin "3"
-			(uuid "d222074a-d175-4b0d-bf5c-25fff22365cb")
+			(uuid "d7bd5440-a513-57cd-ae6b-6f3eba3bb3e0")
 		)
 		(instances
 			(project "ayab-sr-esp32"
 				(path "/db770c4c-c76a-4834-9c64-10fa7d73306e"
-					(reference "RV1")
+					(reference "R24")
 					(unit 1)
 				)
 			)
@@ -12367,7 +12300,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R_Potentiometer_Trim")
+		(lib_id "Device:R")
 		(at 245.11 172.72 0)
 		(unit 1)
 		(body_style 1)
@@ -12376,10 +12309,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5bed1c0d-7347-4455-9260-72e21dcfbd72")
-		(property "Reference" "RV2"
-			(at 242.57 171.4499 0)
+		(uuid "e049c814-a0ac-5494-8a5f-c47227eb36c1")
+		(property "Reference" "R25"
+			(at 243.84 171.45 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12389,8 +12321,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "50k"
-			(at 242.57 173.9899 0)
+		(property "Value" "10k"
+			(at 243.84 173.99 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12400,7 +12332,18 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Library:Potentiometer_Bourns_TC33X_Vertical"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 246.888 172.72 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
 			(at 245.11 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -12411,51 +12354,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.bourns.com/pdfs/TC33.pdf"
-			(at 245.11 172.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Trim-potentiometer"
-			(at 245.11 172.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Device" "R"
-			(at 245.11 172.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Type" "POT"
-			(at 245.11 172.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Pins" "1=r0 2=wiper 3=r1"
+		(property "Description" "Resistor"
 			(at 245.11 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -12488,7 +12387,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C913246"
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
 			(at 245.11 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -12499,7 +12398,7 @@
 				)
 			)
 		)
-		(property "FT Rotation Offset" "-90"
+		(property "LCSC" "C25804"
 			(at 245.11 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -12509,20 +12408,142 @@
 					(size 1.27 1.27)
 				)
 			)
-		)
-		(pin "2"
-			(uuid "d668cf8f-7749-490a-a21e-aa9455b801c7")
-		)
-		(pin "3"
-			(uuid "321b3731-47b7-48d6-b69d-f513975a32c1")
 		)
 		(pin "1"
-			(uuid "a4d075ef-2d3b-45b9-9b5c-4363e46ca915")
+			(uuid "b58d1a17-2ea3-54ec-b27d-253c3b123581")
+		)
+		(pin "2"
+			(uuid "99e97d0e-56f1-5a50-a43d-f4b8d966308a")
 		)
 		(instances
 			(project "ayab-sr-esp32"
 				(path "/db770c4c-c76a-4834-9c64-10fa7d73306e"
-					(reference "RV2")
+					(reference "R25")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 245.11 181.61 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "02fdf2c1-60cd-57da-b583-ceb084a058dd")
+		(property "Reference" "R26"
+			(at 247.65 180.34 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "7.5k"
+			(at 247.65 182.88 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 246.888 181.61 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" ""
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Ref" ""
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C23234"
+			(at 245.11 181.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1a755baa-899c-54f5-9d8a-2d9af6d0d6a9")
+		)
+		(pin "2"
+			(uuid "055dbc7f-70aa-583b-b830-79c551f7de2b")
+		)
+		(instances
+			(project "ayab-sr-esp32"
+				(path "/db770c4c-c76a-4834-9c64-10fa7d73306e"
+					(reference "R26")
 					(unit 1)
 				)
 			)
@@ -14290,7 +14311,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 245.11 181.61 0)
+		(at 245.11 189.23 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -14300,7 +14321,7 @@
 		(dnp no)
 		(uuid "fd0b90f5-33fd-41f3-ba8c-fd25741be7dc")
 		(property "Reference" "R23"
-			(at 247.65 180.34 0)
+			(at 247.65 187.96 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14311,7 +14332,7 @@
 			)
 		)
 		(property "Value" "27k"
-			(at 247.65 182.88 0)
+			(at 247.65 190.5 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14322,7 +14343,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 246.888 181.61 90)
+			(at 246.888 189.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14333,7 +14354,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14344,7 +14365,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14355,7 +14376,7 @@
 			)
 		)
 		(property "Manufacturer" ""
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14366,7 +14387,7 @@
 			)
 		)
 		(property "Ref" ""
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14377,7 +14398,7 @@
 			)
 		)
 		(property "KiLib_Generator" "SMD_2terminal_chip_molded"
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14388,7 +14409,7 @@
 			)
 		)
 		(property "LCSC" "C22967"
-			(at 245.11 181.61 0)
+			(at 245.11 189.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18792,7 +18813,7 @@
 	)
 	(wire
 		(pts
-			(xy 250.19 154.94) (xy 250.19 172.72)
+			(xy 250.19 154.94) (xy 250.19 176.53)
 		)
 		(stroke
 			(width 0)
@@ -18800,7 +18821,17 @@
 		)
 		(uuid "e5025929-c49d-4994-b880-352261a5d304")
 	)
-	(text "INA381A1 (amplifier + comparator):\ntrips when I > V(CMPREF) / 1 V/A\n(20 V/V x 50 mOhm shunt)\nRESET to GND: transparent mode\nALERT: open-drain, active low\n  normal: high, Q1 on, U6 FB held low,\n    Vout ~ VIN (~15 V)\n  overcurrent: low, Q1 off,\n    U6 regulates at the RV1 setpoint\nV_HYS = 4 uA x (12.5k + R10)\n  = 0.38 V, i.e. ~0.4 A (R10 82k)\nThreshold (RV2): R9 82k / RV2 50k / R23 27k\n  CMPREF 0.56..1.60 V, i.e. 0.56..1.60 A\n  (keep CMPREF > V_HYS or ALERT never releases)"
+	(wire
+		(pts
+			(xy 250.19 176.53) (xy 245.11 176.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "989faaf3-5f61-588c-b9d2-cddd2d5d5327")
+	)
+	(text "INA381A1 (amplifier + comparator):\ntrips when I > V(CMPREF) / 1 V/A\n(20 V/V x 50 mOhm shunt)\nRESET to GND: transparent mode\nALERT: open-drain, active low\n  normal: high, Q1 on, U6 FB held low,\n    Vout ~ VIN (~15 V)\n  overcurrent: low, Q1 off,\n    U6 regulates at 8 V\nV_HYS = 4 uA x (12.5k + R10)\n  = 0.38 V, i.e. ~0.4 A (R10 82k)\nThreshold: R9 82k / R25 10k / R26 7.5k / R23 27k\n  CMPREF = 3.3 * 34.5 / 126.5 = 0.90 V, i.e. 0.90 A\n  (keep CMPREF > V_HYS or ALERT never releases)"
 		(exclude_from_sim no)
 		(at 256.54 187.96 0)
 		(effects

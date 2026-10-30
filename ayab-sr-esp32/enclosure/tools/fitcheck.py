@@ -74,10 +74,6 @@ def comp_meshes(W):
     for f in sorted(glob.glob(W+'/comp/*.stl')):
         T=load_stl(f)
         if len(T): out[os.path.basename(f)[:-4]]=T
-    # TC33X trimmers (no 3D model in the KiCad library): body from the F.Fab outline, 2.0 mm high
-    # (positions in the board's original frame, then turned 90 deg CCW like the board, see board_frame() in the .scad)
-    for r,(x,y) in {'RV1':(134.915,33.33),'RV2':(135.06,38.08)}.items():
-        out[r]=to_board_frame(box_tris(x-2.0,-(y+1.5),1.6, x+1.8,-(y-1.5),3.6))
     return out
 def to_board_frame(T):
     T=T.copy(); X,Y=T[...,0]-148.45,T[...,1]+56.35
