@@ -58,7 +58,6 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
   dépasse de 2,4 mm du fond de la poche. Fente 0,8 mm plus large que la molette de chaque côté.
 - **OLED U5** : le verre est 1 mm sous la plaque du couvercle ; fenêtre 7,1 × 23,9 mm
   (zone active + 0,75 mm) à travers la plaque, chanfreinée à 45° vers l'extérieur.
-- **Trimmers RV1/RV2** : pas d'accès dans le couvercle (réglage boîtier ouvert).
 - **Antenne ESP32** : pas d'insert ni de vis à proximité.
 - **Lèvre de centrage** de 2 mm sous le couvercle (côtés gauche, haut et bas), absente le
   long du côté droit (OLED, molette) et autour de la DIN.
@@ -94,7 +93,7 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
 ## Vérifications faites (numériques)
 
 - Export 3D de la carte via `kicad-cli` (STEP, GLB, STL par composant) ; S1 (modèle X3D)
-  et RV1/RV2 (modèle absent) ajoutés à la main.
+  ajouté à la main.
 - `tools/fitcheck.py` : aucun point des composants montés ni du PCB à l'intérieur des pièces ;
   sorties à moins de 0,3 mm seulement là où c'est voulu (face DIN / paroi 0,2 mm ;
   module OLED / colonne H2 0,4 mm ; antenne ESP32 / paroi 0,34 mm).

@@ -20,19 +20,23 @@ connector. Sections connect through net labels.
 | Rail | Source | Notes |
 |---|---|---|
 | `+15V` | J1 USB-C PD, CH224A (U1) asks for 15 V (R1 = 56k) | Feeds both bucks |
-| `Vout` / `Vsol` | U6 TPS54202, adjustable 4.6–13.3 V with RV1 | Solenoid supply, through shunt R6 (50 mΩ); `Vsol` goes to the DIN socket |
+| `Vout` / `Vsol` | U6 TPS54202; Q1 bypasses it (≈ 15 V) until an overcurrent, then it regulates at 8.05 V (R4/R24/R5 = 100k/3.3k/4.7k) | Solenoid supply, through shunt R6 (50 mΩ); `Vsol` goes to the DIN socket |
 | `+5V` | U9 TPS54202, R12/R13 = 75k/10k → 5.07 V | Machine logic (DIN pin 7), U4, pull-ups R15–R18 |
 | `+3.3V` | U10 AP2112K from `+5V` (D2) or J2 VBUS (D1) | ESP32, OLED, U7, U8 |
 
 - U6 (solenoids) is enabled by the ESP32 (`SOL_EN`, 100k pull-down: off until
   the firmware turns it on). U9 is always on.
 - Current limiter: U7 INA381A1 senses R6 (Kelvin connection), compares with
-  the threshold set by RV2, and its `ALERT` output switches Q1, which pulls
+  a fixed threshold, and its `ALERT` output switches Q1, which pulls
   U6's FB to ground. `Vsense` (U7 VOUT, 1 V/A) is read by the ESP32.
-  Threshold: R9 82k / RV2 50k / R23 27k on 3.3 V gives CMPREF 0.56–1.60 V,
-  i.e. 0.56–1.60 A (0.60–1.48 A to 0.53–1.70 A with a ±20 % trimmer).
-  Hysteresis 4 µA × (12.5k + R10 82k) ≈ 0.38 V, i.e. ~0.4 A; CMPREF stays
-  above it over the whole range, so `ALERT` always releases (RESET is tied
+  Threshold: R9 82k / R25 10k / R26 7.5k / R23 27k on 3.3 V gives CMPREF
+  0.90 V, i.e. 0.90 A (starting values, to be confirmed on the silverreed shield;
+  R24 sets the 8 V fallback, R25/R26 the threshold).
+  Why 8 V: a solenoid is about 7 Ω cold (a little more once warm), so 0.9 A
+  takes 6.3 V across it, plus the VCE of the carriage's Darlington driver and
+  the drop in the DIN cable to the carriage.
+  Hysteresis 4 µA × (12.5k + R10 82k) ≈ 0.38 V, i.e. ~0.4 A; CMPREF (0.90 V)
+  stays above it, so `ALERT` always releases (RESET is tied
   to GND).
 
 ## ESP32-S3-WROOM-1 pin map
