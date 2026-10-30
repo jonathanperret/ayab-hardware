@@ -11442,7 +11442,7 @@
 			(uuid "e99fd95c-5576-4ecc-a7a1-8498a6de8cfa")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/../ayab-library/packages3D/SW-SMD_BL-DT.x3d"
+		(model "${KIPRJMOD}/../ayab-library/packages3D/SW-SMD_BL-DT.step"
 			(offset
 				(xyz 0 0 0)
 			)
