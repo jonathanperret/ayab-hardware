@@ -1,0 +1,143 @@
+{
+ "date": "2026-10-29",
+ "vout_note": "Vout = 0.596 * (RV1+R5+R4) / (RV1+R5)\\nVout_min = 0.596 * (10+4.7+100) / (10+4.7) = 4.65V\\nVout_max = 0.596 * (0+4.7+100) / (0+4.7) = 13.28V\\nDefault: Q1 on holds FB low, Vout ~ VIN (~15 V bypass)\\nOvercurrent: Q1 off, U6 regulates at the RV1 setpoint",
+ "lim_note": "INA381A1 (amplifier + comparator):\\ntrips when I > V(CMPREF) / 1 V/A\\n(20 V/V x 50 mOhm shunt)\\nRESET to GND: transparent mode\\nALERT: open-drain, active low\\n  normal: high, Q1 on, U6 FB held low,\\n    Vout ~ VIN (~15 V)\\n  overcurrent: low, Q1 off,\\n    U6 regulates at the RV1 setpoint\\nV_HYS = 4 uA x (12.5k + R10)\\n  = 0.38 V, i.e. ~0.4 A (R10 82k)\\nThreshold (RV2): R9 82k / RV2 50k / R23 27k\\n  CMPREF 0.56..1.60 V, i.e. 0.56..1.60 A\\n  (keep CMPREF > V_HYS or ALERT never releases)",
+ "place": {
+  "pwr_in": [
+   35,
+   40
+  ],
+  "buck5": [
+   152,
+   40
+  ],
+  "v33": [
+   282,
+   40
+  ],
+  "usb": [
+   378,
+   46
+  ],
+  "ui_btn": [
+   470,
+   48
+  ],
+  "ui_oled": [
+   525,
+   45
+  ],
+  "solbuck": [
+   25,
+   135
+  ],
+  "lim": [
+   177,
+   133
+  ],
+  "conn": [
+   340,
+   250
+  ],
+  "mech": [
+   480,
+   133
+  ],
+  "mcu": [
+   35,
+   240
+  ],
+  "lvl_u8": [
+   160,
+   246
+  ],
+  "lvl_u4": [
+   242,
+   253
+  ],
+  "q1": [
+   132,
+   153
+  ],
+  "r20": [
+   122,
+   93
+  ],
+  "r21": [
+   115,
+   240
+  ],
+  "r22": [
+   125.16,
+   240
+  ]
+ },
+ "frames": {
+  "1. Power input (USB-PD 15 V)": [
+   15,
+   20,
+   140,
+   110
+  ],
+  "2. 5 V buck": [
+   145,
+   20,
+   265,
+   110
+  ],
+  "3. 3.3 V supply": [
+   270,
+   20,
+   355,
+   110
+  ],
+  "4. USB (programming)": [
+   360,
+   20,
+   450,
+   110
+  ],
+  "5. User interface": [
+   455,
+   20,
+   579,
+   110
+  ],
+  "6. Solenoid buck (Vout)": [
+   15,
+   115,
+   165,
+   215
+  ],
+  "7. Current sense and limiter": [
+   170,
+   115,
+   345,
+   215
+  ],
+  "8. Mechanical": [
+   455,
+   115,
+   520,
+   155
+  ],
+  "9. MCU": [
+   15,
+   220,
+   135,
+   335
+  ],
+  "10. Level shifting": [
+   140,
+   220,
+   320,
+   335
+  ],
+  "11. Machine connector": [
+   325,
+   220,
+   450,
+   335
+  ]
+ }
+}
