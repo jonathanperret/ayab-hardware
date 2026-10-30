@@ -21,7 +21,7 @@ connector. Sections connect through net labels.
 |---|---|---|
 | `+15V` | J1 USB-C PD, CH224A (U1) asks for 15 V (R1 = 56k) | Feeds both bucks |
 | `Vout` / `Vsol` | U6 TPS54202, adjustable 4.6–13.3 V with RV1 | Solenoid supply, through shunt R6 (50 mΩ); `Vsol` goes to the DIN socket |
-| `+5V` | U9 TPS54202, R12/R13 = 100k/13.7k → 4.95 V | Machine logic (DIN pin 7), U4, pull-ups R15–R18 |
+| `+5V` | U9 TPS54202, R12/R13 = 75k/10k → 5.07 V | Machine logic (DIN pin 7), U4, pull-ups R15–R18 |
 | `+3.3V` | U10 AP2112K from `+5V` (D2) or J2 VBUS (D1) | ESP32, OLED, U7, U8 |
 
 - U6 (solenoids) is enabled by the ESP32 (`SOL_EN`, 100k pull-down: off until
