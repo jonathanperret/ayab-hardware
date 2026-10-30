@@ -14,7 +14,7 @@
 "R2,R3","5.1k","Resistor_SMD:R_0603_1608Metric","C23186","2",""
 "R4,R12,R19","100k","Resistor_SMD:R_0603_1608Metric","C25803","3",""
 "R5,R21,R22","4.7k","Resistor_SMD:R_0603_1608Metric","C23162","3",""
-"R6","50m","Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder","C25334","1",""
+"R6","50m","Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder","C127691","1",""
 "R7","47k","Resistor_SMD:R_0603_1608Metric","C25819","1",""
 "R8,R11,R14,R15,R16,R17,R18,R20","10k","Resistor_SMD:R_0603_1608Metric","C25804","8",""
 "R9,R10","82k","Resistor_SMD:R_0603_1608Metric","C23254","2",""
