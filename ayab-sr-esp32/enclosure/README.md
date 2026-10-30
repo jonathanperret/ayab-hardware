@@ -53,9 +53,9 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
   laisse passer le bord du circuit du module OLED, à 0,13 mm du bord de l'encoche).
 - **Molette S1** : elle dépasse jusqu'à x = 193,7, au-delà de la paroi : la fente du fond
   est **ouverte vers le haut** (on descend la carte verticalement, la molette passe dans
-  la fente) et une **languette du couvercle** la referme au-dessus (z ≥ 4,6, molette ≤ 4,1).
+  la fente) et une **languette du couvercle** la referme au-dessus (z ≥ 4,6, molette ≤ 4,35).
   Une poche de 1 mm sur la face extérieure (y 55,5..77,8) dégage la molette : elle
-  dépasse de 2,5 mm du fond de la poche (1,5 mm de la face extérieure). Fente 0,8 mm plus large que la molette de chaque côté.
+  dépasse de 3,1 mm du fond de la poche (2,1 mm de la face extérieure). Fente 0,8 mm plus large que la molette de chaque côté.
 - **OLED U5** : le verre est 1 mm sous la plaque du couvercle ; fenêtre 7,1 × 23,9 mm
   (zone active + 0,75 mm) à travers la plaque, chanfreinée à 45° vers l'extérieur.
 - **Antenne ESP32** : pas d'insert ni de vis à proximité.
@@ -116,8 +116,8 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
   vérifier au premier tirage.
 - USB-C : surmoulages > 13 × 7,6 mm non prévus ; deux câbles très épais côte à côte
   peuvent se gêner (prises à 14,8 mm d'entraxe).
-- Molette S1 : modèle construit d'après la datasheet (Ø 14,2, hauteur 2,5) ; vérifier la saillie
-  réelle et la hauteur de la molette (languette du couvercle à z = 4,6).
+- Molette S1 : modèle construit d'après la datasheet (Ø 14,2, 2,5 de haut sur ses pattes de 0,25) ;
+  vérifier la saillie réelle et la hauteur de la molette (languette du couvercle à z = 4,6).
 - Ventilation non prévue (régulateurs à découpage + ESP32 : à surveiller en usage long).
 - Le boîtier ne dépend que du placement, des trous H1, H2, H3 et du contour ; à revalider si
   un de ces éléments bouge.
