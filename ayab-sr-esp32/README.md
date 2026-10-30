@@ -135,17 +135,24 @@ machine's mast).
 
 Board renders come from KiCad (`kicad-cli pcb render`), enclosure renders from
 OpenSCAD's preview (`enclosure/tools/quick_render.py`) and the 2D sections
-from `enclosure/tools/sections.py`. MP4 versions of the animations:
-[board turntable](renders/board_turntable.mp4),
-[enclosure turntable](enclosure/renders/turntable.mp4),
-[enclosure exploded](enclosure/renders/exploded.mp4).
+from `enclosure/tools/sections.py`. MP4 versions of the enclosure animations:
+[turntable](enclosure/renders/turntable.mp4),
+[exploded](enclosure/renders/exploded.mp4).
+
+### Interactive 3D view
+
+[`viewer/`](viewer/) is a three.js page: the board (KiCad GLB export) in its
+tray and lid, with orbit and zoom, an explode slider, preset views, and a click
+on a part shows its reference, value and LCSC number. It needs to be served
+over HTTP, e.g. GitHub Pages, or locally:
+
+    python3 -m http.server -d ayab-sr-esp32/viewer 8000   # then open http://localhost:8000
 
 ### Board
 
 <table>
 <tr><td align="center"><img src="renders/iso_front.png" alt="Front isometric" width="400"><br><sub>Front isometric</sub></td><td align="center"><img src="renders/iso_back.png" alt="Back isometric" width="400"><br><sub>Back isometric</sub></td></tr>
 <tr><td align="center"><img src="renders/top.png" alt="Top" width="400"><br><sub>Top</sub></td><td align="center"><img src="renders/bottom.png" alt="Bottom" width="400"><br><sub>Bottom</sub></td></tr>
-<tr><td align="center"><img src="renders/board_turntable.gif" alt="Turntable" width="400"><br><sub>Turntable</sub></td></tr>
 </table>
 
 ### Enclosure
