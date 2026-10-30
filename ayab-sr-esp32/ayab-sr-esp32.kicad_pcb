@@ -1463,6 +1463,7 @@
 		(path "/52ad45bc-9ea3-4cde-b287-a6bf72b7e86a")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
+		(attr exclude_from_pos_files exclude_from_bom)
 		(units
 			(unit
 				(name "A")
@@ -13421,6 +13422,7 @@
 		(path "/c0381cc1-b61e-46d9-a4b4-ddebf581f44f")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
+		(attr exclude_from_pos_files exclude_from_bom)
 		(units
 			(unit
 				(name "A")
@@ -14477,6 +14479,7 @@
 		(path "/96acd49c-65e8-49c1-9f4e-893e0fff97b9")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
+		(attr exclude_from_pos_files exclude_from_bom)
 		(units
 			(unit
 				(name "A")

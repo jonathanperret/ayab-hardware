@@ -6,7 +6,6 @@
 "C5,C11","47u","Capacitor_SMD:C_1210_3225Metric","C7432791","2",""
 "C10","22u","Capacitor_SMD:C_0805_2012Metric","C45783","1",""
 "D1,D2","SS34","Diode_SMD:D_SMA","C8678","2",""
-"H1,H2,H3","MountingHole_Pad","MountingHole:MountingHole_3mm_Pad","","3",""
 "J1,J2","USB_C_Receptacle_USB2.0_16P","Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12","C165948","2",""
 "J3","DIN-7","Library:DIN-704-M10","C20611695","1",""
 "L1,L2","10u","Inductor_SMD:L_Changjiang_FXL0518","C475910","2",""
