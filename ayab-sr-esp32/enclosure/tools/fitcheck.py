@@ -36,7 +36,9 @@ class ColumnSolid:
                 self.iv[k]=h.reshape(-1,2)
     def _col(self,x,y):
         i=np.rint((x-self.x0)/self.res).astype(int); j=np.rint((y-self.y0)/self.res).astype(int)
-        return i*self.ny+j
+        k=i*self.ny+j
+        k[(i<0)|(i>=self.nx)|(j<0)|(j>=self.ny)]=-1   # outside the grid: no column (would wrap into a neighbour)
+        return k
     def inside(self,P):
         k=self._col(P[:,0],P[:,1]); out=np.zeros(len(P),bool)
         for n,(kk,z) in enumerate(zip(k,P[:,2])):
