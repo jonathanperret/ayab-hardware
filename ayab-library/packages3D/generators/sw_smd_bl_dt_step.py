@@ -9,7 +9,7 @@ import sys, cadquery as cq
 DARK, LEVER, METAL = (26, 26, 26), (40, 40, 40), (200, 200, 205)
 H, LEVER_T, PLATE_T = 2.50, 1.65, 0.25    # overall height, lever ring thickness (the top element, side view), cover
 LEVER_Z = H - LEVER_T                     # 0.85: the ring's underside
-R_OUT, R_IN, R_HOUSING, TEETH, TOOTH = 7.10, 6.00, 5.50, 60, 0.30
+R_OUT, R_IN, R_HOUSING, TEETH, TOOTH = 7.10, 6.00, 5.75, 60, 0.30
 CX, CY = 0.0, 1.86                        # lever axis: rim top 6.65 above the A terminals (y 2.32) and the ring
 Y_A = 2.32                                #   ends on that line with the 14.20 width -> r 7.10, centre 0.46 below it
 Y_BOT = CY + R_OUT - 11.90                # base edge: 12.34 overall less the 0.44 handle tab -> -2.94
@@ -29,10 +29,24 @@ def body():
     return housing.union(pegs)
 
 def cover():
-    """E: stainless cover on the housing, notched at the top for the lever's arm."""
+    """E: stainless cover on the housing (top view): a central block at the top between two diagonal cuts, where
+    the lever's arm comes through, and a pressed V (chevron) in the middle."""
     c = d_shape(R_HOUSING, Y_BOT + 0.3, Y_A, PLATE_T)
+    for sx in (-1, 1):   # diagonal cuts either side of the top block
+        c = c.cut(cq.Workplane('XY').polyline([(sx * 1.8, R_HOUSING + 0.5), (sx * 1.8, R_HOUSING - 1.6), (sx * 6.5, R_HOUSING - 4.6),
+                                                (sx * 6.5, R_HOUSING + 0.5)]).close().extrude(PLATE_T).translate((CX, CY, 0)))
     c = c.cut(cq.Workplane('XY').box(2.6, 1.6, PLATE_T, centered=(True, False, False)).translate((CX, CY + R_HOUSING - 1.2, 0)))
-    return c.translate((0, 0, H - PLATE_T - 0.45))
+    v = (cq.Workplane('XY').polyline([(-3.8, 0.0), (0, 1.6), (3.8, 0.0), (3.8, -0.6), (0, 1.0), (-3.8, -0.6)]).close()
+         .extrude(0.12).translate((CX, CY - 0.6, PLATE_T)))     # the chevron, pressed 0.12 proud of the plate
+    return c.union(v).translate((0, 0, H - PLATE_T - 0.45))
+
+def springs():
+    """The two return springs in the gap between the housing and the ring, by the ring's ends."""
+    sp = cq.Workplane('XY')
+    for sx in (-1, 1):
+        sp = sp.union(cq.Workplane('XY').box(1.6, 0.3, 1.0, centered=(True, True, False))
+                      .rotate((0, 0, 0), (0, 0, 1), sx * 35).translate((CX + sx * (R_IN - 0.8), Y_A + 1.0, LEVER_Z + 0.2)))
+    return sp
 
 def lever():
     """F: the toothed ring (drawing: ends on the A terminals' line, inner arc r 6.0), the 2.16 tab outside at the
@@ -54,6 +68,7 @@ def terminals():
 asm = cq.Assembly(name='SW-SMD_BL-DT')
 asm.add(body(), name='body', color=cq.Color(*[c / 255 for c in DARK]))
 asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
+asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
 asm.add(lever(), name='lever', color=cq.Color(*[c / 255 for c in LEVER]))
 asm.add(terminals(), name='terminals', color=cq.Color(*[c / 255 for c in METAL]))
 asm.save(sys.argv[1], exportType='STEP')
