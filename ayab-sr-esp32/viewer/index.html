@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AYAB-SR-ESP32 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: full-bleed 3D stage, one floating instrument panel (bottom sheet on phones). */
+:root {
+  --bg: #e9ecea; --stage: #dfe4e1; --panel: #f7f8f6; --fg: #1d2421; --muted: #5b6661;
+  --line: #c9d0cc; --accent: #2f6b4f; --accent-fg: #ffffff;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #151a18; --stage: #1b211f; --panel: #212825; --fg: #e3e9e5; --muted: #9aa69f;
+  --line: #34403b; --accent: #6fbf95; --accent-fg: #0f1512; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #151a18; --stage: #1b211f; --panel: #212825; --fg: #e3e9e5; --muted: #9aa69f;
+  --line: #34403b; --accent: #6fbf95; --accent-fg: #0f1512; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--mono); font-size: 13px; overflow: hidden; }
+#stage { position: fixed; inset: 0; background: var(--stage); }
+#stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.panel { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px));
+  width: 17rem; max-width: calc(100% - 32px); background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 6px 24px rgb(0 0 0 / 0.12); }
+h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 1.35rem; letter-spacing: 0.01em; text-wrap: balance; }
+.sub { margin: 2px 0 0; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.group { display: flex; flex-direction: column; gap: 6px; }
+.label { font-family: var(--display); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 6px; }
+button, .chip { font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px; cursor: pointer; }
+button:hover, .chip:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; user-select: none; }
+.chip input { accent-color: var(--accent); margin: 0; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.part { min-height: 2.6em; border-top: 1px solid var(--line); padding-top: 10px; font-variant-numeric: tabular-nums; }
+.part b { font-family: var(--display); font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+.part .hint { color: var(--muted); }
+#status { color: var(--muted); }
+@media (max-width: 560px) {
+  .panel { top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px)); width: auto; max-width: none; padding: 10px 12px; gap: 8px; }
+  h1 { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div id="stage" aria-label="3D view of the AYAB-SR-ESP32 board and its enclosure"></div>
+<section class="panel">
+  <div>
+    <h1>AYAB-SR-ESP32</h1>
+    <p class="sub">64.5 × 83.1 mm · 2 layers · <span id="status">loading…</span></p>
+  </div>
+  <div class="group">
+    <span class="label">Show</span>
+    <div class="row">
+      <label class="chip"><input type="checkbox" id="show-board" checked> Board</label>
+      <label class="chip"><input type="checkbox" id="show-tray" checked> Tray</label>
+      <label class="chip"><input type="checkbox" id="show-lid"> Lid</label>
+    </div>
+  </div>
+  <div class="group">
+    <label class="label" for="explode">Explode</label>
+    <input type="range" id="explode" min="0" max="1" step="0.01" value="0">
+  </div>
+  <div class="group">
+    <span class="label">View</span>
+    <div class="row">
+      <button type="button" data-view="iso">Iso</button>
+      <button type="button" data-view="top">Top</button>
+      <button type="button" data-view="bottom">Bottom</button>
+      <button type="button" data-view="din">DIN side</button>
+    </div>
+  </div>
+  <div class="part" id="part" aria-live="polite"><span class="hint">Tap a part to see its reference, value and LCSC number.</span></div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+// Parts from production/ayab-sr-esp32-bom.csv: reference -> [value, LCSC]
+const PARTS = {"C1":["10u","C15850"],"C7":["10u","C15850"],"C8":["10u","C15850"],"C2":["1u","C15849"],"C6":["1u","C15849"],"C13":["1u","C15849"],"C3":["100n","C14663"],"C12":["100n","C14663"],"C14":["100n","C14663"],"C15":["100n","C14663"],"C4":["100n","C49678"],"C9":["100n","C49678"],"C5":["47u","C7432791"],"C11":["47u","C7432791"],"C10":["22u","C45783"],"D1":["SS34","C8678"],"D2":["SS34","C8678"],"J1":["USB_C_Receptacle_USB2.0_16P","C165948"],"J2":["USB_C_Receptacle_USB2.0_16P","C165948"],"J3":["DIN-7","C20611695"],"L1":["10u","C475910"],"L2":["10u","C475910"],"Q1":["BSS138","C7420339"],"R1":["56k","C23206"],"R2":["5.1k","C23186"],"R3":["5.1k","C23186"],"R4":["100k","C25803"],"R19":["100k","C25803"],"R5":["4.7k","C23162"],"R21":["4.7k","C23162"],"R22":["4.7k","C23162"],"R6":["50m","C127691"],"R7":["47k","C25819"],"R8":["10k","C25804"],"R11":["10k","C25804"],"R13":["10k","C25804"],"R14":["10k","C25804"],"R15":["10k","C25804"],"R16":["10k","C25804"],"R17":["10k","C25804"],"R18":["10k","C25804"],"R20":["10k","C25804"],"R25":["10k","C25804"],"R9":["82k","C23254"],"R10":["82k","C23254"],"R12":["75k","C23242"],"R23":["27k","C22967"],"R24":["3.3k","C22978"],"R26":["7.5k","C23234"],"S1":["BL-DT","C53223909"],"U1":["CH224A","C42459160"],"U2":["USBLC6-2SC6","C2687116"],"U3":["ESP32-S3-WROOM-1","C2913198"],"U4":["74AHCT1G125","C52140417"],"U5":["HS91L02W2C01","C5248081"],"U6":["TPS54202","C191884"],"U9":["TPS54202","C191884"],"U7":["INA381A1","C1849472"],"U8":["74LVC125","C54411083"],"U10":["AP2112K-3.3","C22365427"],"J14":["8-pin socket (debug)","—"],"J4":["2-pin header","—"]};
+// KiCad's GLB is in metres, Y up, Z = KiCad y. The enclosure STLs are in mm, KiCad x, -y, z (0 = PCB bottom).
+const C = new THREE.Vector3(0.13225, 0.004, 0.06655);   // board centre
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x445048, 0.6));
+const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(0.3, 0.6, -0.2); scene.add(sun);
+const camera = new THREE.PerspectiveCamera(35, 1, 0.002, 5);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.target.copy(C);
+function stageColor() { scene.background = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--stage').trim()); }
+stageColor(); matchMedia('(prefers-color-scheme: dark)').addEventListener('change', stageColor);
+new MutationObserver(stageColor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+const groups = { board: new THREE.Group(), tray: new THREE.Group(), lid: new THREE.Group() };
+Object.values(groups).forEach(g => scene.add(g));
+const toBoard = new THREE.Matrix4().set(0.001, 0, 0, 0,  0, 0, 0.001, 0,  0, -0.001, 0, 0,  0, 0, 0, 1);
+let pending = 3;
+const done = () => { if (--pending === 0) document.getElementById('status').textContent = '65 parts'; };
+const fail = what => e => { document.getElementById('status').textContent = what + ' did not load'; console.error(e); };
+new THREE.GLTFLoader().load('board.glb', g => { groups.board.add(g.scene); done(); }, undefined, fail('board'));
+function stl(name, color, opacity) {
+  new THREE.STLLoader().load(name + '.stl', geo => {
+    geo.applyMatrix4(toBoard); geo.computeVertexNormals();
+    const m = new THREE.MeshStandardMaterial({ color, roughness: 0.75, metalness: 0, transparent: opacity < 1, opacity, side: THREE.DoubleSide });
+    groups[name].add(new THREE.Mesh(geo, m)); done();
+  }, undefined, fail(name));
+}
+stl('tray', 0x4f5a66, 1);
+stl('lid', 0x7d8a96, 0.55);
+
+const ids = ['board', 'tray', 'lid'];
+ids.forEach(k => {
+  const el = document.getElementById('show-' + k);
+  const apply = () => { groups[k].visible = el.checked; };
+  el.addEventListener('change', apply); apply();
+});
+const explode = document.getElementById('explode');
+explode.addEventListener('input', () => {
+  const t = +explode.value;
+  groups.board.position.y = t * 0.015; groups.lid.position.y = t * 0.04;
+});
+
+function view(name) {
+  const d = 0.17 * Math.max(1, 1.1 / camera.aspect);
+  const pos = { iso: [0.55, 0.75, 0.75], top: [0, 1, 0.0001], bottom: [0, -1, 0.0001], din: [-0.15, 0.35, -1] }[name];
+  camera.up.set(0, 1, 0);
+  if (name === 'top') camera.up.set(0, 0, -1);
+  if (name === 'bottom') camera.up.set(0, 0, -1);
+  camera.position.copy(C).add(new THREE.Vector3(...pos).normalize().multiplyScalar(d));
+  controls.target.copy(C); controls.update();
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => view(b.dataset.view)));
+
+// Click a part: walk up from the hit mesh to the node named after the reference (U8, R15, ...)
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), out = document.getElementById('part');
+let down = null, picked = null;
+renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return;
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(ids.filter(k => groups[k].visible).map(k => groups[k]), true);
+  let ref = null;
+  for (const h of hits) {
+    if (h.object.parent === groups.tray || h.object.parent === groups.lid) break;
+    for (let o = h.object; o; o = o.parent) if (/^[A-Z]+\d+$/.test(o.name || '')) { ref = o; break; }
+    if (ref) break;
+  }
+  highlight(ref);
+});
+function highlight(node) {
+  if (picked) picked.traverse(o => { if (o.isMesh && o.userData.mat) { o.material = o.userData.mat; } });
+  picked = node;
+  if (!node) { out.innerHTML = '<span class="hint">Tap a part to see its reference, value and LCSC number.</span>'; return; }
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  node.traverse(o => { if (o.isMesh) { o.userData.mat = o.material; o.material = o.material.clone(); o.material.emissive = new THREE.Color(accent); o.material.emissiveIntensity = 0.6; } });
+  const p = PARTS[node.name] || ['', ''];
+  out.innerHTML = '<b>' + node.name + '</b> ' + (p[0] || '') + (p[1] ? ' · ' + p[1] : '');
+}
+
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+view('iso');
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
+</body>
+</html>
