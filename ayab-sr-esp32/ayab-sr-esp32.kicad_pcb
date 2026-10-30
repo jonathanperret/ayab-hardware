@@ -150,6 +150,19 @@
 			)
 		)
 		(property ki_fp_filters "DIP*W7.62mm*")
+		(property "FT Rotation Offset" "-90"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f78fa684-6b96-48f1-b97e-87680154209d")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/87873ad4-9cb9-4601-a6f0-7d27b989a4f5")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -1090,6 +1103,19 @@
 			)
 		)
 		(property ki_fp_filters "SOT?23*")
+		(property "FT Rotation Offset" "180"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a71bcadc-a4ef-4a8e-bd0c-cd1e8578279a")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/e6ca4696-8cc0-4c28-ad54-913f01d053e3")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -1829,7 +1855,7 @@
 				)
 			)
 		)
-		(property "FT Rotation Offset" "90"
+		(property "FT Rotation Offset" "-90"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -3229,6 +3255,19 @@
 			)
 		)
 		(property ki_fp_filters "SOT* SG-*")
+		(property "FT Rotation Offset" "-90"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "32afce6b-c2c9-46cf-8f08-5d5eab8a06bd")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/f3ee9b3b-175d-45ca-af3a-375f72e8248d")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -4572,6 +4611,19 @@
 			)
 		)
 		(property ki_fp_filters "SOT?23*")
+		(property "FT Rotation Offset" "-90"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "7368f40b-b76f-47e3-bb34-88aae07ef02f")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/42e32f4d-4260-451c-a038-d8b256a1771c")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -6807,7 +6859,7 @@
 				)
 			)
 		)
-		(property "FT Rotation Offset" "90"
+		(property "FT Rotation Offset" "-90"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -8020,6 +8072,19 @@
 			)
 		)
 		(property ki_fp_filters "SOT?23?5*")
+		(property "FT Rotation Offset" "180"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "7954d456-0d24-4ff2-87a3-2284fc1015d5")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/17c8afb5-6a64-4941-8990-ce3e29eeacd3")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -10518,6 +10583,19 @@
 			)
 		)
 		(property ki_fp_filters "SSOP*3.9x4.9mm*P1mm*EP2.1x3.3mm*")
+		(property "FT Rotation Offset" "-90"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e2c1ffe4-4f37-49ee-b833-a6ba92fc1e50")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/8b7ac663-fb85-41cc-afc5-97bc639ef485")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
@@ -12202,6 +12280,19 @@
 			)
 		)
 		(property ki_fp_filters "SOT?23*")
+		(property "FT Rotation Offset" "-90"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6f6f858e-4e95-4b5b-8bb1-f702134faf92")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/7bd8e0cf-c8dd-44ab-89b4-236cf30fefa0")
 		(sheetname "/")
 		(sheetfile "ayab-sr-esp32.kicad_sch")
