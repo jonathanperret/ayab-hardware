@@ -182,12 +182,16 @@ revision: Gerbers and Excellon drill files (`gerbers/`, zipped in
 an LCSC number on every placed part), the pick-and-place file
 (`ayab-sr-esp32-pos.csv`, plus `ayab-sr-esp32-cpl-jlc.csv` in JLCPCB's CPL format with
 the `FT Rotation Offset` corrections applied) and the schematic PDF. Regenerate them after
-any change (scripts on the `tooling` branch).
+any change with `scripts/kicad/production.sh ayab-sr-esp32`.
 
 ## Tooling
 
-The scripts used to edit, check, route and regenerate this board (and the matching workflow skill)
-live on the `tooling` branch.
+Everything above is generated or checked by scripts that run headless (KiCad 10 in Docker):
+`scripts/setup-kicad.sh` prepares a fresh container, `scripts/kicad/` holds the generic tools
+(checks, production files, renders, routing, JLCPCB part lookup), `tools/` the project-specific ones
+(schematic build, routing settings) and `enclosure/tools/` the case. The workflow, the checks to run
+before a push and the known pitfalls are in the project skill
+[`.claude/skills/kicad-board-workflow/SKILL.md`](../.claude/skills/kicad-board-workflow/SKILL.md).
 
 ## Open points
 

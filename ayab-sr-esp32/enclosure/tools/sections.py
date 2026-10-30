@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageChops
 from stlio import load_stl
 from fitcheck import comp_meshes
 from glb import load_glb
-W='..'
+W=sys.argv[1] if len(sys.argv) > 1 else '..'   # work dir of regen.sh (tray_asm.stl, comp/, renders/)
 def slice_mesh(T, axis, val):
     """returns segments (N,2,3) of the intersection of triangles with plane coord[axis]=val"""
     d=T[...,axis]-val

@@ -130,6 +130,13 @@ openscad -D 'part="lid_print"'  -o lid.stl    ayab-sr-esp32-enclosure.scad
 # part = "assembly" | "exploded" | "tray" | "lid" pour visualiser dans OpenSCAD
 ```
 
-Le script qui enchaîne tout (STL, exports KiCad, vérification d'ajustement, rendus) est sur la
-branche `tooling`. Les scripts de `tools/` (Python 3 + numpy + PIL) travaillent dans un dossier
-contenant `board.glb`, `pcb_only.stl`, `comp/<REF>.stl`, `tray_asm.stl` et `lid_asm.stl`.
+Tout d'un coup (STL, exports KiCad, vérification d'ajustement, rendus) depuis la racine du dépôt,
+après `scripts/setup-kicad.sh` :
+
+```sh
+ayab-sr-esp32/enclosure/tools/regen.sh /tmp/enc            # STL + fitcheck + une vue iso
+ayab-sr-esp32/enclosure/tools/regen.sh /tmp/enc --full --install   # + coupes, vues, animations -> renders/
+```
+
+Les scripts de `tools/` (Python 3 + numpy + PIL) travaillent dans ce dossier (`/tmp/enc`) :
+`board.glb`, `pcb_only.stl`, `comp/<REF>.stl`, `tray_asm.stl`, `lid_asm.stl`.
