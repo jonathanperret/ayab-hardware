@@ -53,9 +53,9 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
   laisse passer le bord du circuit du module OLED, à 0,13 mm du bord de l'encoche).
 - **Molette S1** : elle dépasse jusqu'à x = 193,7, au-delà de la paroi : la fente du fond
   est **ouverte vers le haut** (on descend la carte verticalement, la molette passe dans
-  la fente) et une **languette du couvercle** la referme au-dessus (z ≥ 4,6, molette ≤ 4,0).
+  la fente) et une **languette du couvercle** la referme au-dessus (z ≥ 4,6, molette ≤ 4,1).
   Une poche de 1 mm sur la face extérieure (y 55,5..77,8) dégage la molette : elle
-  dépasse de 2,4 mm du fond de la poche. Fente 0,8 mm plus large que la molette de chaque côté.
+  dépasse de 2,5 mm du fond de la poche (1,5 mm de la face extérieure). Fente 0,8 mm plus large que la molette de chaque côté.
 - **OLED U5** : le verre est 1 mm sous la plaque du couvercle ; fenêtre 7,1 × 23,9 mm
   (zone active + 0,75 mm) à travers la plaque, chanfreinée à 45° vers l'extérieur.
 - **Antenne ESP32** : pas d'insert ni de vis à proximité.
@@ -92,8 +92,8 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
 
 ## Vérifications faites (numériques)
 
-- Export 3D de la carte via `kicad-cli` (STEP, GLB, STL par composant) ; S1 a un STEP converti
-  depuis son X3D (`ayab-library/packages3D/generators/x3d_to_step.py`).
+- Export 3D de la carte via `kicad-cli` (STEP, GLB, STL par composant) ; S1 a un STEP construit
+  d'après le dessin coté du fabricant (`ayab-library/packages3D/generators/sw_smd_bl_dt_step.py`).
 - `tools/fitcheck.py` : aucun point des composants montés ni du PCB à l'intérieur des pièces ;
   sorties à moins de 0,3 mm seulement là où c'est voulu (face DIN / paroi 0,2 mm ;
   module OLED / colonne H2 0,4 mm ; antenne ESP32 / paroi 0,34 mm).
@@ -116,8 +116,8 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
   vérifier au premier tirage.
 - USB-C : surmoulages > 13 × 7,6 mm non prévus ; deux câbles très épais côte à côte
   peuvent se gêner (prises à 14,8 mm d'entraxe).
-- Molette S1 : modèle X3D de la bibliothèque ayab ; vérifier la saillie réelle et la
-  hauteur de la molette (languette du couvercle à z = 4,6).
+- Molette S1 : modèle construit d'après la datasheet (Ø 14,2, hauteur 2,5) ; vérifier la saillie
+  réelle et la hauteur de la molette (languette du couvercle à z = 4,6).
 - Ventilation non prévue (régulateurs à découpage + ESP32 : à surveiller en usage long).
 - Le boîtier ne dépend que du placement, des trous H1, H2, H3 et du contour ; à revalider si
   un de ces éléments bouge.
