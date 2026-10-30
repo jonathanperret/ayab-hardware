@@ -16,9 +16,6 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "C15","100n","C_0603_1608Metric",124.500001,-54.399999,180.000000,top
 "D1","SS34","D_SMA",144.735001,-75.864999,-90.000000,top
 "D2","SS34","D_SMA",133.875001,-70.229999,90.000000,top
-"H1","MountingHole_Pad","MountingHole_3mm_Pad",105.375001,-102.824999,90.000000,top
-"H2","MountingHole_Pad","MountingHole_3mm_Pad",133.300001,-41.999999,90.000000,top
-"H3","MountingHole_Pad","MountingHole_3mm_Pad",140.700001,-90.499999,90.000000,top
 "J1","USB_C_Receptacle_USB2.0_16P","USB_C_Receptacle_HRO_TYPE-C-31-M-12",160.530001,-101.019999,90.000000,top
 "J2","USB_C_Receptacle_USB2.0_16P","USB_C_Receptacle_HRO_TYPE-C-31-M-12",160.470001,-86.219999,90.000000,top
 "J3","DIN-7","DIN-704-M10",111.350001,-43.049999,0.000000,top
