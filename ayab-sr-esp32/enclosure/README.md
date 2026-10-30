@@ -92,8 +92,8 @@ Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de 
 
 ## Vérifications faites (numériques)
 
-- Export 3D de la carte via `kicad-cli` (STEP, GLB, STL par composant) ; S1 (modèle X3D)
-  ajouté à la main.
+- Export 3D de la carte via `kicad-cli` (STEP, GLB, STL par composant) ; S1 a un STEP converti
+  depuis son X3D (`ayab-library/packages3D/generators/x3d_to_step.py`).
 - `tools/fitcheck.py` : aucun point des composants montés ni du PCB à l'intérieur des pièces ;
   sorties à moins de 0,3 mm seulement là où c'est voulu (face DIN / paroi 0,2 mm ;
   module OLED / colonne H2 0,4 mm ; antenne ESP32 / paroi 0,34 mm).
