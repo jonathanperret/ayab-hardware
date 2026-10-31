@@ -28,7 +28,7 @@ def box(x0, x1, y0, y1, z0, z1):
 def poly(pts, z0, z1):
     return cq.Workplane('XY').polyline(pts).close().extrude(z1 - z0).translate((0, 0, z0))
 
-ARM = [(-2.20, 7.30), (2.20, 7.30), (1.75, 6.05), (-1.75, 6.05)]   # the lever's arm, seen in both plan views
+ARM = [(-2.20, 7.30), (0.0, 7.65), (2.20, 7.30), (1.75, 6.05), (-1.75, 6.05)]   # the lever's arm, seen in both plan views
 
 def lever_inner():
     """Inner edge of the lever's wide top part, left to right: V notch, arc r 6.40 about (0, 1.19), V notch."""
@@ -51,12 +51,13 @@ def housing():
     return h
 
 def cover():
-    """E: stainless cover: straight sides, a diagonal edge from the side to the spring hook, then the arc;
+    """E: stainless cover: straight sides, a curved edge round the springs up to the hooks, then the arc;
     the pressed V is recessed 0.08."""
-    pts = [(-5.55, Y_BASE + 0.05), (5.55, Y_BASE + 0.05), (5.55, 2.0), (3.40, 4.95)]
-    a0 = math.atan2(4.95 - COVER_C[1], 3.40); n = 24
-    pts += [(COVER_R * math.cos(a0 + (math.pi - 2 * a0) * i / n), COVER_C[1] + COVER_R * math.sin(a0 + (math.pi - 2 * a0) * i / n)) for i in range(1, n)]
-    pts += [(-3.40, 4.95), (-5.55, 2.0)]
+    side = [(5.45, 2.40), (5.27, 3.00), (5.00, 3.50), (4.45, 3.85), (3.95, 4.10), (3.35, 4.30), (3.10, 4.50)]   # read off the drawing
+    x_top = 3.10; a0 = math.atan2(math.sqrt(COVER_R ** 2 - x_top ** 2), x_top); n = 24
+    pts = [(-5.45, Y_BASE + 0.05), (5.45, Y_BASE + 0.05)] + side
+    pts += [(COVER_R * math.cos(a0 + (math.pi - 2 * a0) * i / n), COVER_C[1] + COVER_R * math.sin(a0 + (math.pi - 2 * a0) * i / n)) for i in range(0, n + 1)]
+    pts += [(-x, y) for x, y in reversed(side)]
     c = poly(pts, Z_HOUSING, Z_TOP)
     # the V: flat centre then arms at 29.7 deg, rounded ends at x +-2.85
     k = math.tan(math.radians(29.6))
