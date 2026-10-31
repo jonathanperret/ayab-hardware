@@ -159,9 +159,12 @@ from `enclosure/tools/sections.py`. MP4 versions of the enclosure animations:
 
 ### Interactive 3D view
 
-[`viewer/`](viewer/) is a three.js page: the board (KiCad GLB export) in its
-tray and lid, with orbit and zoom, an explode slider, preset views, and a click
-on a part shows its reference, value and LCSC number. It needs to be served
+[`viewer/`](viewer/) is a three.js page: the board (KiCad GLB export with
+silkscreen and soldermask) in its tray and lid, with orbit and zoom, an explode
+slider, preset views, toggles for the silkscreen and the copper traces
+(`traces.json`, drawn at their true width but raised 0.1 mm and coloured: copper
+on top, blue underneath), and a click on a part shows its reference, value and
+LCSC number. It needs to be served
 over HTTP, e.g. GitHub Pages, or locally:
 
     python3 -m http.server -d ayab-sr-esp32/viewer 8000   # then open http://localhost:8000
