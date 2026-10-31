@@ -132,14 +132,14 @@ def lever():
     """F: toothed ring around the housing, its ends cut level at y 2.90, a wide top part whose inner edge is
     an arc with a V notch on each side, the 2.16 tab, and the arm reaching in to the cover's edge."""
     t = (Z_RING0, Z_RING1)
-    # scalloped edge: bumps reaching R_TIP and hollows down to R_ROOT, alternating at the tooth pitch
-    r_mid = (R_ROOT + R_TIP) / 2; pitch = 2 * math.pi / TEETH; rb = 0.26
-    ring = disc(RC, r_mid, *t).cut(disc(RC, R_IN, *t))
+    # notched edge: the outer cylinder (R_TIP) less a cylinder per tooth pitch, reaching down to R_ROOT
+    pitch = 2 * math.pi / TEETH; rn = 0.26
+    ring = disc(RC, R_TIP, *t).cut(disc(RC, R_IN, *t))
     for i in range(-TEETH // 2, TEETH // 2 + 1):
-        a = math.pi / 2 + i * pitch
-        ring = ring.union(disc((RC[0] + (R_TIP - rb) * math.cos(a), RC[1] + (R_TIP - rb) * math.sin(a)), rb, *t))
-        a += pitch / 2
-        ring = ring.cut(disc((RC[0] + (R_ROOT + rb) * math.cos(a), RC[1] + (R_ROOT + rb) * math.sin(a)), rb, *t))
+        a = math.pi / 2 + (i + 0.5) * pitch
+        if abs((R_ROOT + rn) * math.cos(a)) < 1.05 + rn:
+            continue   # no notch where the tab leaves the ring
+        ring = ring.cut(disc((RC[0] + (R_ROOT + rn) * math.cos(a), RC[1] + (R_ROOT + rn) * math.sin(a)), rn, *t))
     ring = ring.intersect(box(-8, 8, Y_END, 10, *t))
     # wide top part: from the inner edge (V notch + arc) out to the ring
     wide = poly(lever_inner() + [(3.75, 9.0), (-3.75, 9.0)], *t).intersect(disc(RC, R_ROOT, *t))
