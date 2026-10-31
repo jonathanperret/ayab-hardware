@@ -159,7 +159,7 @@ def terminals():
 
 if __name__ == '__main__':
     asm = cq.Assembly(name='SW-SMD_BL-DT')
-    asm.add(housing(), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
+    asm.add(housing().cut(springs()).cut(terminals()), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
     asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
     asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
     asm.add(lever(), name='lever', color=cq.Color(*[c / 255 for c in LEVER]))
