@@ -76,13 +76,15 @@ def draw_section(name, axis, val, h_axis, view_rng, z_rng, title, notes=(), scal
     d.text((20,yy),'grille 2 mm ; rouge = contours des composants, vert = PCB, gris foncé = fond, gris clair = couvercle',fill=(110,110,110),font=FONT)
     img.save(W+'/renders/'+name)
 if __name__=='__main__':
-    # Section through the thumb-wheel S1 and the OLED (plane KiCad y = 66.65)
-    draw_section('11_section_wheel_oled.png',1,-66.65,0,(150,196),(-7,25.5),
-        'Coupe y=66.65 (molette S1 + OLED U5)',
-        ('OLED: verre z=6.74, plafond z=7.8, fenêtre chanfreinée','molette: x max 193.7, mur 190.3..192.3'))
-    draw_section('12_section_din.png',1,-35.46,0,(150,196),(-7,25.5),
-        'Coupe y=35.46 (axe de la DIN J3)',('DIN: haut z=21.25, plafond de la bosse z=22.3','fenêtre = face avant de la prise + 0,3 mm'))
-    draw_section('13_section_usb.png',0,116.58,1,(-92,-62),(-7,25.5),
-        'Coupe x=116.58 (USB-C J1)',('face USB y=86.5, mur intérieur y=87.3','poche extérieure 1.2 mm'),scale=16)
-    draw_section('14_section_columns.png',1,-57.4,0,(104,194),(-7,25.5),
-        'Coupe y=57.4 (colonne H2, vis M3 + insert)',(),scale=11)
+    # Board frame (KiCad x, Y = -KiCad y), DIN socket facing up, USB-C on the right edge
+    draw_section('11_section_wheel_oled.png',0,142.55,1,(-66,-18),(-7,25.5),
+        'Coupe x=142.55 (molette S1 + OLED U5)',
+        ('OLED sur support J15 de 5 mm : verre z=11.74, plafond z=12.8, fenêtre chanfreinée','molette : dépasse du bord haut'))
+    draw_section('12_section_din.png',0,111.36,1,(-66,-18),(-7,25.5),
+        'Coupe x=111.36 (axe de la DIN J3)',('DIN : haut z=21.25, plafond de la bosse z=22.3','le boîtier s\'arrête au ras de la face de la prise'))
+    draw_section('13_section_usb.png',1,-104.42,0,(138,168),(-7,25.5),
+        'Coupe y=104.42 (USB-C J1)',('face USB x=164.2, mur intérieur x=165.0','poche extérieure 1.2 mm'),scale=16)
+    draw_section('14_section_columns.png',0,133.3,1,(-116,-20),(-7,25.5),
+        'Coupe x=133.3 (colonne H2, vis M3 + insert)',(),scale=11)
+    draw_section('15_section_oled_post.png',1,-32.3,0,(118,170),(-7,25.5),
+        'Coupe y=32.3 (appui sous le bout de l\'OLED)',('bloc du fond au-delà du bord du PCB (x 158.9)','sommet z=9.0, dessous du module z=9.1'),scale=14)

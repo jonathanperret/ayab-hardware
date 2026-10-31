@@ -1,3 +1,3 @@
 # Accepted ERC/DRC violations (scripts/kicad/check.sh fails if any type exceeds its count here).
 # kind type count   reason
-drc items_not_allowed 1   U5 (OLED) over the ESP32 antenna keep-out: kept as a reminder until Wi-Fi range is measured
+# (none: ERC and DRC are clean since the board was lengthened and the OLED cleared the antenna keep-out)
