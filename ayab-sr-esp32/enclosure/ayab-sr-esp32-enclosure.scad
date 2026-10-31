@@ -23,7 +23,10 @@
 //  copied from ayab-sr-esp32.kicad_pcb (commit d8073cd, before the board was
 //  turned 90 deg) and can be typed in those KiCad coordinates thanks to the
 //  kp() helper. The board has since been lengthened by 6 mm on the USB-C /
-//  mounting-hole end (old x - 6: bx0, holes, usb_x); J3, U5 and S1 did not move.
+//  mounting-hole end (old x - 6: bx0, holes, usb_x; J3, U5 and S1 did not move),
+//  then by 8 mm more at the bottom (bx0 = 92.9, USB-C unchanged), with H1 and H3
+//  in the two bottom corners and H2 near the right edge below the OLED.
+//  Current board (x, y) = old (y + 75.9, 215 - x).
 //  The OLED U5 now plugs into a 5.0 mm socket J15 (glass 5 mm higher, lid
 //  raised to match) and its far end, which overhangs the board edge (the PCB
 //  is cut along the antenna cut-out up to its top edge), rests on a block of the tray.
@@ -81,10 +84,10 @@ $fn = 48;
 // ---------------------------------------------------------------------
 function kp(x, y) = [x, -y];
 
-bx0 = 100.9; bx1 = 190.0; by0 = 24.1; by1 = 88.6;   // Edge.Cuts bounding box
+bx0 = 92.9; bx1 = 190.0; by0 = 24.1; by1 = 88.6;   // Edge.Cuts bounding box
 notch_x = 181.3;  notch_y = 48.0;                    // top-right notch (DIN socket)
 
-holes = [[106.175, 29.475], [167.0, 57.4], [118.5, 64.8]]; // H1, H2, H3
+holes = [[98.175, 29.475], [170.5, 79.5], [98.175, 83.225]]; // H1, H2, H3 (board: 105.375/116.825, 155.4/44.5, 159.125/116.825)
 
 // USB-C receptacles (front of shell at y=88.3, shell 8.94 x 3.16 mm, centre z=3.33)
 usb_x   = [107.98, 122.78];     // J1 (power / USB-PD), J2 (ESP32 USB): 14.8 mm apart, like the ports of a MacBook
@@ -300,7 +303,7 @@ module s1_tab() {
 
 module lid_text() {
     if (lid_text != "")
-        translate([134, -64, top_z - engrave]) linear_extrude(engrave + 1)
+        translate([134, -64, top_z - engrave]) linear_extrude(engrave + 1)   // board y 81: middle of the lid between the OLED window and the bottom edge
             text(lid_text, size = 5.5, font = "Liberation Sans:style=Bold", halign = "center", valign = "center");
 }
 

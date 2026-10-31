@@ -82,9 +82,9 @@ if __name__=='__main__':
         ('OLED sur support J15 de 5 mm : verre z=11.74, plafond z=12.8, fenêtre chanfreinée','molette : dépasse du bord haut'))
     draw_section('12_section_din.png',0,111.36,1,(-66,-18),(-7,25.5),
         'Coupe x=111.36 (axe de la DIN J3)',('DIN : haut z=21.25, plafond de la bosse z=22.3','le boîtier s\'arrête au ras de la face de la prise'))
-    draw_section('13_section_usb.png',1,-104.42,0,(138,168),(-7,25.5),
-        'Coupe y=104.42 (USB-C J1)',('face USB x=164.2, mur intérieur x=165.0','poche extérieure 1.2 mm'),scale=16)
-    draw_section('14_section_columns.png',0,133.3,1,(-116,-20),(-7,25.5),
-        'Coupe x=133.3 (colonne H2, vis M3 + insert)',(),scale=11)
+    draw_section('13_section_usb.png',1,-107.02,0,(138,168),(-7,25.5),
+        'Coupe y=107.02 (USB-C J1)',('face USB x=164.2, mur intérieur x=165.0','poche extérieure 1.2 mm'),scale=16)
+    draw_section('14_section_columns.png',0,155.4,1,(-125,-20),(-7,25.5),
+        'Coupe x=155.4 (colonne H2 sous l\'OLED, vis M3 + insert)',('H2 en y=44.5, OLED jusqu\'à y=38.3',),scale=10)
     draw_section('15_section_oled_post.png',1,-32.3,0,(118,170),(-7,25.5),
         'Coupe y=32.3 (appui sous le bout de l\'OLED)',('bloc du fond au-delà du bord du PCB (x 158.9)','sommet z=9.0, dessous du module z=9.1'),scale=14)

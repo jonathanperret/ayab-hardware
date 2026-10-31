@@ -109,7 +109,7 @@ DIN J3 and J14 pinout:
 
 ## PCB
 
-- 2 layers, GND pour on both sides, 64.5 × 89.1 mm (width × height), drawn in
+- 2 layers, GND pour on both sides, 64.5 × 97.1 mm (width × height), drawn in
   its intended orientation: DIN socket J3 facing up, USB-C sockets on the
   right edge. A 23.9 × 8.7 mm notch above the DIN socket leaves room for bulky
   plugs. S1's wheel sticks out of the top edge, centred on its straight part
@@ -129,7 +129,12 @@ DIN J3 and J14 pinout:
   at y 38.55, the keep-out starts at 38.7). Above the cut-out, the board is
   cut along the same line (x = 158.9) up to the top edge: the far end of the
   OLED module overhangs the board there by 5 mm and rests on a block of the
-  enclosure tray.
+  enclosure tray. The board was then lengthened by 8 mm more at the bottom
+  (nothing moved but the bottom edge and the holes).
+- Mounting holes (M3, GND pad): H1 and H3 in the two bottom corners, 5.4 mm
+  from the side edges and 5.3 mm from the bottom (105.4 / 116.8 and
+  159.1 / 116.8), and H2 below the OLED near the right edge (155.4 / 44.5: as far
+  right as the antenna keep-out allows, its lid column 2.9 mm from the OLED module).
 - Routing was done with Freerouting (power nets first, then signals) plus
   local fixes; it is functional but autorouter-looking — worth a manual
   review pass in KiCad (especially the `+15V` / `Vsol` paths and the USB pair).
@@ -140,8 +145,8 @@ DIN J3 and J14 pinout:
 `packages3D/generators/sw_smd_bl_dt_step.py`, from the manufacturer's drawing).
 
 A 3D-printable enclosure is in [`enclosure/`](enclosure/README.md).
-Its model follows the board's 90° turn (`board_frame()` in the .scad), the 6 mm
-longer board, the OLED on its 5 mm socket (lid raised by 5 mm) and the block under
+Its model follows the board's 90° turn (`board_frame()` in the .scad), the
+current outline and holes, the OLED on its 5 mm socket (lid raised by 5 mm) and the block under
 the OLED's far end. A redesign is planned (ring around the machine's mast).
 
 ## Renders

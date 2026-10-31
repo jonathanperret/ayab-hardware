@@ -2,9 +2,10 @@
 
 Boîtier en deux pièces (fond + couvercle) pour la carte `ayab-sr-esp32`. Le `.scad` est
 écrit dans le repère du placement du commit d8073cd (avant la rotation de 90° de la carte,
-`board_frame()` la remet dans le repère actuel), mis à jour pour la carte allongée de
-6 mm côté USB-C (trous et USB-C décalés de −6 mm en x dans ce repère) et pour l'OLED
-monté sur un support bas J15 de 5 mm.
+`board_frame()` la remet dans le repère actuel), mis à jour pour la carte allongée
+(6 mm puis 8 mm côté bas : 64,5 × 97,1 mm), les trous H1/H3 dans les deux coins du bas et
+H2 près du bord droit sous l'OLED, et pour l'OLED monté sur un support bas J15 de 5 mm.
+Correspondance : carte actuelle (x, y) = repère du .scad (y + 75,9 ; 215 − x).
 
 ![assemblé](renders/01_assembled.png)
 ![éclaté](renders/04_exploded.png)
@@ -17,7 +18,7 @@ monté sur un support bas J15 de 5 mm.
 | `renders/` | Vues fixes, coupes 2D, animations `turntable` et `exploded` (GIF et MP4, `quick_render.py --anim`) |
 | `tools/` | Scripts Python (numpy/PIL) de la vérification d'ajustement, des coupes et des rendus (aperçu OpenGL d'OpenSCAD) |
 
-Dimensions extérieures : **93,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de la bosse de la DIN
+Dimensions extérieures : **101,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de la bosse de la DIN
 (fond 13,65 mm ; couvercle : 7 mm au-dessus du joint, bosse de 16,5 mm au-dessus du joint).
 
 ## Choix de conception
@@ -103,11 +104,11 @@ Dimensions extérieures : **93,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de 
   d'après le dessin coté du fabricant (`ayab-library/packages3D/generators/sw_smd_bl_dt_step.py`).
 - `tools/fitcheck.py` : aucun point des composants montés ni du PCB à l'intérieur des pièces ;
   sorties à moins de 0,3 mm seulement là où c'est voulu (face DIN / paroi 0,2 mm ;
-  module OLED / colonne H2 0,4 mm ; antenne ESP32 / paroi 0,34 mm).
+  module OLED / support du fond 0,1 mm ; antenne ESP32 / paroi 0,34 mm).
 - `tools/openings_check.py` : coques USB-C dans leurs trous avec 0,33 mm (x) et
-  0,36 mm (z) de marge ; molette y 60,6..72,7 dans une fente y 58,4..74,9 ; OLED à 6,75,
-  plafond à 7,8 ; DIN : aucune pièce du boîtier devant la face.
-- Coupes 2D : `renders/11..14_section_*.png`.
+  0,36 mm (z) de marge ; molette y 60,6..72,7 dans une fente y 58,4..74,9 ; OLED à 11,74,
+  plafond à 12,8 ; DIN : aucune pièce du boîtier devant la face.
+- Coupes 2D : `renders/11..15_section_*.png`.
 
 ## Limites / à vérifier au premier tirage
 
@@ -116,8 +117,8 @@ Dimensions extérieures : **93,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de 
 - Colonnes plus courtes (6,2 mm) : trou d'insert de 6,5 mm, la pointe d'une vis M3×12
   arrive à 6,0 mm ; ne pas prendre plus long que M3×12.
 - Le modèle de la DIN (DIN-704-M10) et du module OLED sont ceux de la bibliothèque : vérifier
-  sur les vraies pièces la hauteur de la DIN, la hauteur réelle de l'OLED sur son
-  entretoise de 2,5 mm et sa position latérale (0,4 mm de la colonne H2).
+  sur les vraies pièces la hauteur de la DIN et la hauteur réelle de l'OLED sur son
+  support J15 et son entretoise de 2,5 mm (colonne H2 à 2,9 mm du module).
 - Une fiche DIN à gros surmoulage peut toucher le côté du compartiment OLED (à 11 mm
   de l'axe de la prise) ; la jupe de 0,45 mm qui ferme ce compartiment est fragile, à
   vérifier au premier tirage.
