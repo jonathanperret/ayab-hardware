@@ -65,7 +65,7 @@ def top_tab(sx, d0, d1, z0, z1, ext=0.0):
 
 def outline(y0):
     """The cover's outline, also the body's above its base (the bottom view draws the body's edge on the cover's
-    arc): straight sides from y0, a curved edge round the springs up to the hooks, then the arc r 5."""
+    arc): straight sides from y0, a curved edge up to the hooks, then the arc r 5."""
     side = [(5.45, 2.40), (5.27, 3.00), (5.00, 3.50), (4.45, 3.85), (3.95, 4.10), (3.35, 4.30), (3.10, 4.50)]   # read off the drawing
     x_top = 3.10; a0 = math.atan2(math.sqrt(COVER_R ** 2 - x_top ** 2), x_top); n = 24
     pts = [(-5.45, y0), (5.45, y0)] + side
@@ -93,7 +93,7 @@ def housing():
     return h
 
 def cover():
-    """E: stainless cover: straight sides, a curved edge round the springs up to the hooks, then the arc;
+    """E: stainless cover: straight sides, a curved edge up to the hooks, then the arc;
     the pressed V is recessed 0.08."""
     c = poly(outline(Y_BASE + 0.05), Z_HOUSING, Z_TOP)
     # the V: flat centre then arms at 29.7 deg, rounded ends at x +-2.85
@@ -145,16 +145,6 @@ def lever():
     ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
     return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
 
-def springs(g=0.0):
-    """The two return springs, between the cover's diagonal edge and the housing arc (grown by g: their room)."""
-    s = None
-    for sx in (-1, 1):
-        a = math.atan2(4.25 - 2.40, sx * (4.75 - 5.40))
-        bar = (cq.Workplane('XY').box(math.hypot(0.65, 1.85) + 2 * g, 0.30 + 2 * g, 0.70 + 2 * g).rotate((0, 0, 0), (0, 0, 1), math.degrees(a))
-               .translate((sx * (4.75 + 5.40) / 2, (4.25 + 2.40) / 2, 1.2)))
-        s = bar if s is None else s.union(bar)
-    return s
-
 def terminals(g=0.0):
     """b, c, d: 1.6 wide, from the base edge 1.5 in; a: 1.3 x 1.3 by the ring ends; 0.15 thick at the bottom
     (grown by g: their room)."""
@@ -167,9 +157,8 @@ def terminals(g=0.0):
 
 if __name__ == '__main__':
     asm = cq.Assembly(name='SW-SMD_BL-DT')
-    asm.add(housing().cut(springs(GAP)).cut(terminals(GAP)), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
+    asm.add(housing().cut(terminals(GAP)), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
     asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
-    asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
     asm.add(lever(), name='lever', color=cq.Color(*[c / 255 for c in LEVER]))
     asm.add(terminals(), name='terminals', color=cq.Color(*[c / 255 for c in METAL]))
     asm.save(sys.argv[1], exportType='STEP')
