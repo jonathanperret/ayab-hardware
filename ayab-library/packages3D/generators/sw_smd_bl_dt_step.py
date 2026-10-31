@@ -17,7 +17,6 @@ TEETH = 50
 Y_END = 2.90                          # ring ends, cut level
 Y_TAB = 9.54                          # tab top (12.34 from the base edge)
 COVER_C, COVER_R = (0.0, 1.29), 5.00  # the cover's top edge (and the housing's central part)
-HOUS_C, HOUS_R = (0.0, 2.67), 5.73    # housing arc under the lever
 LEV_C, LEV_R = (0.0, 1.19), 6.40      # inner edge of the lever's wide top part
 PEG_Y, PEG_X, PEG_D, PEG_H = 1.32, 2.50, 0.90, 0.50
 # the cover's side features (from the LCSC photo, positions given by the user): two tabs folding down
@@ -60,15 +59,21 @@ def top_tab(sx, d0, d1, z0, z1):
         pts.reverse()
     return poly(pts, z0, z1)
 
+def outline(y0):
+    """The cover's outline, also the body's above its base (the bottom view draws the body's edge on the cover's
+    arc): straight sides from y0, a curved edge round the springs up to the hooks, then the arc r 5."""
+    side = [(5.45, 2.40), (5.27, 3.00), (5.00, 3.50), (4.45, 3.85), (3.95, 4.10), (3.35, 4.30), (3.10, 4.50)]   # read off the drawing
+    x_top = 3.10; a0 = math.atan2(math.sqrt(COVER_R ** 2 - x_top ** 2), x_top); n = 24
+    pts = [(-5.45, y0), (5.45, y0)] + side
+    pts += [(COVER_R * math.cos(a0 + (math.pi - 2 * a0) * i / n), COVER_C[1] + COVER_R * math.sin(a0 + (math.pi - 2 * a0) * i / n)) for i in range(0, n + 1)]
+    return pts + [(-x, y) for x, y in reversed(side)]
+
 def housing():
-    """A: base slab and side walls (11.90 wide to y 1.2, 11.30 above), then the housing arc (r 5.73) up to
-    y 6.45 where the side view ends the body, less the lever's arm; the two pegs (0.90, 0.50 below)."""
+    """A: base slab and side walls (11.90 wide to y 1.2, 11.30 above to y 2.4), then the cover's outline (the
+    bottom view draws the body's edge on the cover's arc), less the lever's arm; the two pegs (0.90, 0.50 below)."""
     h = box(-X_BASE, X_BASE, Y_BASE, 1.20, 0, Z_HOUSING)
-    h = h.union(box(-5.65, 5.65, 1.0, 3.0, 0, Z_HOUSING))
-    h = h.union(disc(HOUS_C, HOUS_R, 0, Z_HOUSING).intersect(box(-5.65, 5.65, 1.0, 6.45, 0, Z_HOUSING)))
-    # above y 6.45 the housing runs on under the lever's notches, within the ring's height (hidden in the side view)
-    below = poly([(-5.65, 6.40)] + lever_inner() + [(5.65, 6.40)], Z_RING0, Z_RING1)
-    h = h.union(disc(HOUS_C, HOUS_R, Z_RING0, Z_RING1).intersect(below).intersect(box(-5.65, 5.65, 6.40, 9.0, Z_RING0, Z_RING1)))
+    h = h.union(box(-5.65, 5.65, 1.0, 2.40, 0, Z_HOUSING))
+    h = h.union(poly(outline(1.0), 0, Z_HOUSING))
     h = h.cut(poly(ARM, Z_RING0, Z_RING1))
     for sx in (-1, 1):
         def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
@@ -82,12 +87,7 @@ def housing():
 def cover():
     """E: stainless cover: straight sides, a curved edge round the springs up to the hooks, then the arc;
     the pressed V is recessed 0.08."""
-    side = [(5.45, 2.40), (5.27, 3.00), (5.00, 3.50), (4.45, 3.85), (3.95, 4.10), (3.35, 4.30), (3.10, 4.50)]   # read off the drawing
-    x_top = 3.10; a0 = math.atan2(math.sqrt(COVER_R ** 2 - x_top ** 2), x_top); n = 24
-    pts = [(-5.45, Y_BASE + 0.05), (5.45, Y_BASE + 0.05)] + side
-    pts += [(COVER_R * math.cos(a0 + (math.pi - 2 * a0) * i / n), COVER_C[1] + COVER_R * math.sin(a0 + (math.pi - 2 * a0) * i / n)) for i in range(0, n + 1)]
-    pts += [(-x, y) for x, y in reversed(side)]
-    c = poly(pts, Z_HOUSING, Z_TOP)
+    c = poly(outline(Y_BASE + 0.05), Z_HOUSING, Z_TOP)
     # the V: flat centre then arms at 29.7 deg, rounded ends at x +-2.85
     k = math.tan(math.radians(29.6))
     top = [(-2.85, 4.95 - k * 1.35 + 0.0), (-0.85, 5.70 - 0.0), (0.85, 5.70), (2.85, 4.95 - k * 1.35)]
