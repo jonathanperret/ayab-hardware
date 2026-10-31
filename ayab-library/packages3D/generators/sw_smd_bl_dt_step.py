@@ -22,6 +22,7 @@ PEG_Y, PEG_X, PEG_D, PEG_H = 1.32, 2.50, 0.90, 0.50
 # the cover's side features (from the LCSC photo, positions given by the user): two tabs folding down
 # into the body and a flat bump between them
 TAB_T = 0.15
+GAP = 0.01                            # clearance kept between the parts: no two solids touch
 TAB_BOT, BUMP = (-1.80, -0.80), (-0.10, 1.10)
 # top tab: folds down along the cover's edge between these two points (marked by the user on the drawing),
 # goes down through the body and folds under it like the bottom tab
@@ -45,10 +46,13 @@ def lever_inner():
     return ([(-3.75, 7.22), (-2.80, 6.97)] + [(LEV_R * math.sin(-a1 + 2 * a1 * i / n), LEV_C[1] + LEV_R * math.cos(-a1 + 2 * a1 * i / n))
             for i in range(n + 1)] + [(2.80, 6.97), (3.75, 7.22)])
 
-def top_tab(sx, d0, d1, z0, z1):
-    """Strip along the top tab's fold line, from d0 to d1 inwards (towards the cover's centre) of it; side sx."""
+def top_tab(sx, d0, d1, z0, z1, ext=0.0):
+    """Strip along the top tab's fold line, from d0 to d1 inwards (towards the cover's centre) of it, lengthened
+    by ext at both ends; side sx."""
     (x1, y1), (x2, y2) = TAB_FOLD
-    n = math.hypot(x2 - x1, y2 - y1); nx, ny = -(y2 - y1) / n, (x2 - x1) / n   # unit normal, inwards
+    n = math.hypot(x2 - x1, y2 - y1); ux, uy = (x2 - x1) / n, (y2 - y1) / n
+    x1, y1, x2, y2 = x1 - ux * ext, y1 - uy * ext, x2 + ux * ext, y2 + uy * ext
+    nx, ny = -uy, ux   # unit normal, inwards
     if nx * x1 + ny * (y1 - COVER_C[1]) > 0:
         nx, ny = -nx, -ny
     p = [(x1 + nx * d0, y1 + ny * d0), (x2 + nx * d0, y2 + ny * d0), (x2 + nx * d1, y2 + ny * d1), (x1 + nx * d1, y1 + ny * d1)]
@@ -71,17 +75,20 @@ def outline(y0):
 def housing():
     """A: base slab and side walls (11.90 wide to y 1.2, 11.30 above to y 2.4), then the cover's outline (the
     bottom view draws the body's edge on the cover's arc), less the lever's arm; the two pegs (0.90, 0.50 below)."""
-    h = box(-X_BASE, X_BASE, Y_BASE, 1.20, 0, Z_HOUSING)
-    h = h.union(box(-5.65, 5.65, 1.0, 2.40, 0, Z_HOUSING))
-    h = h.union(poly(outline(1.0), 0, Z_HOUSING))
-    h = h.cut(poly(ARM, Z_RING0, Z_RING1))
+    zt = Z_HOUSING - GAP   # below the cover
+    h = box(-X_BASE, X_BASE, Y_BASE, 1.20, 0, zt)
+    h = h.union(box(-5.65, 5.65, 1.0, 2.40, 0, zt))
+    h = h.union(poly(outline(1.0), 0, zt))
+    h = h.cut(cq.Workplane('XY').polyline(ARM).close().offset2D(GAP, 'intersection').extrude(Z_RING1 - Z_RING0 + 2 * GAP)
+              .translate((0, 0, Z_RING0 - GAP)))
     for sx in (-1, 1):
         def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
-        h = h.cut(bx(X_BASE - TAB_T, X_BASE + 0.1, *TAB_BOT, 0, Z_HOUSING))   # groove down the side
-        h = h.cut(bx(X_BASE - 0.55, X_BASE + 0.1, *TAB_BOT, 0, TAB_T))         # recess underneath
-        h = h.union(top_tab(sx, 0, 0.6, 0, Z_HOUSING))      # the body reaches out to the top tab's fold line
-        h = h.cut(top_tab(sx, 0, TAB_T, 0, Z_HOUSING))      # groove for the top tab
-        h = h.cut(top_tab(sx, 0, 0.55, 0, TAB_T))           # recess underneath
+        g0, g1 = TAB_BOT[0] - GAP, TAB_BOT[1] + GAP
+        h = h.cut(bx(X_BASE - TAB_T - GAP, X_BASE + 0.1, g0, g1, 0, Z_HOUSING))   # groove down the side
+        h = h.cut(bx(X_BASE - 0.55 - GAP, X_BASE + 0.1, g0, g1, 0, TAB_T + GAP))  # recess underneath
+        h = h.union(top_tab(sx, 0, 0.6, 0, zt))      # the body reaches out to the top tab's fold line
+        h = h.cut(top_tab(sx, -0.1, TAB_T + GAP, 0, Z_HOUSING, GAP))      # groove for the top tab
+        h = h.cut(top_tab(sx, -0.1, 0.55 + GAP, 0, TAB_T + GAP, GAP))     # recess underneath
         h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
     return h
 
@@ -138,28 +145,29 @@ def lever():
     ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
     return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
 
-def springs():
-    """The two return springs, between the cover's diagonal edge and the housing arc."""
+def springs(g=0.0):
+    """The two return springs, between the cover's diagonal edge and the housing arc (grown by g: their room)."""
     s = None
     for sx in (-1, 1):
         a = math.atan2(4.25 - 2.40, sx * (4.75 - 5.40))
-        bar = (cq.Workplane('XY').box(math.hypot(0.65, 1.85), 0.30, 0.70).rotate((0, 0, 0), (0, 0, 1), math.degrees(a))
+        bar = (cq.Workplane('XY').box(math.hypot(0.65, 1.85) + 2 * g, 0.30 + 2 * g, 0.70 + 2 * g).rotate((0, 0, 0), (0, 0, 1), math.degrees(a))
                .translate((sx * (4.75 + 5.40) / 2, (4.25 + 2.40) / 2, 1.2)))
         s = bar if s is None else s.union(bar)
     return s
 
-def terminals():
-    """b, c, d: 1.6 wide, from the base edge 1.5 in; a: 1.3 x 1.3 by the ring ends; 0.15 thick at the bottom."""
+def terminals(g=0.0):
+    """b, c, d: 1.6 wide, from the base edge 1.5 in; a: 1.3 x 1.3 by the ring ends; 0.15 thick at the bottom
+    (grown by g: their room)."""
     t = None
     for x in (-2.5, 0.0, 2.5):
-        b = box(x - 0.8, x + 0.8, Y_BASE, Y_BASE + 1.5, 0, 0.15); t = b if t is None else t.union(b)
+        b = box(x - 0.8 - g, x + 0.8 + g, Y_BASE - g, Y_BASE + 1.5 + g, -g, 0.15 + g); t = b if t is None else t.union(b)
     for sx in (-1, 1):
-        t = t.union(box(min(sx * 4.30, sx * 5.60), max(sx * 4.30, sx * 5.60), 1.80, 3.10, 0, 0.15))
+        t = t.union(box(min(sx * 4.30, sx * 5.60) - g, max(sx * 4.30, sx * 5.60) + g, 1.80 - g, 3.10 + g, -g, 0.15 + g))
     return t
 
 if __name__ == '__main__':
     asm = cq.Assembly(name='SW-SMD_BL-DT')
-    asm.add(housing().cut(springs()).cut(terminals()), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
+    asm.add(housing().cut(springs(GAP)).cut(terminals(GAP)), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
     asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
     asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
     asm.add(lever(), name='lever', color=cq.Color(*[c / 255 for c in LEVER]))
