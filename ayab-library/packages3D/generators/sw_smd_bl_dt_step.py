@@ -20,6 +20,10 @@ COVER_C, COVER_R = (0.0, 1.29), 5.00  # the cover's top edge (and the housing's 
 HOUS_C, HOUS_R = (0.0, 2.67), 5.73    # housing arc under the lever
 LEV_C, LEV_R = (0.0, 1.19), 6.40      # inner edge of the lever's wide top part
 PEG_Y, PEG_X, PEG_D, PEG_H = 1.32, 2.50, 0.90, 0.50
+# the cover's side features (from the LCSC photo, positions given by the user): two tabs folding down
+# into the body and a flat bump between them
+TAB_T = 0.15
+TAB_BOT, BUMP, TAB_TOP, TAB_TOP_X = (-1.80, -0.80), (-0.10, 1.10), (4.00, 5.00), 4.40
 
 def disc(c, r, z0, z1):
     return cq.Workplane('XY').circle(r).extrude(z1 - z0).translate((c[0], c[1], z0))
@@ -50,6 +54,10 @@ def housing():
     h = h.union(disc(HOUS_C, HOUS_R, Z_RING0, Z_RING1).intersect(below).intersect(box(-5.65, 5.65, 6.40, 9.0, Z_RING0, Z_RING1)))
     h = h.cut(poly(ARM, Z_RING0, Z_RING1))
     for sx in (-1, 1):
+        def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
+        h = h.cut(bx(X_BASE - TAB_T, X_BASE + 0.1, *TAB_BOT, 0, Z_HOUSING))   # groove down the side
+        h = h.cut(bx(X_BASE - 0.55, X_BASE + 0.1, *TAB_BOT, 0, TAB_T))         # recess underneath
+        h = h.cut(bx(TAB_TOP_X - TAB_T, TAB_TOP_X, *TAB_TOP, Z_RING0, Z_HOUSING))   # slot for the top tab
         h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
     return h
 
@@ -72,7 +80,24 @@ def cover():
     v = poly(arm_outline(), Z_TOP - 0.08, Z_TOP)
     for sx in (-1, 1):
         v = v.union(disc((sx * 2.85, (4.95 + 4.27) / 2 - k * 1.35), 0.34, Z_TOP - 0.08, Z_TOP))
-    return c.cut(v)
+    c = c.cut(v)
+    T = TAB_T
+    for sx in (-1, 1):
+        def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
+        # bottom tab (y -1.8..-0.8): out to the body's edge, down its side in a groove, folded under the body
+        c = c.union(bx(5.40, X_BASE, *TAB_BOT, Z_HOUSING, Z_TOP))
+        c = c.union(bx(X_BASE - T, X_BASE, *TAB_BOT, T, Z_HOUSING))
+        c = c.union(bx(X_BASE - 0.55, X_BASE, *TAB_BOT, 0, T))
+        # bump (y -0.1..1.1): flat, out to the body's edge, rounded corners
+        c = c.union(bx(5.40, X_BASE - 0.25, *BUMP, Z_HOUSING, Z_TOP))
+        for yc in (BUMP[0] + 0.25, BUMP[1] - 0.25):
+            c = c.union(disc((sx * (X_BASE - 0.25), yc), 0.25, Z_HOUSING, Z_TOP))
+        c = c.union(bx(X_BASE - 0.25, X_BASE, BUMP[0] + 0.25, BUMP[1] - 0.25, Z_HOUSING, Z_TOP))
+        # top tab (y 4.0..5.0, same width as the bottom one): nearly level, outwards from the cover's edge to
+        # x 4.4, then down into a slot in the body
+        c = c.union(bx(3.0, TAB_TOP_X, *TAB_TOP, Z_HOUSING, Z_TOP))
+        c = c.union(bx(TAB_TOP_X - T, TAB_TOP_X, *TAB_TOP, Z_RING0, Z_HOUSING))
+    return c
 
 def lever():
     """F: toothed ring around the housing, its ends cut level at y 2.90, a wide top part whose inner edge is
