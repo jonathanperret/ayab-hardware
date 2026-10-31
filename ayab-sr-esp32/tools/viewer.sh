@@ -18,6 +18,7 @@ m = {}
 for r in csv.DictReader(open(sys.argv[1])):
     for d in r['Designator'].split(','): m[d] = [r['Value'], r['LCSC']]
 m.setdefault('J14', ['8-pin socket (debug)', '—']); m.setdefault('J4', ['2-pin header', '—'])
+m.setdefault('U5', ['HS91L02W2C01 (fitted at assembly)', 'C5248081'])   # not in the JLCPCB BOM
 s = open(sys.argv[2], encoding='utf-8').read()
 s = re.sub(r'const PARTS = \{.*?\};', lambda _: 'const PARTS = %s;' % json.dumps(m, separators=(',', ':'), ensure_ascii=False), s, count=1)
 open(sys.argv[2], 'w', encoding='utf-8').write(s)
