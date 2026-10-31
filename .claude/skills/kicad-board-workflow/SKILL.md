@@ -5,6 +5,10 @@ description: How to work on the KiCad 10 boards in this repo (ayab-sr-esp32 firs
 
 # KiCad board workflow (headless)
 
+Working with the user: once a change is made and checked, offload the long mechanical tail
+(production files, board renders, viewer, enclosure regen/fit check, commit and push) to a
+background agent, and stay available for the next request instead of running it in the foreground.
+
 Tools: `scripts/kicad/` (generic), `ayab-sr-esp32/tools/` (project), `ayab-sr-esp32/enclosure/tools/`.
 Every script has a usage docstring at the top. "(container)" = runs in the KiCad image through
 `scripts/kicad/kicad.sh`; the rest runs on the host.
