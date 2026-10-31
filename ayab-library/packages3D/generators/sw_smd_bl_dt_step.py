@@ -39,6 +39,7 @@ def poly(pts, z0, z1):
 # continue under the cover into the body (how far is not drawn: down to y 5.0 here); its top runs into
 # the wide part
 ARM = [(-2.20, 7.30), (-2.20, 8.00), (2.20, 8.00), (2.20, 7.30), (1.37, 5.00), (-1.37, 5.00)]
+Z_ARM0, Z_ARM1 = Z_RING0 + 0.15, Z_RING1 - 0.15   # the arm is a little thinner than the ring (1.35)
 
 def lever_inner():
     """Inner edge of the lever's wide top part, left to right: V notch, arc r 6.40 about (0, 1.19), V notch."""
@@ -81,8 +82,8 @@ def housing():
     h = h.union(poly(outline(1.0), 0, zt))
     for sx in (-1, 1):   # round terminals a (to y 3.1, x 5.6): the side walls run on to y 3.2
         h = h.union(box(min(sx * 4.20, sx * 5.65), max(sx * 4.20, sx * 5.65), 2.0, 3.20, 0, zt))
-    h = h.cut(cq.Workplane('XY').polyline(ARM).close().offset2D(GAP, 'intersection').extrude(Z_RING1 - Z_RING0 + 2 * GAP)
-              .translate((0, 0, Z_RING0 - GAP)))
+    h = h.cut(cq.Workplane('XY').polyline(ARM).close().offset2D(GAP, 'intersection').extrude(Z_ARM1 - Z_ARM0 + 2 * GAP)
+              .translate((0, 0, Z_ARM0 - GAP)))
     for sx in (-1, 1):
         def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
         g0, g1 = TAB_BOT[0] - GAP, TAB_BOT[1] + GAP
@@ -143,7 +144,7 @@ def lever():
     # wide top part: from the inner edge (V notch + arc) out to the ring
     wide = poly(lever_inner() + [(3.75, 9.0), (-3.75, 9.0)], *t).intersect(disc(RC, R_ROOT, *t))
     tab = box(-1.05, 1.05, RC[1] + R_ROOT - 0.3, Y_TAB, *t)
-    arm = poly(ARM, *t)
+    arm = poly(ARM, Z_ARM0, Z_ARM1)
     ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
     return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
 
