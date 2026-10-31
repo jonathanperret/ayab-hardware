@@ -1,86 +1,117 @@
 """sw_smd_bl_dt_step.py OUT.step  -- SHOU HAN BL-DT thumb wheel switch (LCSC C53223909) as a coloured STEP,
-built with CadQuery from the manufacturer's drawing and LCSC's photos (toothed ring lever over a stainless cover plate) (datasheet rev B00, 2020-05-28): 14.20 wheel diameter,
-12.34 overall length, 11.90 base width, 2.50 overall height, 1.65 wheel thickness, 2.16 handle tab,
-pegs dia 1.05 at 5.00 pitch, terminals 2.50 pitch / 10.80 span.
-Frame: KiCad footprint SW-SMD_BL-DT (origin between the pegs' row and the body), x right, y = -footprint y
-(the wheel protrudes towards +y), z up from the PCB top.   pip install cadquery"""
-import sys, cadquery as cq
+built with CadQuery from the manufacturer's drawing (datasheet rev B00, 2020-05-28) read to scale.
 
-DARK, LEVER, METAL = (26, 26, 26), (40, 40, 40), (200, 200, 205)
-# Vertical layout (z, from the PCB): the body stands on its 0.25 terminals (front elevation: the feet hang
-# below the 2.50 body), housing 0.25..2.50, cover plate 2.50..2.65 with the pressed chevron 0.10 proud, lever
-# ring 0.92..2.57 (1.65 thick; the elevation shows its ends 0.67..2.07 above the body's underside), the
-# lever's arm and wings on the plate.
-FEET = 0.25
-H, LEVER_Z, HOUSING_Z, PLATE_Z0, PLATE_T = FEET + 2.50, FEET + 0.67, FEET + 2.25, FEET + 2.25, 0.15
-# Plan (model x right, y towards the wheel; footprint origin): the 14.20 teeth circle is centred 0.28 above the
-# A terminals' line (its top is 6.65 above the A pads' top edge), the lever's inner edge is a circle centred
-# lower (the lever is 1.75 wide at the top, narrow at its ends), the ring ends are cut at y 4.0.
-CX, CY, R_OUT = 0.0, 2.60, 7.10
-IN_CY, IN_R = 0.60, 7.35
-Y_END, Y_BOT, Y_TAB = 4.0, -2.30, 10.04     # ring ends, base edge (12.34 overall to the tab top), tab top
-TEETH, TOOTH = 50, 0.25
-R_HOUSING, Y_SHOULDER, W_BASE = 5.30, 3.40, 11.90
-import math
+All five views of the drawing share one scale (12.34, 11.90, 2.16, 6.65, 3.40, 5.00, 10.80, 2.50 and 1.65
+all agree within 0.05 mm); the ring is drawn 14.6 wide although its dimension says 14.20 and the drawing is
+followed. Coordinates are those of the KiCad footprint SW-SMD_BL-DT with y flipped (model y = -footprint y,
+towards the wheel), z up from the PCB; the pegs are at (+-2.5, 1.32).   pip install cadquery"""
+import sys, math, cadquery as cq
 
-def half_disc(r, h, cy):
-    return (cq.Workplane('XY').circle(r).extrude(h)
-            .intersect(cq.Workplane('XY').box(2 * r + 1, r + 1, h, centered=(True, False, False)))).translate((CX, cy, 0))
+DARK, LEVER, METAL = (26, 26, 26), (45, 45, 45), (200, 200, 205)
+Y_BASE, X_BASE = -2.80, 5.95          # base front edge, half width (11.90)
+Z_HOUSING, Z_TOP = 2.30, 2.50         # housing top, cover plate top (2.50 overall)
+Z_RING0, Z_RING1 = 0.60, 2.25         # lever ring (1.65), below the cover's top
+RC = (0.0, 1.95)                      # ring centre
+R_ROOT, R_TIP, R_IN = 7.07, 7.42, 6.47
+TEETH = 50
+Y_END = 2.90                          # ring ends, cut level
+Y_TAB = 9.54                          # tab top (12.34 from the base edge)
+COVER_C, COVER_R = (0.0, 1.29), 5.00  # the cover's top edge (and the housing's central part)
+HOUS_C, HOUS_R = (0.0, 2.67), 5.73    # housing arc under the lever
+LEV_C, LEV_R = (0.0, 1.19), 6.40      # inner edge of the lever's wide top part
+PEG_Y, PEG_X, PEG_D, PEG_H = 1.32, 2.50, 0.90, 0.50
 
-def body():
-    """A: nylon base, 11.90 wide up to the shoulders, then the half disc inside the lever ring."""
-    base = cq.Workplane('XY').box(W_BASE, Y_SHOULDER - Y_BOT, HOUSING_Z - FEET, centered=(True, False, False)).translate((0, Y_BOT, 0))
-    housing = base.union(half_disc(R_HOUSING, HOUSING_Z - FEET, CY)).translate((0, 0, FEET))
-    pegs = cq.Workplane('XY').pushPoints([(-2.5, 1.32), (2.5, 1.32)]).circle(0.5).extrude(-0.8).translate((0, 0, FEET))
-    return housing.union(pegs)
+def disc(c, r, z0, z1):
+    return cq.Workplane('XY').circle(r).extrude(z1 - z0).translate((c[0], c[1], z0))
+def box(x0, x1, y0, y1, z0, z1):
+    return cq.Workplane('XY').box(x1 - x0, y1 - y0, z1 - z0, centered=False).translate((x0, y0, z0))
+def poly(pts, z0, z1):
+    return cq.Workplane('XY').polyline(pts).close().extrude(z1 - z0).translate((0, 0, z0))
+
+ARM = [(-2.20, 7.30), (2.20, 7.30), (1.75, 6.05), (-1.75, 6.05)]   # the lever's arm, seen in both plan views
+
+def lever_inner():
+    """Inner edge of the lever's wide top part, left to right: V notch, arc r 6.40 about (0, 1.19), V notch."""
+    n = 16; a1 = math.asin(2.2 / LEV_R)
+    return ([(-3.75, 7.22), (-2.80, 6.97)] + [(LEV_R * math.sin(-a1 + 2 * a1 * i / n), LEV_C[1] + LEV_R * math.cos(-a1 + 2 * a1 * i / n))
+            for i in range(n + 1)] + [(2.80, 6.97), (3.75, 7.22)])
+
+def housing():
+    """A: base slab and side walls (11.90 wide to y 1.2, 11.30 above), then the housing arc (r 5.73) up to
+    y 6.45 where the side view ends the body, less the lever's arm; the two pegs (0.90, 0.50 below)."""
+    h = box(-X_BASE, X_BASE, Y_BASE, 1.20, 0, Z_HOUSING)
+    h = h.union(box(-5.65, 5.65, 1.0, 3.0, 0, Z_HOUSING))
+    h = h.union(disc(HOUS_C, HOUS_R, 0, Z_HOUSING).intersect(box(-5.65, 5.65, 1.0, 6.45, 0, Z_HOUSING)))
+    # above y 6.45 the housing runs on under the lever's notches, within the ring's height (hidden in the side view)
+    below = poly([(-5.65, 6.40)] + lever_inner() + [(5.65, 6.40)], Z_RING0, Z_RING1)
+    h = h.union(disc(HOUS_C, HOUS_R, Z_RING0, Z_RING1).intersect(below).intersect(box(-5.65, 5.65, 6.40, 9.0, Z_RING0, Z_RING1)))
+    h = h.cut(poly(ARM, Z_RING0, Z_HOUSING).cut(disc(COVER_C, COVER_R, Z_RING0, Z_HOUSING)))
+    for sx in (-1, 1):
+        h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
+    return h
 
 def cover():
-    """E: stainless cover: a rectangle over the base and a flat arc (r 8.2 about y -2.1) reaching y 6.1 at the
-    centre, with the pressed V in the middle."""
-    rect = cq.Workplane('XY').box(11.10, 4.5 - Y_BOT, PLATE_T, centered=(True, False, False)).translate((0, Y_BOT, 0))
-    arc = (cq.Workplane('XY').circle(8.2).extrude(PLATE_T).translate((0, -2.1, 0))
-           .intersect(cq.Workplane('XY').box(11.10, 2.0, PLATE_T, centered=(True, False, False)).translate((0, 4.3, 0))))
-    c = rect.union(arc)
-    rib = (cq.Workplane('XY').polyline([(-3.3, 4.1), (0, 5.75), (3.3, 4.1), (3.3, 4.6), (0, 6.25), (-3.3, 4.6)]).close()
-           .extrude(0.10).translate((0, 0, PLATE_T)))
-    return c.union(rib).translate((0, 0, PLATE_Z0))
+    """E: stainless cover: straight sides, a diagonal edge from the side to the spring hook, then the arc;
+    the pressed V is recessed 0.08."""
+    pts = [(-5.55, Y_BASE + 0.05), (5.55, Y_BASE + 0.05), (5.55, 2.0), (3.40, 4.95)]
+    a0 = math.atan2(4.95 - COVER_C[1], 3.40); n = 24
+    pts += [(COVER_R * math.cos(a0 + (math.pi - 2 * a0) * i / n), COVER_C[1] + COVER_R * math.sin(a0 + (math.pi - 2 * a0) * i / n)) for i in range(1, n)]
+    pts += [(-3.40, 4.95), (-5.55, 2.0)]
+    c = poly(pts, Z_HOUSING, Z_TOP)
+    # the V: flat centre then arms at 29.7 deg, rounded ends at x +-2.85
+    k = math.tan(math.radians(29.6))
+    top = [(-2.85, 4.95 - k * 1.35 + 0.0), (-0.85, 5.70 - 0.0), (0.85, 5.70), (2.85, 4.95 - k * 1.35)]
+    def arm_outline():
+        t = [(-0.9, 5.70), (0.9, 5.70), (1.5, 4.95), (2.85, 4.95 - k * 1.35), (2.85, 4.27 - k * 1.35), (1.5, 4.27), (0.75, 4.70),
+             (-0.75, 4.70), (-1.5, 4.27), (-2.85, 4.27 - k * 1.35), (-2.85, 4.95 - k * 1.35), (-1.5, 4.95)]
+        return t
+    v = poly(arm_outline(), Z_TOP - 0.08, Z_TOP)
+    for sx in (-1, 1):
+        v = v.union(disc((sx * 2.85, (4.95 + 4.27) / 2 - k * 1.35), 0.34, Z_TOP - 0.08, Z_TOP))
+    return c.cut(v)
 
 def lever():
-    """F: toothed ring (outer r 7.10 about y 2.6, inner edge r 7.35 about y 0.6, ends cut at y 4.0), the 2.16
-    tab at the top, and on the plate the arm block and the two wings down to the ring's ends."""
-    t = 1.65
-    ring = (cq.Workplane('XY').circle(R_OUT).extrude(t).translate((CX, CY, 0))
-            .cut(cq.Workplane('XY').circle(IN_R).extrude(t).translate((CX, IN_CY, 0)))
-            .intersect(cq.Workplane('XY').box(2 * R_OUT + 1, R_OUT + 3, t, centered=(True, False, False)).translate((0, Y_END, 0))))
-    pts = [(CX + R_OUT * math.cos(a), CY + R_OUT * math.sin(a)) for a in [2 * math.pi * i / TEETH for i in range(TEETH)] if CY + R_OUT * math.sin(a) > Y_END + 0.3]
-    ring = ring.cut(cq.Workplane('XY').pushPoints(pts).circle(TOOTH).extrude(t))
-    tab = cq.Workplane('XY').box(2.16, Y_TAB - (CY + R_OUT) + 0.4, t, centered=(True, False, False)).translate((CX, CY + R_OUT - 0.4, 0))
-    top_z = PLATE_Z0 + PLATE_T; ht = 0.10
-    arm = cq.Workplane('XY').polyline([(-1.95, 8.2), (1.95, 8.2), (1.65, 6.8), (-1.65, 6.8)]).close().extrude(ht).translate((0, 0, top_z - LEVER_Z))
-    wings = [cq.Workplane('XY').polyline([(sx * 1.9, 8.3), (sx * 5.8, 4.1), (sx * 6.3, 4.6), (sx * 2.4, 7.7)][::sx]).close()
-             .extrude(ht).translate((0, 0, top_z - LEVER_Z)) for sx in (-1, 1)]   # counter-clockwise outlines
-    # kept as separate solids: OCC's fuse drops the ring when the thin wings are added
-    return [w.translate((0, 0, LEVER_Z)) for w in (ring.union(tab).union(arm), wings[0], wings[1])]
+    """F: toothed ring around the housing, its ends cut level at y 2.90, a wide top part whose inner edge is
+    an arc with a V notch on each side, the 2.16 tab, and the arm reaching in to the cover's edge."""
+    t = (Z_RING0, Z_RING1)
+    ring = disc(RC, R_ROOT, *t).cut(disc(RC, R_IN, *t))
+    pitch = 2 * math.pi / TEETH
+    for i in range(-TEETH // 2, TEETH // 2 + 1):
+        a = math.pi / 2 + i * pitch
+        ring = ring.union(disc((RC[0] + (R_TIP - 0.25) * math.cos(a), RC[1] + (R_TIP - 0.25) * math.sin(a)), 0.25, *t))
+    ring = ring.intersect(box(-8, 8, Y_END, 10, *t))
+    # wide top part: from the inner edge (V notch + arc) out to the ring
+    wide = poly(lever_inner() + [(3.75, 9.0), (-3.75, 9.0)], *t).intersect(disc(RC, R_ROOT, *t))
+    tab = box(-1.05, 1.05, RC[1] + R_ROOT - 0.3, Y_TAB, *t)
+    arm = poly(ARM, *t).cut(disc(COVER_C, COVER_R, *t))
+    ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
+    return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
 
 def springs():
-    """The two return springs between the housing and the ring, by the ring's ends."""
-    bars = [cq.Workplane('XY').box(1.8, 0.3, 0.9, centered=(True, True, False))
-            .rotate((0, 0, 0), (0, 0, 1), sx * 40).translate((sx * 4.6, 5.1, FEET + 0.9)) for sx in (-1, 1)]
-    sp = bars[0].union(bars[1])
-    return sp
+    """The two return springs, between the cover's diagonal edge and the housing arc."""
+    s = None
+    for sx in (-1, 1):
+        a = math.atan2(4.25 - 2.40, sx * (4.75 - 5.40))
+        bar = (cq.Workplane('XY').box(math.hypot(0.65, 1.85), 0.30, 0.70).rotate((0, 0, 0), (0, 0, 1), math.degrees(a))
+               .translate((sx * (4.75 + 5.40) / 2, (4.25 + 2.40) / 2, 1.2)))
+        s = bar if s is None else s.union(bar)
+    return s
 
 def terminals():
-    """Five terminals, 0.25 thick under the body; b and d have 0.90 feet reaching out below the base edge."""
-    t = cq.Workplane('XY').pushPoints([(-5.4, 2.32), (5.4, 2.32)]).rect(1.6, 1.6).extrude(FEET)
-    t = t.union(cq.Workplane('XY').pushPoints([(-2.5, -2.32), (0, -2.32), (2.5, -2.32)]).rect(1.9, 1.9).extrude(FEET))
+    """b, c, d: 1.6 wide, from the base edge 1.5 in; a: 1.3 x 1.3 by the ring ends; 0.15 thick at the bottom."""
+    t = None
+    for x in (-2.5, 0.0, 2.5):
+        b = box(x - 0.8, x + 0.8, Y_BASE, Y_BASE + 1.5, 0, 0.15); t = b if t is None else t.union(b)
+    for sx in (-1, 1):
+        t = t.union(box(min(sx * 4.30, sx * 5.60), max(sx * 4.30, sx * 5.60), 1.80, 3.10, 0, 0.15))
     return t
 
-asm = cq.Assembly(name='SW-SMD_BL-DT')
-asm.add(body(), name='body', color=cq.Color(*[c / 255 for c in DARK]))
-asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
-asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
-for i, part in enumerate(lever()):
-    asm.add(part, name='lever%d' % i, color=cq.Color(*[c / 255 for c in LEVER]))
-asm.add(terminals(), name='terminals', color=cq.Color(*[c / 255 for c in METAL]))
-asm.save(sys.argv[1], exportType='STEP')
-print(sys.argv[1])
+if __name__ == '__main__':
+    asm = cq.Assembly(name='SW-SMD_BL-DT')
+    asm.add(housing(), name='housing', color=cq.Color(*[c / 255 for c in DARK]))
+    asm.add(cover(), name='cover', color=cq.Color(*[c / 255 for c in METAL]))
+    asm.add(springs(), name='springs', color=cq.Color(*[c / 255 for c in METAL]))
+    asm.add(lever(), name='lever', color=cq.Color(*[c / 255 for c in LEVER]))
+    asm.add(terminals(), name='terminals', color=cq.Color(*[c / 255 for c in METAL]))
+    asm.save(sys.argv[1], exportType='STEP')
+    print(sys.argv[1])
