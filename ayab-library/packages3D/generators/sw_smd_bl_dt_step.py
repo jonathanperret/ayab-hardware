@@ -39,7 +39,7 @@ def poly(pts, z0, z1):
 # continue under the cover into the body (how far is not drawn: down to y 5.0 here); its top runs into
 # the wide part
 ARM = [(-2.20, 7.30), (-2.20, 8.00), (2.20, 8.00), (2.20, 7.30), (1.37, 5.00), (-1.37, 5.00)]
-Z_ARM0, Z_ARM1 = Z_RING0 + 0.15, Z_RING1 - 0.15   # the arm is a little thinner than the ring (1.35)
+Z_ARM0, Z_ARM1 = Z_RING0 + 0.15, Z_RING1 - 0.15   # the arm and the tab are a little thinner than the ring (1.35)
 
 def lever_inner():
     """Inner edge of the lever's wide top part, left to right: V notch, arc r 6.40 about (0, 1.19), V notch."""
@@ -143,7 +143,7 @@ def lever():
     ring = ring.intersect(box(-8, 8, Y_END, 10, *t))
     # wide top part: from the inner edge (V notch + arc) out to the ring
     wide = poly(lever_inner() + [(3.75, 9.0), (-3.75, 9.0)], *t).intersect(disc(RC, R_ROOT, *t))
-    tab = box(-1.05, 1.05, RC[1] + R_ROOT - 0.3, Y_TAB, *t)
+    tab = box(-1.05, 1.05, RC[1] + R_ROOT - 0.3, Y_TAB, Z_ARM0, Z_ARM1)   # as thin as the arm
     arm = poly(ARM, Z_ARM0, Z_ARM1)
     ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
     return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
