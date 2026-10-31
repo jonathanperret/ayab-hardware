@@ -28,7 +28,10 @@ def box(x0, x1, y0, y1, z0, z1):
 def poly(pts, z0, z1):
     return cq.Workplane('XY').polyline(pts).close().extrude(z1 - z0).translate((0, 0, z0))
 
-ARM = [(-2.20, 7.30), (0.0, 7.65), (2.20, 7.30), (1.75, 6.05), (-1.75, 6.05)]   # the lever's arm, seen in both plan views
+# the lever's arm: seen in both plan views between the cover's edge and the lever's arc, its sides
+# continue under the cover into the body (how far is not drawn: down to y 5.0 here); its top runs into
+# the wide part
+ARM = [(-2.20, 7.30), (-2.20, 8.00), (2.20, 8.00), (2.20, 7.30), (1.37, 5.00), (-1.37, 5.00)]
 
 def lever_inner():
     """Inner edge of the lever's wide top part, left to right: V notch, arc r 6.40 about (0, 1.19), V notch."""
@@ -45,7 +48,7 @@ def housing():
     # above y 6.45 the housing runs on under the lever's notches, within the ring's height (hidden in the side view)
     below = poly([(-5.65, 6.40)] + lever_inner() + [(5.65, 6.40)], Z_RING0, Z_RING1)
     h = h.union(disc(HOUS_C, HOUS_R, Z_RING0, Z_RING1).intersect(below).intersect(box(-5.65, 5.65, 6.40, 9.0, Z_RING0, Z_RING1)))
-    h = h.cut(poly(ARM, Z_RING0, Z_HOUSING).cut(disc(COVER_C, COVER_R, Z_RING0, Z_HOUSING)))
+    h = h.cut(poly(ARM, Z_RING0, Z_RING1))
     for sx in (-1, 1):
         h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
     return h
@@ -75,16 +78,19 @@ def lever():
     """F: toothed ring around the housing, its ends cut level at y 2.90, a wide top part whose inner edge is
     an arc with a V notch on each side, the 2.16 tab, and the arm reaching in to the cover's edge."""
     t = (Z_RING0, Z_RING1)
-    ring = disc(RC, R_ROOT, *t).cut(disc(RC, R_IN, *t))
-    pitch = 2 * math.pi / TEETH
+    # scalloped edge: bumps reaching R_TIP and hollows down to R_ROOT, alternating at the tooth pitch
+    r_mid = (R_ROOT + R_TIP) / 2; pitch = 2 * math.pi / TEETH; rb = 0.26
+    ring = disc(RC, r_mid, *t).cut(disc(RC, R_IN, *t))
     for i in range(-TEETH // 2, TEETH // 2 + 1):
         a = math.pi / 2 + i * pitch
-        ring = ring.union(disc((RC[0] + (R_TIP - 0.25) * math.cos(a), RC[1] + (R_TIP - 0.25) * math.sin(a)), 0.25, *t))
+        ring = ring.union(disc((RC[0] + (R_TIP - rb) * math.cos(a), RC[1] + (R_TIP - rb) * math.sin(a)), rb, *t))
+        a += pitch / 2
+        ring = ring.cut(disc((RC[0] + (R_ROOT + rb) * math.cos(a), RC[1] + (R_ROOT + rb) * math.sin(a)), rb, *t))
     ring = ring.intersect(box(-8, 8, Y_END, 10, *t))
     # wide top part: from the inner edge (V notch + arc) out to the ring
     wide = poly(lever_inner() + [(3.75, 9.0), (-3.75, 9.0)], *t).intersect(disc(RC, R_ROOT, *t))
     tab = box(-1.05, 1.05, RC[1] + R_ROOT - 0.3, Y_TAB, *t)
-    arm = poly(ARM, *t).cut(disc(COVER_C, COVER_R, *t))
+    arm = poly(ARM, *t)
     ends = [box(sx * 6.30 if sx > 0 else -7.30, 7.30 if sx > 0 else -6.30, Y_END, Y_END + 0.55, *t) for sx in (-1, 1)]   # square outer corners
     return ring.union(wide).union(tab).union(arm).union(ends[0]).union(ends[1])
 
