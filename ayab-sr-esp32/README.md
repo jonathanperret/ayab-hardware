@@ -103,7 +103,7 @@ DIN J3 and J14 pinout:
 
 ## PCB
 
-- 2 layers, GND pour on both sides, 64.5 × 83.1 mm (width × height), drawn in
+- 2 layers, GND pour on both sides, 64.5 × 89.1 mm (width × height), drawn in
   its intended orientation: DIN socket J3 facing up, USB-C sockets on the
   right edge. A 23.9 × 8.7 mm notch above the DIN socket leaves room for bulky
   plugs. S1's wheel sticks out of the top edge, centred on its straight part
@@ -115,9 +115,12 @@ DIN J3 and J14 pinout:
 - Minimum track 0.15 mm (fine-pitch escapes), minimum hole 0.2 mm (ESP32
   footprint thermal vias): within JLCPCB's standard process.
 - Antenna: the ESP32 antenna is on the right edge, with a 5.6 × 47.9 mm
-  cut-out under it (y 32.7–80.6, from x = 158.9: the keep-out starts at
+  cut-out under it (y 38.7–86.6, from x = 158.9: the keep-out starts at
   158.66, the 0.24 mm strip left keeps the SDA/SCL tracks 0.5 mm from the
-  edge). The lower part of the OLED module still hangs over the keep-out.
+  edge). The board was lengthened by 6 mm at the bottom so that the OLED
+  module clears the keep-out: the top components (J3, U5, S1) and the top
+  edge stayed in place, everything else moved down 6 mm (U5's courtyard ends
+  at y 38.55, the keep-out starts at 38.7).
 - Routing was done with Freerouting (power nets first, then signals) plus
   local fixes; it is functional but autorouter-looking — worth a manual
   review pass in KiCad (especially the `+15V` / `Vsol` paths and the USB pair).
@@ -127,8 +130,8 @@ DIN J3 and J14 pinout:
 `packages3D/generators/sw_smd_bl_dt_step.py`, from the manufacturer's drawing).
 
 A 3D-printable enclosure is in [`enclosure/`](enclosure/README.md).
-Its model follows the board's 90° turn (`board_frame()` in the .scad); the
-enclosure renders and sections below still show the case in the old
+Its model follows the board's 90° turn (`board_frame()` in the .scad) but
+not yet the 6 mm longer board; the enclosure renders and sections below still show the case in the old
 orientation and will be redone with the planned redesign (ring around the
 machine's mast).
 
@@ -194,21 +197,18 @@ live on the `tooling` branch.
 - CH224A (checked in the WCH CH224 manual v2.1): PG is open drain, active low,
   rated 32 V, so R20 is right; a single CFG1 resistor enables I²C on CFG2/CFG3
   (internal 7–15k pull-ups), so R21/R22 do not change the mode.
-- Wi-Fi is the main link, so the antenna matters most. The lower part of the
-  OLED module (y > 32.7) hangs over the antenna keep-out (above the
-  cut-out) and will detune it to some degree. On the first boards, measure
-  RSSI and throughput with the board in its enclosure and mounted on the
-  machine (a large metal body: the antenna end should face away from it),
-  and repeat with the OLED removed to see what the overhang costs. If it
-  costs too much: move or turn the OLED off the keep-out, or use the
-  ESP32-S3-WROOM-1U (u.FL) with a small external antenna (about $0.5–1 more).
+- Wi-Fi is the main link, so the antenna matters most. The OLED module is
+  now clear of the antenna keep-out. On the first boards, measure RSSI and
+  throughput with the board in its enclosure and mounted on the machine (a
+  large metal body: the antenna end should face away from it). If range is
+  short: use the ESP32-S3-WROOM-1U (u.FL) with a small external antenna
+  (about $0.5–1 more).
 - Also on the first boards: scope the 3.3 V rail during Wi-Fi transmit bursts
   (350–500 mA peaks on the AP2112K) with the solenoids firing, the bucks'
   switching noise, and the Vsense / Vsol_div ADC readings. These measurements
   decide whether the first respin goes to 4 layers (solid GND plane under
   the module and the bucks).
-- DRC: one item left on purpose, U5 in the antenna keep-out (see above), kept
-  as a reminder until Wi-Fi range is measured. `ayab-sr-esp32.kicad_dru` has
+- DRC: clean. `ayab-sr-esp32.kicad_dru` has
   the JLCPCB 2-layer rules plus two documented exceptions: U5 stands on its
   spacer above U3 and S1 (courtyard overlap), and the silkscreen of parts
   that overhang the board edge (U3, U5, J3) is clipped by the fab.
