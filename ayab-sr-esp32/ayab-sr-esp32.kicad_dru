@@ -244,9 +244,10 @@
 
 # --- Project-specific exceptions (ayab-sr-esp32) ---
 
-# U5 (OLED module) stands 2.5 mm above the board on its header spacer and overhangs
-# U3 and S1 on purpose; the enclosure fit check confirms the parts do not touch.
-(rule "U5 stacked above U3 and S1"
+# U5 (OLED module) stands 7.5 mm above the board (5.0 mm socket J15 + its 2.5 mm pin
+# spacer) and overhangs J15 and S1 on purpose; the enclosure fit check confirms the
+# parts do not touch.
+(rule "U5 stacked above J15 and S1"
 	(condition "A.Reference == 'U5' || B.Reference == 'U5'")
 	(constraint courtyard_clearance (min -100mm))
 	(severity ignore)

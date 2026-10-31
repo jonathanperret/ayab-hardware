@@ -20,8 +20,12 @@
 //
 //  Coordinate system: X = KiCad x, Y = -KiCad y (so the model is not
 //  mirrored), Z = 0 at the PCB bottom face. All board positions below are
-//  copied from ayab-sr-esp32.kicad_pcb (commit d8073cd) and can be typed in
-//  KiCad coordinates thanks to the kp() helper.
+//  copied from ayab-sr-esp32.kicad_pcb (commit d8073cd, before the board was
+//  turned 90 deg) and can be typed in those KiCad coordinates thanks to the
+//  kp() helper. The board has since been lengthened by 6 mm on the USB-C /
+//  mounting-hole end (old x - 6: bx0, holes, usb_x); J3, U5 and S1 did not move.
+//  The OLED U5 now plugs into a 5.0 mm socket J15 (glass 5 mm higher, lid
+//  raised to match) and its far end rests on a tray post through the PCB.
 //
 //  Usage:
 //    openscad -D 'part="tray_print"' -o bottom.stl ayab-sr-esp32-enclosure.scad
@@ -42,9 +46,11 @@ standoff_d  = 7.0;
 pcb_t       = 1.6;
 split_z     = 7.8;    // height (from PCB bottom) of the tray / lid joint (= lid ceiling)
 joint_gap   = 0.15;   // tray wall is shorter by this: the PCB clamp, not the walls, takes the load
-oled_top    = 6.74;   // top of the OLED glass (U5), tallest part besides J3
-ceiling_z   = oled_top + 1.06;         // lid inner ceiling (7.8)
-top_z       = ceiling_z + top_t;       // outside top of the lid (9.8)
+oled_socket_h = 5.0;  // J15 low-profile socket (HC-PM254-5.0H-1x4PZ-02A) under the module's 2.5 mm pin spacer
+oled_top    = 6.74 + oled_socket_h;    // top of the OLED glass (U5), tallest part besides J3 (11.74)
+oled_bottom = pcb_t + oled_socket_h + 2.5;  // underside of the OLED module PCB (9.1)
+ceiling_z   = oled_top + 1.06;         // lid inner ceiling (12.8)
+top_z       = ceiling_z + top_t;       // outside top of the lid (14.8)
 din_top     = 21.25;  // top of the DIN socket J3, from the STEP export
 hump_ceiling_z = din_top + 1.05;       // inner ceiling of the DIN hump (22.3)
 hump_top_z  = hump_ceiling_z + top_t;  // outside top of the hump (24.3)
@@ -74,13 +80,13 @@ $fn = 48;
 // ---------------------------------------------------------------------
 function kp(x, y) = [x, -y];
 
-bx0 = 106.9; bx1 = 190.0; by0 = 24.1; by1 = 88.6;   // Edge.Cuts bounding box
+bx0 = 100.9; bx1 = 190.0; by0 = 24.1; by1 = 88.6;   // Edge.Cuts bounding box
 notch_x = 181.3;  notch_y = 48.0;                    // top-right notch (DIN socket)
 
-holes = [[112.175, 29.475], [173.0, 57.4], [124.5, 64.8]]; // H1, H2, H3
+holes = [[106.175, 29.475], [167.0, 57.4], [118.5, 64.8]]; // H1, H2, H3
 
 // USB-C receptacles (front of shell at y=88.3, shell 8.94 x 3.16 mm, centre z=3.33)
-usb_x   = [113.98, 128.78];     // J1 (power / USB-PD), J2 (ESP32 USB): 14.8 mm apart, like the ports of a MacBook
+usb_x   = [107.98, 122.78];     // J1 (power / USB-PD), J2 (ESP32 USB): 14.8 mm apart, like the ports of a MacBook
 usb_lbl = ["PWR", "ESP32"];
 usb_zc  = 3.33;
 usb_w   = 9.6;  usb_h = 3.9;  usb_r = 1.4;         // through opening
@@ -104,6 +110,12 @@ thumb_y0 = 57.15; thumb_y1 = 79.45; thumb_depth = 1.0;   // outer recess for the
 
 // OLED U5 (HS91L02W2C01): glass top at z=6.74 (oled_top), active area x 181.0..186.6, y 57.62..80.0
 win_x0 = 180.25; win_x1 = 187.35; win_y0 = 56.87; win_y1 = 80.77; // window = active area + 0.75, 45 deg chamfer outwards
+
+// Support post under the far end of the OLED module (the end away from its pins), standing on the
+// tray floor and going up through a 3.6 mm hole in the PCB (board KiCad 161.0, 32.3 today)
+oled_post   = [182.7, 85.1];   // centre
+oled_post_d = 3.0;
+oled_post_gap = 0.1;           // below the module underside, so the post supports it without lifting it
 
 
 
@@ -191,6 +203,11 @@ module s1_slot() {
         cube([wall + 3, s1_y1 - s1_y0 + 2 * s1_slot_clr, 30]);
 }
 
+module oled_post() {
+    translate([oled_post[0], -oled_post[1], -standoff_h - 0.01])
+        cylinder(d = oled_post_d, h = standoff_h + oled_bottom - oled_post_gap + 0.01);
+}
+
 module tray() {
     difference() {
         union() {
@@ -199,6 +216,7 @@ module tray() {
                 translate([0, 0, -standoff_h]) linear_extrude(50) cavity2d();
             }
             standoffs();
+            oled_post();
             tray_notch_closer();
         }
         screw_holes();
@@ -281,7 +299,7 @@ module s1_tab() {
 
 module lid_text() {
     if (lid_text != "")
-        translate([137, -64, top_z - engrave]) linear_extrude(engrave + 1)
+        translate([134, -64, top_z - engrave]) linear_extrude(engrave + 1)
             text(lid_text, size = 5.5, font = "Liberation Sans:style=Bold", halign = "center", valign = "center");
 }
 
@@ -314,8 +332,9 @@ cx = (bx0 + bx1) / 2;  cy = -(by0 + by1) / 2;
 
 // The case is modelled in the board's original frame (DIN socket facing +X). The board was
 // then turned 90 deg counter-clockwise (DIN facing up, -Y in KiCad): this puts the case
-// back on the board's current KiCad coordinates (bounding box x 100..164.5, y 25..108.1).
-module board_frame() { translate([132.25, -66.55, 0]) rotate([0, 0, 90]) translate([-cx, -cy, 0]) children(); }
+// back on the board's current KiCad coordinates (bounding box x 100..164.5, y 25..114.1).
+// The pivot is the old board centre (148.45, 56.35): it stays fixed when the board grows.
+module board_frame() { translate([132.25, -66.55, 0]) rotate([0, 0, 90]) translate([-148.45, 56.35, 0]) children(); }
 
 if (part == "tray") board_frame() tray();
 else if (part == "lid") board_frame() lid();
