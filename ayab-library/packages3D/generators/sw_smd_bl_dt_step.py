@@ -24,11 +24,9 @@ PEG_Y, PEG_X, PEG_D, PEG_H = 1.32, 2.50, 0.90, 0.50
 # into the body and a flat bump between them
 TAB_T = 0.15
 TAB_BOT, BUMP = (-1.80, -0.80), (-0.10, 1.10)
-# top tab: 1.0 wide like the bottom one, radial about the housing arc's centre and folded down over that arc
-# (its fold line tangent to it), placed so that its lowest corner is at y 4.0
-TAB_W, TAB_LOW = 1.00, 4.00
-_k = TAB_LOW - HOUS_C[1]; _h = TAB_W / 2
-TAB_TOP_A = math.asin(_k / math.hypot(HOUS_R, _h)) + math.atan2(_h, HOUS_R)   # 5.73 sin a - 0.5 cos a = k
+# top tab: folds down along the cover's edge between these two points (marked by the user on the drawing),
+# goes down through the body and folds under it like the bottom tab
+TAB_FOLD = ((3.63, 4.56), (4.60, 3.98))
 
 def disc(c, r, z0, z1):
     return cq.Workplane('XY').circle(r).extrude(z1 - z0).translate((c[0], c[1], z0))
@@ -48,12 +46,19 @@ def lever_inner():
     return ([(-3.75, 7.22), (-2.80, 6.97)] + [(LEV_R * math.sin(-a1 + 2 * a1 * i / n), LEV_C[1] + LEV_R * math.cos(-a1 + 2 * a1 * i / n))
             for i in range(n + 1)] + [(2.80, 6.97), (3.75, 7.22)])
 
-def top_tab(sx, r0, r1, z0, z1):
-    """A piece of the top tab: radial from r0 to r1 about the housing arc's centre, TAB_W wide, side sx."""
-    b = box(r0, r1, -TAB_W / 2, TAB_W / 2, z0, z1).rotate((0, 0, 0), (0, 0, 1), math.degrees(TAB_TOP_A))
+def top_tab(sx, d0, d1, z0, z1):
+    """Strip along the top tab's fold line, from d0 to d1 inwards (towards the cover's centre) of it; side sx."""
+    (x1, y1), (x2, y2) = TAB_FOLD
+    n = math.hypot(x2 - x1, y2 - y1); nx, ny = -(y2 - y1) / n, (x2 - x1) / n   # unit normal, inwards
+    if nx * x1 + ny * (y1 - COVER_C[1]) > 0:
+        nx, ny = -nx, -ny
+    p = [(x1 + nx * d0, y1 + ny * d0), (x2 + nx * d0, y2 + ny * d0), (x2 + nx * d1, y2 + ny * d1), (x1 + nx * d1, y1 + ny * d1)]
+    if p[0][0] * 0 + (p[1][0] - p[0][0]) * (p[3][1] - p[0][1]) - (p[1][1] - p[0][1]) * (p[3][0] - p[0][0]) < 0:
+        p.reverse()
+    pts = [(sx * x, y) for x, y in p]
     if sx < 0:
-        b = b.mirror('YZ')
-    return b.translate((HOUS_C[0], HOUS_C[1], 0))
+        pts.reverse()
+    return poly(pts, z0, z1)
 
 def housing():
     """A: base slab and side walls (11.90 wide to y 1.2, 11.30 above), then the housing arc (r 5.73) up to
@@ -69,8 +74,8 @@ def housing():
         def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
         h = h.cut(bx(X_BASE - TAB_T, X_BASE + 0.1, *TAB_BOT, 0, Z_HOUSING))   # groove down the side
         h = h.cut(bx(X_BASE - 0.55, X_BASE + 0.1, *TAB_BOT, 0, TAB_T))         # recess underneath
-        h = h.cut(top_tab(sx, HOUS_R - TAB_T, HOUS_R + 0.1, 0, Z_HOUSING))   # groove down the arc
-        h = h.cut(top_tab(sx, HOUS_R - 0.55, HOUS_R + 0.1, 0, TAB_T))       # recess underneath
+        h = h.cut(top_tab(sx, 0, TAB_T, 0, Z_HOUSING))      # slot through the body for the top tab
+        h = h.cut(top_tab(sx, 0, 0.55, 0, TAB_T))           # recess underneath
         h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
     return h
 
@@ -106,10 +111,10 @@ def cover():
         for yc in (BUMP[0] + 0.25, BUMP[1] - 0.25):
             c = c.union(disc((sx * (X_BASE - 0.25), yc), 0.25, Z_HOUSING, Z_TOP))
         c = c.union(bx(X_BASE - 0.25, X_BASE, BUMP[0] + 0.25, BUMP[1] - 0.25, Z_HOUSING, Z_TOP))
-        # top tab: out from the cover's edge to the housing arc, down over it, folded under the body
-        c = c.union(top_tab(sx, 4.0, HOUS_R, Z_HOUSING, Z_TOP))
-        c = c.union(top_tab(sx, HOUS_R - T, HOUS_R, T, Z_HOUSING))
-        c = c.union(top_tab(sx, HOUS_R - 0.55, HOUS_R, 0, T))
+        # top tab: down from the cover's edge along the fold line, through the body, folded under it
+        c = c.union(top_tab(sx, 0, 0.6, Z_HOUSING, Z_TOP))   # the cover's edge reaches the fold line here
+        c = c.union(top_tab(sx, 0, T, T, Z_HOUSING))
+        c = c.union(top_tab(sx, 0, 0.55, 0, T))
     return c
 
 def lever():
