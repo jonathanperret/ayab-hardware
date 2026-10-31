@@ -1,8 +1,10 @@
 # Boîtier imprimé 3D pour la carte ayab-sr-esp32
 
-Boîtier en deux pièces (fond + couvercle) pour la carte `ayab-sr-esp32` (placement du
-commit d8073cd, avec **J2 décalé de 3,8 mm vers la gauche, à x = 128,78**, hors de la
-zone d'exclusion de l'antenne ESP32).
+Boîtier en deux pièces (fond + couvercle) pour la carte `ayab-sr-esp32`. Le `.scad` est
+écrit dans le repère du placement du commit d8073cd (avant la rotation de 90° de la carte,
+`board_frame()` la remet dans le repère actuel), mis à jour pour la carte allongée de
+6 mm côté USB-C (trous et USB-C décalés de −6 mm en x dans ce repère) et pour l'OLED
+monté sur un support bas J15 de 5 mm.
 
 ![assemblé](renders/01_assembled.png)
 ![éclaté](renders/04_exploded.png)
@@ -15,17 +17,21 @@ zone d'exclusion de l'antenne ESP32).
 | `renders/` | Vues fixes, coupes 2D, animations `turntable` et `exploded` (GIF et MP4, `quick_render.py --anim`) |
 | `tools/` | Scripts Python (numpy/PIL) de la vérification d'ajustement, des coupes et des rendus (aperçu OpenGL d'OpenSCAD) |
 
-Dimensions extérieures : **87,7 × 67,5 × 15,8 mm**, **30,3 mm** au sommet de la bosse de la DIN
-(fond 13,65 mm ; couvercle : plaque de 2 mm, bosse de 16,5 mm au-dessus du joint).
+Dimensions extérieures : **93,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de la bosse de la DIN
+(fond 13,65 mm ; couvercle : 7 mm au-dessus du joint, bosse de 16,5 mm au-dessus du joint).
 
 ## Choix de conception
 
 - **Repère** : X = x KiCad, Y = −y KiCad, Z = 0 sous le PCB. Toutes les positions du `.scad`
   sont tapées en coordonnées KiCad (`kp()`, `krect()`), on peut donc les recopier
   directement depuis le PCB.
-- **Dessus bas + bosse DIN** : le plafond est à 7,8 mm au-dessus du dessous du PCB, juste
-  au-dessus du verre de l'OLED (6,75 mm, la pièce la plus haute après la DIN) ; dessus à
-  9,8 mm. Seule la **DIN J3** (haut à 21,25 mm) dépasse : une bosse de 20 × 23 mm la
+- **Dessus bas + bosse DIN** : le plafond est à 12,8 mm au-dessus du dessous du PCB, juste
+  au-dessus du verre de l'OLED (11,74 mm, la pièce la plus haute après la DIN : le module
+  est enfiché dans le support J15 de 5 mm, sur son entretoise de picots de 2,5 mm) ; dessus à
+  14,8 mm. Le joint fond/couvercle reste à 7,8 mm : le couvercle a donc 5 mm de parois.
+- **Poteau sous l'OLED** : le bout du module opposé aux picots repose sur un poteau Ø3 du
+  fond, qui traverse le PCB par un trou Ø3,6 (KiCad 161,0 ; 32,3) ; son sommet est à
+  0,1 mm sous le module (z = 9,0). Seule la **DIN J3** (haut à 21,25 mm) dépasse : une bosse de 20 × 23 mm la
   recouvre (plafond 22,3 mm, sommet 24,3 mm), dans l'angle arrière droit.
 - **J4 et J14 ne sont pas montés** (DNP dans le schéma et le PCB) : aucune ouverture
   pour eux, ils sont exclus des rendus et de la vérification d'ajustement.
