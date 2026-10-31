@@ -8,6 +8,12 @@ description: How to work on the KiCad 10 boards in this repo (ayab-sr-esp32 firs
 Working with the user: once a change is made and checked, offload the long mechanical tail
 (production files, board renders, viewer, enclosure regen/fit check, commit and push) to a
 background agent, and stay available for the next request instead of running it in the foreground.
+The 3D viewer is also published as the claude.ai artifact
+https://claude.ai/artifact/8rZJP4fLQETQ6Z9C7zTrCP (its index.html is the viewer page with board.glb,
+tray.stl and lid.stl published base64-encoded as *.b64.txt next to it). After any change to the board,
+the enclosure or the BOM, refresh it in that background agent: run viewer.sh, read the artifact,
+re-encode the three models, update the page's PARTS table, board size, centre and part count, and
+republish to the same URL.
 
 Tools: `scripts/kicad/` (generic), `ayab-sr-esp32/tools/` (project), `ayab-sr-esp32/enclosure/tools/`.
 Every script has a usage docstring at the top. "(container)" = runs in the KiCad image through
