@@ -64,7 +64,12 @@ Crop large PNGs with ImageMagick before viewing; show the user one view per chan
 
 Adds missing footprints (parked right of the board), updates values/fields/pad nets; reports
 footprint swaps (do those by editing the footprint ID). Net renames need the same rename in the PCB
-(text substitution of `(net "old")`, then refill zones).
+(text substitution of `(net "old")`, then refill zones). A pin moved off a net leaves its old tracks
+on the old net: remove the track(s) touching the pad, then `pcb/prune.py BOARD NET,NET` (container)
+takes the rest of the dangling chain in one call (`route/rm_dangling.py` removes one segment per
+DRC pass, and the router leaves chains of 0.1 mm segments).
+When a symbol is copied from another instance, check its flags: `in_bom` / `in_pos_files` / `dnp`
+come along (a socket cloned from the DNP debug header J14 ended up out of the BOM).
 
 ## 5. PCB edits and routing
 
@@ -83,6 +88,12 @@ footprint swaps (do those by editing the footprint ID). Net renames need the sam
   keep-outs are read from the board by pcb/boardgeom.py). Freerouting pitfalls: give fine-pitch
   classes the SMD-SMD clearance exception (prep_dsn.py), keep it off the edge (edge_keepout.py),
   wide power classes must be narrowed for the second pass, and it rips up anything not locked.
+- Growing the board: `pcb/stretch.py IN OUT DY STATIC --keep REFS [--move-point X,Y]` (host) moves
+  everything outside STATIC (rectangles) by DY and stretches the tracks crossing its horizontal sides
+  with vertical extensions; tracks crossing its vertical sides are deleted and listed: reroute them
+  (`route/maze.py BOARD fixdrc DRC_REPORT`), then `pcb/prune.py`, refill, check.
+- Board cut-outs and holes are Edge.Cuts graphics: remove stitching vias left outside the outline
+  (they show up as unconnected/dangling) and those within 0.5 mm of a new edge (copper_edge_clearance).
 - Silkscreen: `pcb/placeref.py BOARD REFS` moves labels clear, `pcb/silktext.py` enforces 1.0/0.15 mm,
   `pcb/clipsilk.py` clips outlines off pads (then put the clipped footprint in ayab-library so the
   board still matches its library), `pcb/upright.py` after `pcb/rotate_board.py`.
@@ -91,18 +102,27 @@ footprint swaps (do those by editing the footprint ID). Net renames need the sam
 
     scripts/kicad/check.sh ayab-sr-esp32 [GIT_REF]
 
-ERC/DRC by type against `ayab-sr-esp32/check-baseline.txt` (today: ERC 0; DRC 1, the OLED over the
-antenna keep-out), 0 unconnected, pad-net check of the board vs the schematic (65 footprints, 0
-mismatches), and with a ref the netlist comparison (81 nets; pin sets must stay identical unless the
-change is meant to alter connectivity; renames are listed). For a layout-only change, compare with
+ERC/DRC by type against `ayab-sr-esp32/check-baseline.txt` (today: ERC 0, DRC 0), 0 unconnected,
+pad-net check of the board vs the schematic (66 footprints, 0 mismatches), and with a ref the
+netlist comparison (83 nets; pin sets must stay identical unless the change is meant to alter
+connectivity, in which case "CHECKS FAILED" is expected: read the listed nets and make sure they
+are exactly the intended ones; renames are listed). For a layout-only change, compare with
 the last commit. Then regenerate outputs (7) and look at a PNG of what changed.
 
 ## 7. Production files and renders
 
-    scripts/kicad/production.sh ayab-sr-esp32     # gerbers/, drill, zip, pos, cpl-jlc, bom, schematic PDF
-    scripts/kicad/render_board.sh ayab-sr-esp32 ayab-sr-esp32/renders
-    ayab-sr-esp32/tools/viewer.sh                  # viewer/board.glb, tray/lid STL, PARTS table
-    ayab-sr-esp32/enclosure/tools/regen.sh /tmp/enc [--full] [--install]   # STLs + fit check (+ renders)
+Run from the design checkout (T=../tooling):
+
+    $T/scripts/kicad/production.sh ayab-sr-esp32     # gerbers/, drill, zip, pos, cpl-jlc, bom, schematic PDF
+    $T/scripts/kicad/render_board.sh ayab-sr-esp32 ayab-sr-esp32/renders
+    $T/ayab-sr-esp32/tools/viewer.sh                  # viewer/board.glb, tray/lid STL, PARTS table
+    $T/ayab-sr-esp32/enclosure/tools/regen.sh /tmp/enc [--full] [--install]   # STLs + fit check (+ renders)
+
+regen.sh takes the board, the .scad and the enclosure tools of the current checkout. Its component list
+is the placement file plus the BOM (not DNP): U5 (OLED module, plugged into J15 by hand) is in the BOM
+only. Its fit check should report "no collision"; U5 within 0.2 mm of the tray is the support block
+(0.1 mm gap by design). production.sh rewrites the schematic PDF (dates only when the schematic did
+not change: `git checkout` it then).
 
 `.gitignore` ignores *.csv and *.zip: `git add -f` the BOM, pos/CPL and the Gerber zip. Gerber diffs
 should only show dates when copper did not change. README galleries use renders/ and enclosure/renders/.
@@ -129,4 +149,6 @@ should only show dates when copper did not change. README galleries use renders/
 - `kicad-cli pcb render` / STL export need the -full image; --subst-models for missing STEP models.
 - OpenSCAD 2021: no --animate on the command line and `-D $t` is ignored: pass a variable (tt).
 - Fit check, enclosure .scad and tools use KiCad x, Y = -y, Z = 0 at PCB bottom; the case model is
-  drawn in the board's original frame and turned by `board_frame()` (board was rotated 90 deg).
+  drawn in the board's original frame and turned by `board_frame()` (board was rotated 90 deg; its
+  pivot is fixed at the old board centre). Current board (x, y) = old (y + 75.9, 215 - x): moving a
+  part down by d on the board is old x - d in the .scad. sections.py works in the current frame.
