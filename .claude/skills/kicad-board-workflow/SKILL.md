@@ -129,8 +129,8 @@ Run from the design checkout (T=../tooling):
     $T/ayab-sr-esp32/enclosure/tools/regen.sh /tmp/enc [--full] [--install]   # STLs + fit check (+ renders)
 
 regen.sh takes the board, the .scad and the enclosure tools of the current checkout. Its component list
-is the placement file plus the BOM (not DNP): U5 (OLED module, plugged into J15 by hand) is in the BOM
-only. Its fit check should report "no collision"; U5 within 0.2 mm of the tray is the support block
+is the placement file plus the footprints excluded from it that are not DNP and have a 3D model: U5
+(OLED module, plugged into J15 at assembly) is in neither the BOM nor the CPL. Its fit check should report "no collision"; U5 within 0.2 mm of the tray is the support block
 (0.1 mm gap by design). production.sh rewrites the schematic PDF (dates only when the schematic did
 not change: `git checkout` it then).
 
