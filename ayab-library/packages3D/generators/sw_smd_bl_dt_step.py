@@ -79,6 +79,8 @@ def housing():
     h = box(-X_BASE, X_BASE, Y_BASE, 1.20, 0, zt)
     h = h.union(box(-5.65, 5.65, 1.0, 2.40, 0, zt))
     h = h.union(poly(outline(1.0), 0, zt))
+    for sx in (-1, 1):   # round terminals a (to y 3.1, x 5.6): the side walls run on to y 3.2
+        h = h.union(box(min(sx * 4.20, sx * 5.65), max(sx * 4.20, sx * 5.65), 2.0, 3.20, 0, zt))
     h = h.cut(cq.Workplane('XY').polyline(ARM).close().offset2D(GAP, 'intersection').extrude(Z_RING1 - Z_RING0 + 2 * GAP)
               .translate((0, 0, Z_RING0 - GAP)))
     for sx in (-1, 1):
