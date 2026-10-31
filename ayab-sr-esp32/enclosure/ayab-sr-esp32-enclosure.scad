@@ -25,7 +25,8 @@
 //  kp() helper. The board has since been lengthened by 6 mm on the USB-C /
 //  mounting-hole end (old x - 6: bx0, holes, usb_x); J3, U5 and S1 did not move.
 //  The OLED U5 now plugs into a 5.0 mm socket J15 (glass 5 mm higher, lid
-//  raised to match) and its far end rests on a tray post through the PCB.
+//  raised to match) and its far end, which overhangs the board edge (the PCB
+//  is cut along the antenna cut-out up to its top edge), rests on a block of the tray.
 //
 //  Usage:
 //    openscad -D 'part="tray_print"' -o bottom.stl ayab-sr-esp32-enclosure.scad
@@ -111,10 +112,10 @@ thumb_y0 = 57.15; thumb_y1 = 79.45; thumb_depth = 1.0;   // outer recess for the
 // OLED U5 (HS91L02W2C01): glass top at z=6.74 (oled_top), active area x 181.0..186.6, y 57.62..80.0
 win_x0 = 180.25; win_x1 = 187.35; win_y0 = 56.87; win_y1 = 80.77; // window = active area + 0.75, 45 deg chamfer outwards
 
-// Support post under the far end of the OLED module (the end away from its pins), standing on the
-// tray floor and going up through a 3.6 mm hole in the PCB (board KiCad 161.0, 32.3 today)
-oled_post   = [182.7, 85.1];   // centre
-oled_post_d = 3.0;
+// Support post under the far end of the OLED module (the end away from its pins): a block on the
+// tray floor, in the space freed by cutting the PCB along the antenna cut-out (current board frame:
+// x 159.3..165.0 = 0.4 mm from the PCB edge up into the side wall, y 27.0..37.6 under the module)
+oled_post   = [177.4, 83.4, 188.0, 89.2];   // KiCad x0, y0, x1, y1 in this file's frame
 oled_post_gap = 0.1;           // below the module underside, so the post supports it without lifting it
 
 
@@ -204,8 +205,8 @@ module s1_slot() {
 }
 
 module oled_post() {
-    translate([oled_post[0], -oled_post[1], -standoff_h - 0.01])
-        cylinder(d = oled_post_d, h = standoff_h + oled_bottom - oled_post_gap + 0.01);
+    translate([0, 0, -standoff_h - 0.01]) linear_extrude(standoff_h + oled_bottom - oled_post_gap + 0.01)
+        krect(oled_post[0], oled_post[1], oled_post[2], oled_post[3]);
 }
 
 module tray() {
