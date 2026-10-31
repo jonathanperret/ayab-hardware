@@ -29,9 +29,10 @@ Dimensions extérieures : **93,7 × 69,3 × 20,8 mm**, **30,3 mm** au sommet de 
   au-dessus du verre de l'OLED (11,74 mm, la pièce la plus haute après la DIN : le module
   est enfiché dans le support J15 de 5 mm, sur son entretoise de picots de 2,5 mm) ; dessus à
   14,8 mm. Le joint fond/couvercle reste à 7,8 mm : le couvercle a donc 5 mm de parois.
-- **Poteau sous l'OLED** : le bout du module opposé aux picots repose sur un poteau Ø3 du
-  fond, qui traverse le PCB par un trou Ø3,6 (KiCad 161,0 ; 32,3) ; son sommet est à
-  0,1 mm sous le module (z = 9,0). Seule la **DIN J3** (haut à 21,25 mm) dépasse : une bosse de 20 × 23 mm la
+- **Appui sous l'OLED** : le PCB est coupé le long de la découpe d'antenne (x = 158,9)
+  jusqu'au bord haut ; le bout du module opposé aux picots dépasse donc du PCB et repose
+  sur un bloc rectangulaire du fond (KiCad x 159,3–165,0, y 27,0–37,6, accolé à la paroi),
+  dont le sommet est à 0,1 mm sous le module (z = 9,0). Seule la **DIN J3** (haut à 21,25 mm) dépasse : une bosse de 20 × 23 mm la
   recouvre (plafond 22,3 mm, sommet 24,3 mm), dans l'angle arrière droit.
 - **J4 et J14 ne sont pas montés** (DNP dans le schéma et le PCB) : aucune ouverture
   pour eux, ils sont exclus des rendus et de la vérification d'ajustement.

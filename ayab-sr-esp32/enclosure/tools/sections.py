@@ -87,4 +87,4 @@ if __name__=='__main__':
     draw_section('14_section_columns.png',0,133.3,1,(-116,-20),(-7,25.5),
         'Coupe x=133.3 (colonne H2, vis M3 + insert)',(),scale=11)
     draw_section('15_section_oled_post.png',1,-32.3,0,(118,170),(-7,25.5),
-        'Coupe y=32.3 (poteau sous le bout de l\'OLED)',('poteau Ø3 du fond, à travers le trou Ø3.6 du PCB','sommet z=9.0, dessous du module z=9.1'),scale=14)
+        'Coupe y=32.3 (appui sous le bout de l\'OLED)',('bloc du fond au-delà du bord du PCB (x 158.9)','sommet z=9.0, dessous du module z=9.1'),scale=14)

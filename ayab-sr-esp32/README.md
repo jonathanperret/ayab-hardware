@@ -19,7 +19,7 @@ connector. Sections connect through net labels.
 
 | Rail | Source | Notes |
 |---|---|---|
-| `+15V` | J1 USB-C PD, CH224A (U1) asks for 15 V (R1 = 56k) | Feeds both bucks |
+| `+15V` | J1 USB-C PD, CH224A (U1) asks for 15 V, set by R1 = 56k alone (I²C not used) | Feeds both bucks |
 | `Vout` / `Vsol` | U6 TPS54202; Q1 bypasses it (≈ 15 V) until an overcurrent, then it regulates at 8.05 V (R4/R24/R5 = 100k/3.3k/4.7k) | Solenoid supply, through shunt R6 (50 mΩ); `Vsol` goes to the DIN socket |
 | `+5V` | U9 TPS54202, R12/R13 = 75k/10k → 5.07 V | Machine logic (DIN pin 7), U4, pull-ups R15–R18 |
 | `+3.3V` | U10 AP2112K from `+5V` (D2) or J2 VBUS (D1) | ESP32, OLED, U7, U8 |
@@ -46,7 +46,7 @@ connector. Sections connect through net labels.
 | IO0 | 27 | `BTN_C` | S1 push (centre); also the BOOT strap: held at reset → download mode |
 | IO1 | 39 | `Vsense` | ADC1_CH0, U7 output, 1 V per amp of solenoid current |
 | IO2 | 38 | `Vsol_div` | ADC1_CH1, `Vsol` × 10/57 (R7 47k / R8 10k): 15 V → 2.63 V |
-| IO8 | 12 | `SDA` | I²C: OLED (U5) and CH224A (U1), 4.7k pull-ups |
+| IO8 | 12 | `SDA` | I²C, OLED (U5) only, 4.7k pull-ups R21/R22 |
 | IO18 | 11 | `SCL` | I²C |
 | IO9 | 17 | `ND1_3V` | Machine ND1 via U8 |
 | IO10 | 18 | `CCP_3V` | Machine CCP (carriage clock) via U8 |
@@ -69,9 +69,14 @@ Firmware notes:
 - Buttons: S1 common is GND → `INPUT_PULLUP`, active low.
 - Avoided on purpose: IO3, IO45, IO46 (straps), IO35–IO37 (PSRAM on some
   module variants).
-- CH224A over I²C (address 0x22/0x23): it can request up to 28 V (register
-  0x0A), above the 25 V rating of C1/C7 and at the TPS54202's limit. Do not
-  request more than 20 V.
+- The I²C bus is the OLED's only: the CH224A's CFG2/CFG3 are left open
+  (single-resistor mode, R1 alone requests 15 V). Unpowered, the CH224A would
+  pull them toward its dead supply (internal pull-ups) and hold the bus at
+  about 2 V, below the ESP32's and the SSD1306's VIH.
+- The ESP32 and the display also run with only J2 plugged in (`+3.3V` from J2
+  VBUS through D1 and U10). A PD adapter plugged into J2 instead of J1 can be
+  detected: `PG` stays high (the CH224A is unpowered) and no USB host enumerates
+  the ESP32.
 
 ## Connectors
 
@@ -86,7 +91,7 @@ MacBook, so dual-plug MacBook cables and hubs fit both at once.
 | J14 | 1×8 header duplicating the DIN signals (debug / alternative cable) |
 | J4 | ESP32 UART0 (TX, RX), not populated |
 | S1 | BL-DT 3-way thumb wheel, wheel protrudes past the top edge, under the OLED. Per the datasheet, rolling the rim 24° toward a terminal's side closes it: toward the USB-C edge → B, toward the DIN → D; push → C (common A to GND) |
-| U5 | 0.91" 128×32 I²C OLED module, Hansheng HS91L02W2C01 (LCSC C5248081, SSD1306, address 0x3C), plugged into J15 on its own 2.5 mm pin spacer; any 38 × 12 mm 4-pin GND/VCC/SCL/SDA module fits. U5 is in the BOM but not in the placement file: it is fitted by hand (trim its pins if they bottom out in the socket). Its far end rests on a post of the enclosure tray, through a 3.6 mm hole in the PCB |
+| U5 | 0.91" 128×32 I²C OLED module, Hansheng HS91L02W2C01 (LCSC C5248081, SSD1306, address 0x3C), plugged into J15 on its own 2.5 mm pin spacer; any 38 × 12 mm 4-pin GND/VCC/SCL/SDA module fits. U5 is in the BOM but not in the placement file: it is fitted by hand (trim its pins if they bottom out in the socket). Its far end overhangs the board edge and rests on a block of the enclosure tray |
 | J15 | Low-profile 1×4 2.54 mm female socket for U5, 5.0 mm high (HC-PM254-5.0H-1x4PZ-02A, LCSC C42163122; standard sockets are 8.5 mm) |
 
 DIN J3 and J14 pinout:
@@ -108,7 +113,7 @@ DIN J3 and J14 pinout:
   its intended orientation: DIN socket J3 facing up, USB-C sockets on the
   right edge. A 23.9 × 8.7 mm notch above the DIN socket leaves room for bulky
   plugs. S1's wheel sticks out of the top edge, centred on its straight part
-  (x 123.9–164.5); the OLED's visible area sits 0.5 mm further from the DIN
+  (x 123.9–164.5 before the antenna-side cut, see below); the OLED's visible area sits 0.5 mm further from the DIN
   than S1's axis (the HS91L02W2C01 active area is 7.62 mm from the end of
   its board, not the 7.1 mm the board was laid out for).
 - Net classes: Power 0.6 mm (`+15V`, U6 switch node, `Vout`, `Vsol`),
@@ -121,7 +126,10 @@ DIN J3 and J14 pinout:
   edge). The board was lengthened by 6 mm at the bottom so that the OLED
   module clears the keep-out: the top components (J3, U5, S1) and the top
   edge stayed in place, everything else moved down 6 mm (U5's courtyard ends
-  at y 38.55, the keep-out starts at 38.7).
+  at y 38.55, the keep-out starts at 38.7). Above the cut-out, the board is
+  cut along the same line (x = 158.9) up to the top edge: the far end of the
+  OLED module overhangs the board there by 5 mm and rests on a block of the
+  enclosure tray.
 - Routing was done with Freerouting (power nets first, then signals) plus
   local fixes; it is functional but autorouter-looking — worth a manual
   review pass in KiCad (especially the `+15V` / `Vsol` paths and the USB pair).
@@ -133,7 +141,7 @@ DIN J3 and J14 pinout:
 
 A 3D-printable enclosure is in [`enclosure/`](enclosure/README.md).
 Its model follows the board's 90° turn (`board_frame()` in the .scad), the 6 mm
-longer board, the OLED on its 5 mm socket (lid raised by 5 mm) and the post under
+longer board, the OLED on its 5 mm socket (lid raised by 5 mm) and the block under
 the OLED's far end. A redesign is planned (ring around the machine's mast).
 
 ## Renders
@@ -176,7 +184,7 @@ over HTTP, e.g. GitHub Pages, or locally:
 <table>
 <tr><td align="center"><img src="enclosure/renders/11_section_wheel_oled.png" alt="Through the wheel S1 and the OLED" width="400"><br><sub>Through the wheel S1 and the OLED</sub></td><td align="center"><img src="enclosure/renders/12_section_din.png" alt="Through the DIN socket axis" width="400"><br><sub>Through the DIN socket axis</sub></td></tr>
 <tr><td align="center"><img src="enclosure/renders/13_section_usb.png" alt="Through the USB-C J1" width="400"><br><sub>Through the USB-C J1</sub></td><td align="center"><img src="enclosure/renders/14_section_columns.png" alt="Through the H2 column" width="400"><br><sub>Through the H2 column</sub></td></tr>
-<tr><td align="center"><img src="enclosure/renders/15_section_oled_post.png" alt="Through the OLED support post" width="400"><br><sub>Through the OLED support post</sub></td><td></td></tr>
+<tr><td align="center"><img src="enclosure/renders/15_section_oled_post.png" alt="Through the OLED support block" width="400"><br><sub>Through the OLED support block</sub></td><td></td></tr>
 </table>
 
 ## Production files
@@ -197,8 +205,8 @@ live on the `tooling` branch.
 ## Open points
 
 - CH224A (checked in the WCH CH224 manual v2.1): PG is open drain, active low,
-  rated 32 V, so R20 is right; a single CFG1 resistor enables I²C on CFG2/CFG3
-  (internal 7–15k pull-ups), so R21/R22 do not change the mode.
+  rated 32 V, so R20 is right; CFG2/CFG3 may float in single-resistor mode
+  (§5.2.1), so they are left unconnected.
 - Wi-Fi is the main link, so the antenna matters most. The OLED module is
   now clear of the antenna keep-out. On the first boards, measure RSSI and
   throughput with the board in its enclosure and mounted on the machine (a
