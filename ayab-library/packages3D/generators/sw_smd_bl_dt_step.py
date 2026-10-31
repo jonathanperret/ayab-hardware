@@ -79,7 +79,8 @@ def housing():
         def bx(x0, x1, y0, y1, z0, z1): return box(min(sx * x0, sx * x1), max(sx * x0, sx * x1), y0, y1, z0, z1)
         h = h.cut(bx(X_BASE - TAB_T, X_BASE + 0.1, *TAB_BOT, 0, Z_HOUSING))   # groove down the side
         h = h.cut(bx(X_BASE - 0.55, X_BASE + 0.1, *TAB_BOT, 0, TAB_T))         # recess underneath
-        h = h.cut(top_tab(sx, 0, TAB_T, 0, Z_HOUSING))      # slot through the body for the top tab
+        h = h.union(top_tab(sx, 0, 0.6, 0, Z_HOUSING))      # the body reaches out to the top tab's fold line
+        h = h.cut(top_tab(sx, 0, TAB_T, 0, Z_HOUSING))      # groove for the top tab
         h = h.cut(top_tab(sx, 0, 0.55, 0, TAB_T))           # recess underneath
         h = h.union(disc((sx * PEG_X, PEG_Y), PEG_D / 2, -PEG_H, 0))
     return h
