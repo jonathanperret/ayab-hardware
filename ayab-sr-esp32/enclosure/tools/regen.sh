@@ -4,8 +4,9 @@
 #   and every placed component as STL from KiCad (pick-and-place refs), then tools/fitcheck.py
 #   ("no collision" expected). --iso: one isometric render; --full: all stills, sections and the
 #   turntable / exploded animations. --install copies the renders into enclosure/renders/.
-# Components: the pick-and-place refs plus hand-fitted BOM parts (not DNP), so a module that is left
-# out of the placement file (U5 on its socket) is still fit-checked and rendered.
+# Components: the pick-and-place refs plus hand-fitted footprints (excluded from the placement file,
+# not DNP, with a 3D model), so a module plugged in at assembly (U5 on its socket) is still fit-checked
+# and rendered.
 # Needs openscad + xvfb-run (headless OpenGL), ffmpeg, python3 numpy/pillow and the KiCad -full image.
 set -e
 # Design files come from the checkout of the current directory (run it from the design checkout, like
@@ -22,12 +23,21 @@ openscad -q -D 'part="tray_print"' -o bottom.stl ayab-sr-esp32-enclosure.scad
 openscad -q -D 'part="lid_print"' -o lid.stl ayab-sr-esp32-enclosure.scad
 openscad -q -D 'part="tray"' -o "$W/tray_asm.stl" ayab-sr-esp32-enclosure.scad
 openscad -q -D 'part="lid"' -o "$W/lid_asm.stl" ayab-sr-esp32-enclosure.scad
-# placed parts (pick-and-place) plus parts fitted by hand that are in the BOM but not in the
-# placement file (e.g. the OLED module U5 plugged into its socket); DNP parts stay out
+# placed parts (pick-and-place) plus footprints fitted by hand: on the board, excluded from the
+# placement file, not DNP, with a visible 3D model (e.g. the OLED module U5, plugged into J15 at
+# assembly and in neither the JLCPCB BOM nor the CPL)
 REFS=$( { awk -F, 'NR>1 {gsub(/"/,"",$1); print $1}' "$P/production/ayab-sr-esp32-pos.csv";
-          python3 -c 'import csv,sys
-for r in csv.DictReader(open(sys.argv[1])):
-    if not r.get("DNP"): print("\n".join(r["Designator"].split(",")))' "$P/production/ayab-sr-esp32-bom.csv"; } | sort -u | tr '\n' ' ')
+          python3 - "$P/ayab-sr-esp32.kicad_pcb" <<'PY'
+import re, sys
+s = open(sys.argv[1]).read()
+for m in re.finditer(r'\n\t\(footprint .*?\n\t\)(?=\n)', s, re.S):
+    b = m.group(0)
+    attr = (re.search(r'\n\t\t\(attr ([^)]*)\)', b) or [None, ''])[1].split()
+    models = re.findall(r'\n\t\t\(model .*?\n\t\t\)', b, re.S)
+    if 'exclude_from_pos_files' in attr and 'dnp' not in attr and any('(hide yes)' not in x for x in models):
+        print(re.search(r'\(property "Reference" "([^"]+)"', b).group(1))
+PY
+        } | sort -u | tr '\n' ' ')
 cd "$P"
 KICAD_IMAGE=mirror.gcr.io/kicad/kicad:10.0.7-full "$REPO/scripts/kicad/kicad.sh" sh -c "
  kicad-cli pcb export glb --no-dnp --subst-models -f --user-origin 0x0mm -o $W/board.glb ayab-sr-esp32.kicad_pcb >/dev/null 2>&1;
