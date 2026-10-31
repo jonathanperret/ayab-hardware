@@ -91,7 +91,7 @@ MacBook, so dual-plug MacBook cables and hubs fit both at once.
 | J14 | 1×8 header duplicating the DIN signals (debug / alternative cable) |
 | J4 | ESP32 UART0 (TX, RX), not populated |
 | S1 | BL-DT 3-way thumb wheel, wheel protrudes past the top edge, under the OLED. Per the datasheet, rolling the rim 24° toward a terminal's side closes it: toward the USB-C edge → B, toward the DIN → D; push → C (common A to GND) |
-| U5 | 0.91" 128×32 I²C OLED module, Hansheng HS91L02W2C01 (LCSC C5248081, SSD1306, address 0x3C), plugged into J15 on its own 2.5 mm pin spacer; any 38 × 12 mm 4-pin GND/VCC/SCL/SDA module fits. U5 is in the BOM but not in the placement file: it is fitted by hand (trim its pins if they bottom out in the socket). Its far end overhangs the board edge and rests on a block of the enclosure tray |
+| U5 | 0.91" 128×32 I²C OLED module, Hansheng HS91L02W2C01 (LCSC C5248081, SSD1306, address 0x3C), plugged into J15 on its own 2.5 mm pin spacer; any 38 × 12 mm 4-pin GND/VCC/SCL/SDA module fits. Not in the JLCPCB BOM nor the CPL: bought separately and fitted at assembly (see *Assembly-time parts*). Its far end overhangs the board edge and rests on a block of the enclosure tray |
 | J15 | Low-profile 1×4 2.54 mm female socket for U5, 5.0 mm high (HC-PM254-5.0H-1x4PZ-02A, LCSC C42163122; standard sockets are 8.5 mm) |
 
 DIN J3 and J14 pinout:
@@ -196,6 +196,24 @@ an LCSC number on every placed part), the pick-and-place file
 (`ayab-sr-esp32-pos.csv`, plus `ayab-sr-esp32-cpl-jlc.csv` in JLCPCB's CPL format with
 the `FT Rotation Offset` corrections applied) and the schematic PDF. Regenerate them after
 any change (scripts on the `tooling` branch).
+
+## Assembly-time parts
+
+JLCPCB assembles everything in the BOM and CPL, J15 included. One part is not in either and is
+fitted by the assembler:
+
+- **OLED module U5**: 0.91" 128×32 I²C module (Hansheng HS91L02W2C01, LCSC C5248081, or any
+  38 × 12 mm SSD1306 module), 3.3 V supply, 4 pins at 2.54 mm in the order **GND, VCC, SCL, SDA**
+  (pin 1 = GND: the square pad of J15, the one farthest from the top edge). It needs a 4-pin male header
+  soldered on: check whether your module comes with the header soldered (the LCSC part appears to
+  ship without one, going by its datasheet drawing).
+- **Fitting**: plug it into J15 (5.0 mm low-profile socket), glass up, the module overhanging the
+  board edge on the antenna side. The header's 2.5 mm plastic spacer rests on top of J15; the pins
+  below it go into the socket, whose contacts are about 4.5 mm deep. Standard headers have about
+  6 mm below the spacer: if the module does not sit flat on the socket, trim the pins to about
+  4 mm below the spacer. The enclosure has no trimming jig.
+- **Support**: the far end of the module rests on a block of the enclosure tray (0.1 mm below the
+  module), in the space next to the board edge.
 
 ## Tooling
 
