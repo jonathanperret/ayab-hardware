@@ -9,8 +9,10 @@ The design files are made with gEDA (gschem and pcb):
 
 - `schematic/`: schematic, netlist and schematic PDF
 - `layout/`: PCB layout, footprints and Gerbers
-- `assembly/`: bill of materials (`ayab_rs_oshw.csv`) and pick-and-place
-  file (`ayab_rs.xy`)
+- `assembly/`: bill of materials (`ayab_rs_oshw.csv`), pick-and-place
+  file (`ayab_rs.xy`), and BOM and placement files for JLCPCB assembly
+  (`ayab_rs_jlcpcb_bom.csv`, `ayab_rs_jlcpcb_cpl.csv`, and the
+  `ayab_rs_jlcpcb_minimal_*` versions without the optional parts)
 - `enclosure/`: enclosure drawings
 - `CHANGES.md`: changes between board revisions
 
@@ -62,6 +64,30 @@ Mouser does not carry every part as listed:
   it answers on a different I2C address range (0x38–0x39 instead of
   0x20–0x21). Recent versions of the AYAB firmware detect either, so it
   can be used instead, though the PCF8574 is preferred.
+
+### JLCPCB assembly
+
+`ayab_rs_jlcpcb_bom.csv` and `ayab_rs_jlcpcb_cpl.csv` cover the surface-mount
+parts only; the through-hole parts (connectors, power jack, buzzer) and the
+Metro Mini are fitted by hand. To keep JLCPCB's per-part fees down, the JLCPCB
+BOM uses LCSC parts, mostly JLCPCB "Basic" ones, instead of the part numbers
+in the main BOM. Packages and ratings match the footprints, with these
+differences:
+
+- **C3**: a 22 µF 25 V case D (7343) tantalum, which matches the footprint
+  pads, instead of the smaller case B part.
+- **R1, R7, R8**: 5.1 kΩ instead of 4.99 kΩ.
+- **R2, R5, R6** (LED resistors): 100 Ω instead of 62 Ω. The LEDs then run at
+  about 19 mA, within their 20 mA rating.
+- **R3** (power LED resistor): 1 kΩ instead of 330 Ω. The power LED is dimmer,
+  and the resistor stays within its 1/8 W rating with a 12 V supply.
+
+`ayab_rs_jlcpcb_minimal_bom.csv` and `ayab_rs_jlcpcb_minimal_cpl.csv` are the
+same files without the optional parts S1, Q1, R1 and R4. They save about €7 on
+five boards, mostly in JLCPCB's Extended part fees.
+
+The rotations in the placement files were checked in JLCPCB's placement
+preview against the Rev G board, but no assembled board has been tested yet.
 
 ### Other notes
 
