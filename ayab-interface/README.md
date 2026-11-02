@@ -70,6 +70,8 @@ Mouser does not carry every part as listed:
   compatible.
 - **S1 (reset button)**: optional. It cannot be reached once the board is
   installed in the machine, and the Metro Mini has its own reset button.
+- **L1 (buzzer)**: optional, together with the parts that only serve it:
+  Q1 (driver transistor), R1 (its base resistor) and R4 (series resistor).
 - **U1 header**: the BOM lists a 14-pin header that is short on both sides
   (Samtec TSW-114-05-T-S), to stack the Metro Mini 2.54 mm from the board
   without trimming. The header supplied with the Metro Mini can be used
