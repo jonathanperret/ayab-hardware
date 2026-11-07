@@ -17,7 +17,7 @@ set -e
 P=$(realpath "$1"); W=$(realpath -m "$2"); shift 2; SEEDS=${*:-0 1 2}
 H=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd); K=$(realpath "$H/../../kicad.sh"); R=$(realpath "$H/..")
 UR=${ULTRAROUTE:?set ULTRAROUTE to the ultraroute binary}
-RECIPE=${UR_RECIPE:---negotiate --rip-up --rip-boxed --prefanout --escape-room --diff-pairs --shove-plough region --shove-reach 0.5 --shove-repair 20 --shove-ties --guard-ties --shove-passes 60 --shove-patience 8}
+RECIPE=${UR_RECIPE:---negotiate --rip-up --rip-boxed --prefanout --escape-room --shove-plough region --shove-reach 0.5 --shove-repair 20 --shove-ties --guard-ties --shove-passes 60 --shove-patience 8}
 TOOLS=$(realpath "$H/../../../../$(basename "$P")/tools/ultraroute")
 NAME=$(basename "$(ls "$P"/*.kicad_pro | head -1)" .kicad_pro)
 mkdir -p "$W/in"; chmod 777 "$W" "$W/in"
