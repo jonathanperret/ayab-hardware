@@ -261,3 +261,21 @@
 	(constraint silk_clearance (min 0mm))
 	(severity ignore)
 )
+
+# --- Routing rules (ultraroute and KiCad DRC both apply them) ---
+# Power class (+15V, Vout, Vsol, U6 switch node): about 1 A of solenoid current; 0.4 mm keeps a 1 oz
+# outer track under 10 C rise (IPC-2221) and still enters J1's and U6's pads; 0.6 mm where there is room.
+(rule "Power nets minimum width"
+	(condition "A.NetClass == 'Power'")
+	(constraint track_width (min 0.4mm) (opt 0.6mm))
+)
+# Supply class (+5V, +3.3V, LDO input, J2 VBUS, U9 switch node): up to 0.5 A.
+(rule "Supply nets minimum width"
+	(condition "A.NetClass == 'Supply'")
+	(constraint track_width (min 0.25mm) (opt 0.3mm))
+)
+# The Kelvin sense tracks from R6's pads to U7 carry no current.
+(rule "Kelvin sense into U7"
+	(condition "A.NetClass == 'Power' && A.intersectsArea('kelvin-u7')")
+	(constraint track_width (min 0.2mm))
+)
