@@ -109,7 +109,10 @@ come along (a socket cloned from the DNP debug header J14 ended up out of the BO
   `ULTRAROUTE=.../ultraroute scripts/kicad/route/ultraroute/route.sh ayab-sr-esp32 /tmp/ur 0 1 2` (board inputs in
   `ayab-sr-esp32/tools/ultraroute/prep.py`, `preroute.py`: locks, B.Cu soft plane, edge strips, width rules, Kelvin
   and VBUS pre-routes) and `finish.sh /tmp/ur/jN /tmp/ur/final` for the chosen seed (stitching, prune, unlock, DRC
-  all severities, joints.py). Judge seeds by KiCad, not the router's count; prefer a seed with no vias in switch nodes.
+  all severities, joints.py, then octofix.py: 0/45/90-degree tracks). Judge seeds by KiCad, not the router's count;
+  prefer a seed with short switch nodes and no vias in them. The user prefers 45-degree tracks: route.sh leaves out
+  --tighten and --diff-pairs (both lay copper at any angle) and octofix.py squares what is left; tightening first and
+  converting after does not work (parallel bundles leave no room for the corners).
 - Silkscreen: `pcb/placeref.py BOARD REFS` moves labels clear, `pcb/silktext.py` enforces 1.0/0.15 mm,
   `pcb/clipsilk.py` clips outlines off pads (then put the clipped footprint in ayab-library so the
   board still matches its library), `pcb/upright.py` after `pcb/rotate_board.py`.
