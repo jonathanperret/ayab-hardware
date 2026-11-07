@@ -239,6 +239,18 @@ an LCSC number on every placed part), the pick-and-place file
 the `FT Rotation Offset` corrections applied) and the schematic PDF. Regenerate them after
 any change (scripts on the `tooling` branch).
 
+### Ordering the parts from LCSC (self-assembly)
+
+The BOM's LCSC numbers are chosen for JLCPCB assembly (basic parts where possible). For a direct
+LCSC order, one substitute applies while LCSC's own stock of the BOM part is empty:
+
+- **C3, C12, C14, C15** (100 nF 0603, BOM C14663, a JLCPCB basic part with plenty of JLCPCB
+  stock): order **C1591** (Samsung CL10B104KB8NNNC, 100 nF X7R 50 V 0603) from LCSC instead.
+  Keep C14663 in the BOM: C1591 is an extended part at JLCPCB (about $3 more per assembly order).
+
+Parts for 5 boards cost about $56 at LCSC (November 2026 prices, minimum order quantities
+applied, OLED module, shipping and import duties not included).
+
 ## Assembly-time parts
 
 JLCPCB assembles everything in the BOM and CPL, J15 included. One part is not in either and is
