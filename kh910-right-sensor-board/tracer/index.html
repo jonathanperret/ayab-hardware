@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KH910 Sensor Board Tracer</title>
+<style>
+:root{--bg:#15171a;--panel:#1e2125;--line:#2e3238;--fg:#e6e8eb;--dim:#9aa1a9;--accent:#ffd34d;--ok:#4cd07d;--bad:#ff5d5d;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:13px/1.4 -apple-system,system-ui,sans-serif}
+#app{display:grid;grid-template-rows:auto 1fr;grid-template-columns:1fr 1fr 300px;height:100%}
+header{grid-column:1/4;display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+header h1{font-size:14px;margin:0 8px 0 0;font-weight:600}
+.grp{display:flex;gap:4px;align-items:center}
+button{background:#2a2e34;color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:4px 9px;font:inherit;cursor:pointer}
+button:hover{border-color:#556}button.on{background:var(--accent);color:#111;border-color:var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#status{margin-left:auto;color:var(--dim);font-family:var(--mono)}
+.pane{position:relative;overflow:hidden;border-right:1px solid var(--line)}
+.pane canvas{position:absolute;inset:0}
+.pane .tag{position:absolute;left:8px;top:8px;z-index:2;display:flex;gap:4px;align-items:center;background:rgba(20,22,25,.85);padding:4px 6px;border-radius:6px}
+.pane .tag b{margin-right:4px}
+aside{background:var(--panel);overflow:auto;padding:12px;display:flex;flex-direction:column;gap:14px}
+aside h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 0 6px}
+.card{border:1px solid var(--line);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:6px}
+input[type=text]{width:100%;background:#111317;color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:4px 6px;font:inherit}
+label{color:var(--dim)}
+.members{font-family:var(--mono);font-size:12px;color:var(--dim);word-break:break-word}
+.chk{display:grid;grid-template-columns:1fr auto auto;gap:4px;align-items:center;padding:6px;border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.chk.yes{border-color:var(--ok)}.chk.no{border-color:var(--bad)}.chk .q{font-size:12px}
+.yesb.on{background:var(--ok);border-color:var(--ok)}.nob.on{background:var(--bad);border-color:var(--bad)}
+.help{color:var(--dim);font-size:12px}.help kbd{font-family:var(--mono);background:#2a2e34;border-radius:3px;padding:0 4px}
+.netrow{display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer}.sw{width:10px;height:10px;border-radius:50%;flex:none}
+.legend span{display:inline-flex;align-items:center;gap:4px;margin-right:10px}
+</style></head><body>
+<div id="app">
+<header>
+  <h1>KH910 right sensor board</h1>
+  <div class="grp" id="modes">
+    <button data-mode="move" class="on" title="M">Move pads</button>
+    <button data-mode="connect" title="C">Connect</button>
+    <button data-mode="part" title="P">Place part</button>
+    <button data-mode="add" title="A">Add pad</button>
+    <button data-mode="delete" title="D">Delete</button>
+  </div>
+  <div class="grp"><button id="tLabels" class="on">Labels</button><button id="tLinks" class="on">Links</button><button id="undo">Undo</button></div>
+  <span class="help legend"><span>○ white = position not checked</span><span style="color:var(--ok)">○ green = placed by you</span></span>
+  <span id="status">loading…</span>
+</header>
+<div class="pane" id="paneF"><div class="tag"><b>Component side</b><button id="fPhoto" class="on">Photo</button><button id="fBlend">Blend</button></div><canvas></canvas></div>
+<div class="pane" id="paneB"><div class="tag"><b>Solder side</b><button id="bMirror" class="on">Mirrored</button></div><canvas></canvas></div>
+<aside>
+  <section><h2>Selection</h2><div id="sel" class="card"><span class="help">Click a pad or a link.</span></div></section>
+  <section><h2>Beep checks</h2><div id="checks" style="display:flex;flex-direction:column;gap:6px"></div></section>
+  <section><h2>Nets</h2><div id="nets" style="display:flex;flex-direction:column;gap:3px"></div></section>
+  <section class="help">
+    <b>Move pads</b>: drag a circle onto its real pad, in each photo separately. A pad you've dragged turns green on that side.<br>
+    <b>Connect</b> (draw a trace): click the start pad, click along the copper to add corners, click the end pad. The trace belongs to the photo you draw it in; the other photo shows it faded. <kbd>⌫</kbd> removes the last corner, <kbd>Esc</kbd> cancels.<br>
+    <b>Edit a trace</b>: click it, then drag its yellow corners; double-click on the trace to add a corner, double-click a corner to remove it.<br>
+    <b>Place part</b>: click the part's pads in pin order (pin 1 first; for resistors either order), type its reference from the silkscreen, Enter. Click a part outline to edit it.<br>
+    <b>Add pad</b>: click where a pad is missing; place it in the other photo too.<br>
+    Drag the background to pan, scroll to zoom. Clicking a pad centres both photos on it. <kbd>Esc</kbd> deselect, <kbd>⌘Z</kbd> undo.<br>
+    Dashed link = unsure, solid = confirmed. Saves automatically.
+  </section>
+</aside>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let pendPts=[], pendSide=null, cornerDrag=null;
+let S=null, mode='move', sel=null, pending=null, hoverPad=null, showLabels=true, showLinks=true, saveT=null, busy=false;
+const undoStack=[]; const R=13;
+const imgs={front:new Image(),back:new Image(),blend:new Image()}; let loaded=0;
+const pad=id=>S.pads.find(p=>p.id===id);
+let partPick=[];
+function parts(){ return S.parts||(S.parts=[]); }
+function pinOf(id){ for(const pt of parts()){ const i=pt.pins.indexOf(id); if(i>=0) return pt.ref+'.'+(i+1)+(pt.pinnames&&pt.pinnames[i]?' '+pt.pinnames[i]:''); } return ''; }
+function plabel(p){ return p.label||pinOf(p.id); }
+function partAt(pane,sx,sy){ for(const pt of parts()){ const P=pt.pins.map(pad).filter(Boolean).map(q=>pane.toS(...q[pane.side])); if(!P.length) continue;
+    if(P.length===2){ const h=pane.segHit([P[0],P[1]].map(s=>pane.toW(...s)).map(w=>[w.x,w.y]),sx,sy); if(h&&h.d<Math.max(6,9*pane.view.s)&&h.t>0.15&&h.t<0.85) return pt; }
+    else { const xs=P.map(q=>q[0]),ys=P.map(q=>q[1]); if(sx>Math.min(...xs)&&sx<Math.max(...xs)&&sy>Math.min(...ys)&&sy<Math.max(...ys)) return pt; } } return null; }
+function snapshot(){ undoStack.push(JSON.stringify(S)); if(undoStack.length>300) undoStack.shift(); }
+function save(){ $('#status').textContent='saving…'; clearTimeout(saveT); saveT=setTimeout(async()=>{ saveT=null;
+  try{ const r=await fetch('state.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S,null,1)});
+    $('#status').textContent=r.ok?'saved '+new Date().toLocaleTimeString():'save failed ('+r.status+')'; lastText=JSON.stringify(S,null,1); }catch(e){ $('#status').textContent='save failed: is the server running?'; } },400); }
+function change(fn){ snapshot(); fn(); save(); drawAll(); panel(); }
+// ---------- nets
+function nets(){ const par={}; const f=a=>{ while(par[a]!==a) a=par[a]; return a; };
+  S.pads.forEach(p=>par[p.id]=p.id);
+  S.links.forEach(l=>{ if(l.status==='wrong'||par[l.a]===undefined||par[l.b]===undefined) return; const a=f(l.a),b=f(l.b); if(a!==b) par[a]=b; });
+  const g={}; S.pads.forEach(p=>{ const r=f(p.id); (g[r]=g[r]||[]).push(p.id); });
+  const byPad={}; const groups=Object.values(g).filter(m=>m.length>1); groups.forEach(m=>m.forEach(id=>byPad[id]=m)); return {groups,byPad}; }
+function netName(m){ for(const id of m) if(S.netnames[id]) return S.netnames[id]; const lab=m.map(pad).filter(p=>p&&plabel(p)).map(plabel); return lab.length?lab.slice(0,3).join(' / ')+(lab.length>3?' …':''):'unnamed net'; }
+function hue(m){ const n=netName(m); if(n==='GND') return '#4ea3ff'; if(n==='+5V') return '#ff4e4e'; const k=[...m].sort()[0]; let h=7; for(const c of k) h=(h*31+c.charCodeAt(0))%997; return `hsl(${(h*137)%360} 85% 62%)`; }
+// ---------- panes
+class Pane{
+  constructor(el,side){ this.el=el; this.side=side; this.cv=el.querySelector('canvas'); this.ctx=this.cv.getContext('2d'); this.view={x:0,y:0,s:1}; this.mirror=side==='b'; this.useBlend=false; this.down=null; this.drag=null; this.hover=null;
+    el.addEventListener('pointerdown',e=>this.pd(e)); el.addEventListener('pointermove',e=>this.pm(e)); el.addEventListener('pointerup',e=>this.pu(e)); el.addEventListener('dblclick',e=>this.dbl(e));
+    el.addEventListener('wheel',e=>{ e.preventDefault(); const [sx,sy]=this.local(e); const w=this.toW(sx,sy); this.view.s=Math.max(0.2,Math.min(8,this.view.s*Math.exp(-e.deltaY*0.0015))); this.setAt(w,sx,sy); this.draw(); },{passive:false}); }
+  get img(){ return this.side==='f'?(this.useBlend?imgs.blend:imgs.front):imgs.back; }
+  get W(){ return imgs.back.width; }
+  local(e){ const r=this.el.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; }
+  // world = image pixel coords (unmirrored); screen via view
+  toS(x,y){ const X=this.mirror?this.W-x:x; return [(X-this.view.x)*this.view.s,(y-this.view.y)*this.view.s]; }
+  toW(sx,sy){ const X=sx/this.view.s+this.view.x, y=sy/this.view.s+this.view.y; return {x:this.mirror?this.W-X:X,y}; }
+  setAt(w,sx,sy){ const X=this.mirror?this.W-w.x:w.x; this.view.x=X-sx/this.view.s; this.view.y=w.y-sy/this.view.s; }
+  center(x,y){ const r=this.el.getBoundingClientRect(); this.setAt({x,y},r.width/2,r.height/2); }
+  fit(x0,y0,x1,y1){ const r=this.el.getBoundingClientRect(); this.view.s=Math.min(r.width/(x1-x0),r.height/(y1-y0)); this.center((x0+x1)/2,(y0+y1)/2); }
+  pos(p){ return p[this.side]; }
+  resize(){ const r=this.el.getBoundingClientRect(), d=devicePixelRatio; this.cv.width=r.width*d; this.cv.height=r.height*d; this.cv.style.width=r.width+'px'; this.cv.style.height=r.height+'px'; }
+  hitPad(sx,sy){ let best=null; for(const p of S.pads){ const [x,y]=this.toS(...this.pos(p)); const d=Math.hypot(x-sx,y-sy); if(d<Math.max(10,R*this.view.s+4)&&(!best||d<best.d)) best={p,d}; } return best&&best.p; }
+  // polyline of a link in this pane's image coords
+  path(l){ const a=pad(l.a),b=pad(l.b); if(!a||!b) return null; const pts=l.pts||[];
+    const mid=!l.layer||l.layer===this.side?pts:pts.map(q=>guessOther(l.layer,{x:q[0],y:q[1]}));
+    return [this.pos(a),...mid,this.pos(b)]; }
+  segHit(P,sx,sy){ let best=null; for(let i=0;i<P.length-1;i++){ const [ax,ay]=this.toS(...P[i]),[bx,by]=this.toS(...P[i+1]);
+      const vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((sx-ax)*vx+(sy-ay)*vy)/(vx*vx+vy*vy||1))),d=Math.hypot(ax+t*vx-sx,ay+t*vy-sy); if(!best||d<best.d) best={d,i,t}; } return best; }
+  hitLink(sx,sy){ if(!showLinks) return null; let best=null; for(const l of S.links){ const P=this.path(l); if(!P) continue; const h=this.segHit(P,sx,sy);
+      const nearEnd=(h.i===0&&h.t<0.08)||(h.i===P.length-2&&h.t>0.92); if(h.d<6&&!nearEnd&&(!best||h.d<best.d)) best={l,d:h.d}; } return best&&best.l; }
+  hitCorner(sx,sy){ if(!sel||!sel.link||sel.link.layer!==this.side) return -1; const pts=sel.link.pts||[]; for(let i=0;i<pts.length;i++){ const [x,y]=this.toS(...pts[i]); if(Math.hypot(x-sx,y-sy)<8) return i; } return -1; }
+  pd(e){ const [sx,sy]=this.local(e); const p=this.hitPad(sx,sy); this.down={sx,sy,vx:this.view.x,vy:this.view.y,p,moved:false}; busy=true;
+    const ci=this.hitCorner(sx,sy); if(ci>=0&&mode!=='delete'){ snapshot(); cornerDrag={l:sel.link,i:ci,pane:this}; this.el.setPointerCapture(e.pointerId); return; }
+    if(mode==='move'&&p){ snapshot(); this.drag=p; const [px,py]=this.toS(...this.pos(p)); this.grab=[px-sx,py-sy]; } this.el.setPointerCapture(e.pointerId); }
+  pm(e){ const [sx,sy]=this.local(e); this.hover=[sx,sy]; const hp=this.hitPad(sx,sy); if(hp!==hoverPad){ hoverPad=hp; drawAll(); }
+    if(cornerDrag&&cornerDrag.pane===this){ const w=this.toW(sx,sy); cornerDrag.l.pts[cornerDrag.i]=[Math.round(w.x*2)/2,Math.round(w.y*2)/2]; if(this.down) this.down.moved=true; drawAll(); return; }
+    if(this.down){ const dx=sx-this.down.sx,dy=sy-this.down.sy; if(Math.hypot(dx,dy)>3) this.down.moved=true;
+      if(this.drag){ const w=this.toW(sx+this.grab[0],sy+this.grab[1]); this.drag[this.side]=[Math.round(w.x*2)/2,Math.round(w.y*2)/2]; this.drag.ok=this.drag.ok||{}; this.drag.ok[this.side]=true; drawAll(); return; }
+      if(this.down.moved){ this.view.x=this.down.vx-dx/this.view.s; this.view.y=this.down.vy-dy/this.view.s; } }
+    this.el.style.cursor=hp?(mode==='move'?'grab':'pointer'):(mode==='add'?'copy':'default'); if(pending||this.down) this.draw(); }
+  pu(e){ busy=false; if(cornerDrag){ cornerDrag=null; this.down=null; save(); drawAll(); return; }
+    if(!this.down) return; const [sx,sy]=this.local(e); const {p,moved}=this.down; this.down=null;
+    if(mode==='part'&&!moved){
+      if(p){ const i=partPick.indexOf(p.id); if(i>=0) partPick.splice(i,1); else partPick.push(p.id); sel=null; drawAll(); panel(); const r=$('#pref'); if(r) r.focus(); return; }
+      const pt=partAt(this,sx,sy); if(pt){ sel={part:pt}; partPick=[]; drawAll(); panel(); } return; }
+    if(mode==='connect'&&!moved){
+      if(p){ if(pending&&pending!==p.id){ const a=pending, pts=pendPts, layer=pendSide; pending=null; pendPts=[]; pendSide=null;
+          change(()=>{ const l={a,b:p.id,status:'confirmed',by:'you',note:'',layer,pts}; S.links.push(l); sel={link:l}; }); return; }
+        if(pending===p.id){ pending=null; pendPts=[]; pendSide=null; drawAll(); return; }
+        pending=p.id; pendSide=this.side; pendPts=[]; sel={pad:p.id}; drawAll(); panel(); return; }
+      if(pending){ if(this.side===pendSide){ const w=this.toW(sx,sy); pendPts.push([Math.round(w.x),Math.round(w.y)]); } else $('#status').textContent='finish the trace in the photo you started it in'; drawAll(); return; } }
+    if(this.drag){ const d=this.drag; this.drag=null; if(moved){ save(); } else { select(d); } drawAll(); panel(); return; }
+    if(moved) return;
+    if(mode==='add'&&!p){ const w=this.toW(sx,sy); change(()=>{ let n=S.pads.length+1,id; do{ id='p'+String(n++).padStart(3,'0'); }while(pad(id));
+        const other=this.side==='f'?'b':'f'; const guess=guessOther(this.side,w); const np={id,label:'',src:'you',ok:{[this.side]:true,[other]:false}}; np[this.side]=[Math.round(w.x),Math.round(w.y)]; np[other]=guess; S.pads.push(np); sel={pad:id}; });
+      const np=pad(sel.pad); panes[this.side==='f'?'b':'f'].center(...np[this.side==='f'?'b':'f']); drawAll(); return; }
+    if(mode==='delete'){ if(p) change(()=>{ S.pads.splice(S.pads.indexOf(p),1); S.links=S.links.filter(l=>l.a!==p.id&&l.b!==p.id); S.checks=S.checks.filter(c=>c.a!==p.id&&c.b!==p.id); sel=null; });
+      else { const l=this.hitLink(sx,sy); if(l) change(()=>{ S.links.splice(S.links.indexOf(l),1); sel=null; });
+        else { const pt=partAt(this,sx,sy); if(pt) change(()=>{ parts().splice(parts().indexOf(pt),1); sel=null; }); } } return; }
+    if(p){ if(mode==='connect'){ if(pending&&pending!==p.id){ const a=pending; pending=null; change(()=>{ if(!S.links.some(l=>(l.a===a&&l.b===p.id)||(l.b===a&&l.a===p.id))) S.links.push({a,b:p.id,status:'confirmed',by:'you',note:''}); sel={pad:p.id}; }); return; }
+        pending=pending===p.id?null:p.id; } select(p,this); return; }
+    const l=this.hitLink(sx,sy); pending=null; const pt=l?null:partAt(this,sx,sy); sel=l?{link:l}:pt?{part:pt}:null; drawAll(); panel(); }
+  draw(){ if(!S||loaded<3) return; const c=this.ctx, d=devicePixelRatio, v=this.view; c.setTransform(d,0,0,d,0,0); c.clearRect(0,0,this.cv.width,this.cv.height);
+    c.save(); c.scale(v.s,v.s); c.translate(-v.x,-v.y); if(this.mirror){ c.translate(this.W,0); c.scale(-1,1); } c.drawImage(this.img,0,0); c.restore();
+    const N=nets(); const hl=new Set(); if(sel&&sel.pad) (N.byPad[sel.pad]||[sel.pad]).forEach(i=>hl.add(i)); if(sel&&sel.check){ hl.add(sel.check.a); hl.add(sel.check.b); }
+    const r=Math.max(5,R*v.s);
+    // parts: solid on component side, faded on solder side
+    for(const pt of parts()){ const P=pt.pins.map(pad).filter(Boolean).map(q=>this.toS(...q[this.side])); if(!P.length) continue; const isSel=sel&&sel.part===pt;
+      c.globalAlpha=this.side==='f'?1:0.45; c.strokeStyle=isSel?'#ffd34d':'#f2f2f2'; c.lineWidth=isSel?3:1.8; c.setLineDash(this.side==='f'?[]:[4,3]);
+      let lx,ly;
+      if(P.length===2){ const [a,b]=P, dx=b[0]-a[0], dy=b[1]-a[1], L=Math.hypot(dx,dy)||1, nx=-dy/L, ny=dx/L, w=Math.max(4,7*v.s), k=r+2;
+        const ax=a[0]+dx/L*k, ay=a[1]+dy/L*k, bx=b[0]-dx/L*k, by=b[1]-dy/L*k;
+        c.beginPath(); c.moveTo(ax+nx*w,ay+ny*w); c.lineTo(bx+nx*w,by+ny*w); c.lineTo(bx-nx*w,by-ny*w); c.lineTo(ax-nx*w,ay-ny*w); c.closePath(); c.stroke();
+        c.beginPath(); c.moveTo(a[0],a[1]); c.lineTo(ax,ay); c.moveTo(b[0],b[1]); c.lineTo(bx,by); c.stroke(); lx=(a[0]+b[0])/2+nx*(w+4); ly=(a[1]+b[1])/2+ny*(w+4); }
+      else { const xs=P.map(q=>q[0]),ys=P.map(q=>q[1]), m=r+4; const x0=Math.min(...xs)-m,x1=Math.max(...xs)+m,y0=Math.min(...ys)-m,y1=Math.max(...ys)+m; c.strokeRect(x0,y0,x1-x0,y1-y0);
+        c.fillStyle=c.strokeStyle; c.beginPath(); c.arc(P[0][0],P[0][1],3,0,7); c.fill(); lx=(x0+x1)/2-12; ly=(y0+y1)/2; }
+      c.setLineDash([]); c.font='700 12px -apple-system,system-ui,sans-serif'; const t=pt.ref+(pt.value?' '+pt.value:''); c.lineWidth=3; c.strokeStyle='rgba(0,0,0,.85)'; c.strokeText(t,lx,ly); c.fillStyle=isSel?'#ffd34d':'#fff'; c.fillText(t,lx,ly); c.globalAlpha=1; }
+    partPick.forEach((id,i)=>{ const q=pad(id); if(!q) return; const [x,y]=this.toS(...q[this.side]); c.fillStyle='#ffd34d'; c.beginPath(); c.arc(x,y,r*0.9,0,7); c.fill(); c.fillStyle='#111'; c.font='800 12px ui-monospace,monospace'; c.fillText(String(i+1),x-4,y+4); });
+    if(showLinks) for(const l of S.links){ const P=this.path(l); if(!P) continue; const m=N.byPad[l.a]; const own=l.layer===this.side, other=l.layer&&!own, isSel=sel&&sel.link===l;
+      c.globalAlpha=other?0.4:1; c.strokeStyle=l.status==='wrong'?'#ff5d5d':(m?hue(m):'#fff');
+      c.lineWidth=(own?Math.max(2.5,6*v.s):2)+(isSel?2:0); c.lineJoin='round'; c.lineCap='round';
+      c.setLineDash(l.status==='wrong'?[2,5]:l.status==='proposed'?[9,6]:other||!l.layer?[3,4]:[]);
+      c.beginPath(); P.forEach((q,i)=>{ const [x,y]=this.toS(...q); i?c.lineTo(x,y):c.moveTo(x,y); }); c.stroke(); c.globalAlpha=1;
+      if(isSel&&own) (l.pts||[]).forEach(q=>{ const [x,y]=this.toS(...q); c.fillStyle='#ffd34d'; c.fillRect(x-4,y-4,8,8); c.strokeStyle='#000'; c.lineWidth=1; c.setLineDash([]); c.strokeRect(x-4,y-4,8,8); }); }
+    c.setLineDash([]);
+    for(const p of S.pads){ const [x,y]=this.toS(...this.pos(p)); const m=N.byPad[p.id]; const ok=p.ok&&p.ok[this.side];
+      c.lineWidth=hl.has(p.id)?3.5:2; c.strokeStyle=m?hue(m):(ok?'#4cd07d':'rgba(255,255,255,.9)'); c.beginPath(); c.arc(x,y,r,0,7); c.stroke();
+      if(ok&&m){ c.fillStyle='#4cd07d'; c.beginPath(); c.arc(x,y,2.5,0,7); c.fill(); }
+      if(hl.has(p.id)){ c.fillStyle='rgba(255,211,77,.28)'; c.beginPath(); c.arc(x,y,r,0,7); c.fill(); }
+      if(hoverPad===p){ c.strokeStyle='#ffd34d'; c.lineWidth=1.5; c.beginPath(); c.moveTo(x-r-8,y); c.lineTo(x+r+8,y); c.moveTo(x,y-r-8); c.lineTo(x,y+r+8); c.stroke(); }
+      if(pending===p.id){ c.strokeStyle='#ffd34d'; c.lineWidth=3; c.beginPath(); c.arc(x,y,r+5,0,7); c.stroke(); }
+      if(showLabels&&(plabel(p)||v.s>0.9)&&!(pinOf(p.id)&&!p.label&&v.s<1.2)){ const t=plabel(p)||p.id.slice(1); c.font='600 11px ui-monospace,monospace'; c.lineWidth=3; c.strokeStyle='rgba(0,0,0,.85)'; c.strokeText(t,x+r+2,y-r+3); c.fillStyle=plabel(p)?'#fff':'#ffd34d'; c.fillText(t,x+r+2,y-r+3); } }
+    if(pending&&mode==='connect'&&pendSide===this.side){ const [ax,ay]=this.toS(...this.pos(pad(pending))); c.strokeStyle='#ffd34d'; c.lineWidth=2.5; c.beginPath(); c.moveTo(ax,ay);
+      pendPts.forEach(q=>c.lineTo(...this.toS(...q))); c.stroke(); if(this.hover){ c.setLineDash([4,4]); c.lineTo(...this.hover); c.stroke(); c.setLineDash([]); }
+      pendPts.forEach(q=>{ const [x,y]=this.toS(...q); c.fillStyle='#ffd34d'; c.fillRect(x-3,y-3,6,6); }); } }
+  dbl(e){ if(!sel||!sel.link||sel.link.layer!==this.side) return; const [sx,sy]=this.local(e); const l=sel.link; const ci=this.hitCorner(sx,sy);
+    if(ci>=0){ change(()=>l.pts.splice(ci,1)); return; }
+    const P=this.path(l), h=this.segHit(P,sx,sy); if(h&&h.d<8){ const w=this.toW(sx,sy); change(()=>{ l.pts=l.pts||[]; l.pts.splice(h.i,0,[Math.round(w.x),Math.round(w.y)]); }); } }
+}
+// estimate a new pad's position in the other photo from nearby pads (local offset)
+function guessOther(side,w){ const o=side==='f'?'b':'f'; const near=S.pads.map(p=>({p,d:Math.hypot(p[side][0]-w.x,p[side][1]-w.y)})).sort((a,b)=>a.d-b.d).slice(0,3);
+  if(!near.length) return [w.x,w.y]; let sx=0,sy=0,sw=0; for(const {p,d} of near){ const k=1/(d+1); const sgn=-1; sx+=(p[o][0]+sgn*(w.x-p[side][0]))*k; sy+=(p[o][1]+(w.y-p[side][1]))*k; sw+=k; }
+  // front->back mirrors x
+  return [Math.round(sx/sw),Math.round(sy/sw)]; }
+const panes={f:new Pane($('#paneF'),'f'),b:new Pane($('#paneB'),'b')};
+function drawAll(){ panes.f.draw(); panes.b.draw(); }
+function select(p,from){ sel={pad:p.id}; for(const k of ['f','b']) if(panes[k]!==from) panes[k].center(...p[k]); drawAll(); panel(); }
+// ---------- side panel
+function esc(s){ return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function nextRef(prefix){ let n=1; const used=new Set(parts().map(p=>p.ref)); while(used.has(prefix+n)) n++; return prefix+n; }
+function createPart(){ const ref=($('#pref').value||'').trim(); if(!ref||!partPick.length) return; const val=($('#pval').value||'').trim();
+  change(()=>{ const ex=parts().find(p=>p.ref===ref); if(ex){ ex.pins=[...partPick]; if(val) ex.value=val; sel={part:ex}; } else { const np={ref,value:val,pins:[...partPick]}; parts().push(np); sel={part:np}; } partPick=[]; }); }
+function panel(){ const el=$('#sel'); const N=nets();
+  if(mode==='part'&&partPick.length){ const used=partPick.map(id=>pinOf(id)).filter(Boolean);
+    el.innerHTML=`<div><b>New part</b> · ${partPick.length} pin${partPick.length>1?'s':''} picked (in order)</div>
+      ${used.length?`<div class="help" style="color:var(--bad)">Already used by: ${esc(used.join(', '))}</div>`:''}
+      <label for="pref">Reference (as printed, e.g. R313)</label><input id="pref" type="text" placeholder="${partPick.length===2?'R3xx':partPick.length===3?'VR301 / Q3xx':'IC / PI…'}">
+      <label for="pval">Value (optional, e.g. 10k, colour bands)</label><input id="pval" type="text">
+      <div class="grp"><button id="pmk" class="on">Create (Enter)</button><button id="pclr">Clear pins</button></div>`;
+    $('#pmk').onclick=createPart; $('#pclr').onclick=()=>{ partPick=[]; drawAll(); panel(); };
+    el.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{ if(e.key==='Enter') createPart(); if(e.key==='Escape'){ partPick=[]; drawAll(); panel(); } });
+  } else if(sel&&sel.part){ const pt=sel.part;
+    el.innerHTML=`<div><b>${esc(pt.ref)}</b> ${esc(pt.value||'')}</div>
+      <label for="eref">Reference</label><input id="eref" type="text" value="${esc(pt.ref)}">
+      <label for="eval">Value</label><input id="eval" type="text" value="${esc(pt.value||'')}">
+      <div class="members">${pt.pins.map((id,i)=>{ const m=N.byPad[id]; return `${i+1}${pt.pinnames&&pt.pinnames[i]?' '+esc(pt.pinnames[i]):''}: ${m?esc(netName(m)):'(no net)'}`; }).join('<br>')}</div>
+      <div class="grp"><button id="erepick">Re-pick pins</button><button id="edel">Delete part</button></div>`;
+    $('#eref').onchange=e=>change(()=>pt.ref=e.target.value.trim()||pt.ref); $('#eval').onchange=e=>change(()=>pt.value=e.target.value.trim());
+    $('#edel').onclick=()=>change(()=>{ parts().splice(parts().indexOf(pt),1); sel=null; });
+    $('#erepick').onclick=()=>{ setMode('part'); partPick=[]; $('#status').textContent=`click ${pt.ref}'s pins in order, then type ${pt.ref} and press Enter`; panel(); };
+  } else if(sel&&sel.pad){ const p=pad(sel.pad); if(!p){ sel=null; return panel(); } const m=N.byPad[p.id]||[p.id];
+    el.innerHTML=`<div><b>${esc(plabel(p)||'pad '+p.id.slice(1))}</b> <span class="help">${p.id} · component side ${p.ok&&p.ok.f?'✓ placed':'not checked'} · solder side ${p.ok&&p.ok.b?'✓ placed':'not checked'}</span></div>
+      <label for="plabel">Pad label (e.g. R313.1)</label><input id="plabel" type="text" value="${esc(p.label)}">
+      ${m.length>1?`<label for="nname">Net name</label><input id="nname" type="text" value="${esc(S.netnames[m.find(i=>S.netnames[i])]||'')}" placeholder="${esc(netName(m))}">`:''}
+      <div class="members">${m.length>1?'Net: '+m.map(i=>esc(plabel(pad(i))||i)).join(', '):'Not connected to anything yet.'}</div>`;
+    $('#plabel').onchange=e=>change(()=>p.label=e.target.value.trim());
+    const nn=$('#nname'); if(nn) nn.onchange=e=>change(()=>{ m.forEach(i=>delete S.netnames[i]); if(e.target.value.trim()) S.netnames[p.id]=e.target.value.trim(); });
+  } else if(sel&&sel.link){ const l=sel.link,a=pad(l.a),b=pad(l.b);
+    el.innerHTML=`<div><b>${esc(plabel(a)||a.id)}</b> ↔ <b>${esc(plabel(b)||b.id)}</b></div><div class="help">${l.layer?(l.layer==='f'?'trace on component side':'trace on solder side')+` · ${(l.pts||[]).length} corners`:'connection only (no trace drawn)'} · from: ${esc(l.by)}${l.note?' · '+esc(l.note):''}</div>
+      <div class="grp"><button data-s="confirmed" class="${l.status==='confirmed'?'on':''}">Confirmed</button><button data-s="proposed" class="${l.status==='proposed'?'on':''}">Unsure</button><button data-s="wrong" class="${l.status==='wrong'?'on':''}">Wrong</button><button data-s="del">Remove</button></div>`;
+    el.querySelectorAll('button').forEach(bt=>bt.onclick=()=>change(()=>{ if(bt.dataset.s==='del'){ S.links.splice(S.links.indexOf(l),1); sel=null; } else { l.status=bt.dataset.s; if(l.by==='claude'&&bt.dataset.s!=='proposed') l.by='claude, checked by you'; } }));
+  } else el.innerHTML='<span class="help">Click a pad or a link.</span>';
+  const ck=$('#checks'); ck.innerHTML=''; if(!S.checks.length) ck.innerHTML='<span class="help">No open questions.</span>';
+  S.checks.forEach(c=>{ const a=pad(c.a),b=pad(c.b); if(!a||!b) return; const d=document.createElement('div'); d.className='chk '+(c.answer||'');
+    d.innerHTML=`<div class="q">${esc(c.q||('Beep '+(plabel(a)||a.id)+' ↔ '+(plabel(b)||b.id)+'?'))}</div><button class="yesb ${c.answer==='yes'?'on':''}">Yes</button><button class="nob ${c.answer==='no'?'on':''}">No</button>`;
+    d.onclick=()=>{ sel={check:c}; for(const k of ['f','b']){ const xs=[a[k][0],b[k][0]],ys=[a[k][1],b[k][1]]; panes[k].fit(Math.min(...xs)-90,Math.min(...ys)-90,Math.max(...xs)+90,Math.max(...ys)+90); } drawAll(); panel(); };
+    d.querySelector('.yesb').onclick=e=>{ e.stopPropagation(); change(()=>{ c.answer='yes'; if(!S.links.some(l=>(l.a===c.a&&l.b===c.b)||(l.a===c.b&&l.b===c.a))) S.links.push({a:c.a,b:c.b,status:'confirmed',by:'beep',note:c.q||''}); else S.links.forEach(l=>{ if((l.a===c.a&&l.b===c.b)||(l.a===c.b&&l.b===c.a)) l.status='confirmed'; }); }); };
+    d.querySelector('.nob').onclick=e=>{ e.stopPropagation(); change(()=>{ c.answer='no'; S.links.forEach(l=>{ if((l.a===c.a&&l.b===c.b)||(l.a===c.b&&l.b===c.a)) l.status='wrong'; }); }); };
+    ck.appendChild(d); });
+  const nl=$('#nets'); nl.innerHTML=''; N.groups.sort((x,y)=>y.length-x.length).forEach(m=>{ const r=document.createElement('div'); r.className='netrow';
+    r.innerHTML=`<span class="sw" style="background:${hue(m)}"></span><span>${esc(netName(m))}</span><span class="help">${m.length} pads</span>`; r.onclick=()=>select(pad(m[0])); nl.appendChild(r); });
+}
+// ---------- toolbar
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+function setMode(m){ mode=m; pending=null; pendPts=[]; pendSide=null; partPick=[]; panel(); document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m)); drawAll(); }
+$('#tLabels').onclick=e=>{ showLabels=!showLabels; e.target.classList.toggle('on',showLabels); drawAll(); };
+$('#tLinks').onclick=e=>{ showLinks=!showLinks; e.target.classList.toggle('on',showLinks); drawAll(); };
+$('#fPhoto').onclick=()=>{ panes.f.useBlend=false; $('#fPhoto').classList.add('on'); $('#fBlend').classList.remove('on'); panes.f.draw(); };
+$('#fBlend').onclick=()=>{ panes.f.useBlend=true; $('#fBlend').classList.add('on'); $('#fPhoto').classList.remove('on'); panes.f.draw(); };
+$('#bMirror').onclick=e=>{ const p=panes.b; const r=p.el.getBoundingClientRect(); const c=p.toW(r.width/2,r.height/2); p.mirror=!p.mirror; e.target.classList.toggle('on',p.mirror); e.target.textContent=p.mirror?'Mirrored':'As seen'; p.center(c.x,c.y); p.draw(); };
+$('#undo').onclick=undo;
+function undo(){ const s=undoStack.pop(); if(s){ S=JSON.parse(s); sel=null; pending=null; save(); drawAll(); panel(); } }
+addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if((e.metaKey||e.ctrlKey)&&e.key==='z'){ e.preventDefault(); undo(); return; }
+  if(e.key==='Enter'&&mode==='part'&&partPick.length){ const r=$('#pref'); if(r) r.focus(); return; }
+  const m={c:'connect',m:'move',a:'add',d:'delete',p:'part'}[e.key.toLowerCase()]; if(m&&!e.metaKey&&!e.ctrlKey) setMode(m);
+  if((e.key==='Backspace'||e.key==='Delete')&&pending&&pendPts.length){ e.preventDefault(); pendPts.pop(); drawAll(); return; }
+  if(e.key==='Escape'){ pending=null; pendPts=[]; pendSide=null; sel=null; drawAll(); panel(); } });
+addEventListener('resize',()=>{ panes.f.resize(); panes.b.resize(); drawAll(); });
+// ---------- load / poll (picks up proposals Claude writes to state.json)
+let lastText='';
+async function load(first){ try{ const r=await fetch('state.json',{cache:'no-store'}); const t=await r.text(); if(t===lastText) return; lastText=t; S=JSON.parse(t);
+    if(first){ panes.f.resize(); panes.b.resize(); const v=S.view; panes.f.fit(v.x,v.y,v.x+v.w,v.y+v.h);
+      const ids=S.pads.filter(p=>p.f[0]>v.x&&p.f[0]<v.x+v.w&&p.f[1]>v.y&&p.f[1]<v.y+v.h); const bx=ids.map(p=>p.b[0]),by=ids.map(p=>p.b[1]);
+      panes.b.fit(Math.min(...bx)-30,Math.min(...by)-30,Math.max(...bx)+30,Math.max(...by)+30); $('#status').textContent='ready'; }
+    else $('#status').textContent='updated from disk '+new Date().toLocaleTimeString();
+    drawAll(); panel(); }catch(e){ $('#status').textContent='cannot load state.json'; } }
+for(const k in imgs) imgs[k].onload=()=>{ if(++loaded===3) load(true); };
+imgs.front.src='front.jpg'; imgs.back.src='back.jpg'; imgs.blend.src='blend.jpg';
+setInterval(()=>{ if(!busy&&saveT===null&&!document.hidden) load(false); },3000);
+</script></body></html>

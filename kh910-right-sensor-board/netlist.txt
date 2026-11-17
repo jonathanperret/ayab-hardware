@@ -1,0 +1,56 @@
+links 115 {'confirmed': 102, 'proposed': 13}
+35 nets
+ 22 IC301.11(GND) IC302.12(GND) IC303.4(GND) J.H(S-5.2 GND) J.K(optical GND) J.O(hall GND) R305.1 R310.1 R312.1 R317.1 R319.1 R323.2 R324.2 R325.2 R326.2 R328.2 R329.2 R330.2 R331.2 VR301.2 via112 via160
+ 15 D301.2 IC301.4(VCC) IC302.3(VCC) IC303.8(VCC) J.I(S-5.1 +5V) J.L(optical +5V) J.M(hall +5V) PI2.1(C) R306.2 R311.2 R318.2 R320.2 VR301.1 via089 via093
+  7 CH301.1 CH301.2 IC302.8(IN3-) IC302.10(IN4-) IC303.7(OUT2) R332.1 via152
+  6 IC301.6(IN2-) IC301.9(IN3-) IC301.13(IN4-) R309.1 R310.2 via137
+  6 IC301.7(OUT2) J.F(S-5.5? ENC_B) R300.2 via094 via115 via165
+  5 IC301.8(OUT3) J.G(S-5.4? ENC_A) R308.2 via086 via090
+  5 IC301.14(OUT4) J.E(S-5.6? ENC_C) R301.2 via085 via164
+  5 D301.1 PI1.3(A1) PI1.4(A2) PI1.8(C) PI2.4(A)
+  4 IC302.4(IN1-) IC302.6(IN2-) J.J(optical signal) via148
+  4 IC302.5(IN1+) R307.2 R309.2 via098
+  4 IC301.5(IN2+) R300.1 R303.2 via166
+  4 IC302.13(OUT4) J.D(S-5.7? 910_L) R322.1 via116
+  4 PI2.2(E) R302.1 R328.1 via135
+  3 IC302.1(OUT2) J.A(S-5.10? GND on shield) R314.2
+  3 IC302.7(IN2+) R313.1 R314.1
+  3 IC302.9(IN3+) R315.1 R316.1
+  3 IC301.10(IN3+) R304.2 R308.1
+  3 IC302.11(IN4+) R321.2 R322.2
+  3 IC301.12(IN4+) R301.1 R302.2
+  3 IC302.14(OUT3) J.C(S-5.8? EOL_R) R315.2
+  3 IC303.5(IN2+) R333.2 R335.1
+  3 IC303.6(IN2-) R332.2 R334.1
+  3 R311.1 R312.2 R313.2
+  3 R305.2 R306.1 R307.1
+  3 PI1.1(E1) R304.1 R326.1
+  3 PI1.2(E2) R303.1 R324.1
+  3 R316.2 R317.2 R318.1
+  3 R319.2 R320.1 R321.1
+  2 IC302.2(OUT1) J.B(S-5.9? GND on shield)
+  2 J.N(hall out) R335.2
+  2 J.P(hall out) R334.2
+  2 R333.1 VR301.3
+  2 PI1.5(K1) R330.1
+  2 PI1.6(K2) R331.1
+  2 PI2.3(K) R329.1
+
+NC (marked unused): IC301.1(OUT1) IC301.2(IN1-) IC301.3(IN1+) IC303.1(OUT1) IC303.2(IN1-) IC303.3(IN1+) PI1.7(NC)
+
+UNCONNECTED part pins: R323.1 R325.1
+
+MEASURED CHECKS:
+  J.I   -J.H       measured open    traces open    OK
+  J.I   -IC303.8   measured joined  traces joined  OK
+  J.I   -IC302.3   measured joined  traces joined  OK
+  J.I   -IC301.4   measured joined  traces joined  OK
+  J.H   -IC303.4   measured joined  traces joined  OK
+  J.H   -IC302.12  measured joined  traces joined  OK
+  J.H   -IC301.11  measured joined  traces joined  OK
+  J.D   -IC302.13  measured joined  traces joined  OK
+  J.E   -IC301.14  measured joined  traces joined  OK
+  J.F   -IC301.7   measured joined  traces joined  OK
+  J.G   -IC301.8   measured joined  traces joined  OK
+  J.K   -J.H       measured joined  traces joined  OK
+  J.O   -J.H       measured joined  traces joined  OK

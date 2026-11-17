@@ -1,0 +1,324 @@
+** Drc report for kh910_right_sensor.kicad_pcb **
+** Created on 2026-11-16T22:37:03 **
+** Report includes: Errors, Warnings **
+
+** Found 77 DRC violations **
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(72.6900 mm, 43.1430 mm): Footprint D301
+    @(81.4530 mm, 40.9466 mm): Footprint IC301
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(30.8925 mm, 32.8840 mm): Footprint R330
+    @(33.2265 mm, 32.8840 mm): Footprint R329
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(30.8925 mm, 32.8840 mm): Footprint R330
+    @(28.2855 mm, 32.8010 mm): Footprint R331
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(73.9045 mm, 18.3050 mm): Footprint R308
+    @(81.4530 mm, 40.9466 mm): Footprint IC301
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(33.2265 mm, 32.8840 mm): Footprint R329
+    @(35.7145 mm, 37.8765 mm): Footprint R328
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(66.8060 mm, 4.7825 mm): Segment of R311 on F.Silkscreen
+    @(67.1700 mm, 6.6190 mm): Reference field of R312
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(69.6460 mm, 6.7025 mm): Reference field of R311
+    @(69.4490 mm, 4.3660 mm): Segment of R310 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(72.0205 mm, 4.5680 mm): Segment of R309 on F.Silkscreen
+    @(72.2890 mm, 6.2860 mm): Reference field of R310
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.4850 mm, 12.7890 mm): Segment of R304 on F.Silkscreen
+    @(78.9765 mm, 13.0560 mm): Reference field of R303
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(64.3300 mm, 4.6990 mm): Segment of R312 on F.Silkscreen
+    @(64.5390 mm, 6.5710 mm): Reference field of R313
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(61.6990 mm, 4.6510 mm): Segment of R313 on F.Silkscreen
+    @(61.8965 mm, 6.6070 mm): Reference field of R314
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(44.3485 mm, 6.6190 mm): Reference field of R317
+    @(44.1275 mm, 4.7585 mm): Segment of R316 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(46.9675 mm, 6.6785 mm): Reference field of R316
+    @(46.5090 mm, 4.7940 mm): Segment of R315 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(41.8010 mm, 6.5955 mm): Reference field of R318
+    @(41.5085 mm, 4.6990 mm): Segment of R317 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(79.9200 mm, 6.4640 mm): Reference field of R306
+    @(79.7470 mm, 4.4730 mm): Segment of R305 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.0800 mm, 4.5440 mm): Segment of R306 on F.Silkscreen
+    @(77.3960 mm, 6.5120 mm): Reference field of R307
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(74.5560 mm, 4.5920 mm): Segment of R307 on F.Silkscreen
+    @(74.8605 mm, 6.4880 mm): Reference field of R309
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(32.2625 mm, 34.6940 mm): Rectangle of R330 on F.Silkscreen
+    @(29.6555 mm, 34.6110 mm): Rectangle of R331 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(34.5965 mm, 34.6940 mm): Rectangle of R329 on F.Silkscreen
+    @(32.2625 mm, 34.6940 mm): Rectangle of R330 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(42.3300 mm, 38.6035 mm): Segment of R325 on F.Silkscreen
+    @(42.5510 mm, 40.5120 mm): Reference field of R326
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(45.1700 mm, 40.5235 mm): Reference field of R325
+    @(44.8420 mm, 38.6275 mm): Segment of R324 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(47.3900 mm, 38.5920 mm): Segment of R323 on F.Silkscreen
+    @(47.6820 mm, 40.5475 mm): Reference field of R324
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(47.7276 mm, 25.4956 mm): Rectangle of PI1 on F.Silkscreen
+    @(59.1636 mm, 25.4716 mm): Reference field of PI1
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(76.5000 mm, 41.0230 mm): Reference field of D301
+    @(74.9930 mm, 24.3766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(74.9800 mm, 42.0230 mm): Segment of D301 on F.Silkscreen
+    @(74.9930 mm, 24.3766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(75.1000 mm, 42.0230 mm): Segment of D301 on F.Silkscreen
+    @(74.9930 mm, 24.3766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(74.3800 mm, 42.0230 mm): Rectangle of D301 on F.Silkscreen
+    @(74.9930 mm, 24.3766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.5205 mm, 20.6220 mm): Segment of R301 on F.Silkscreen
+    @(79.2975 mm, 20.2105 mm): Reference field of R300
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.3535 mm, 18.1340 mm): Segment of R302 on F.Silkscreen
+    @(79.4405 mm, 17.7820 mm): Reference field of R301
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(74.9800 mm, 42.0230 mm): Segment of D301 on F.Silkscreen
+    @(74.9930 mm, 42.2766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(75.1000 mm, 42.0230 mm): Segment of D301 on F.Silkscreen
+    @(74.9930 mm, 42.2766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(75.2200 mm, 42.0230 mm): Segment of D301 on F.Silkscreen
+    @(74.9930 mm, 42.2766 mm): Segment of IC301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.6430 mm, 42.2766 mm): Arc of IC301 on F.Silkscreen
+    @(76.5000 mm, 41.0230 mm): Reference field of D301
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.6430 mm, 42.2766 mm): Arc of IC301 on F.Silkscreen
+    @(74.3800 mm, 42.0230 mm): Rectangle of D301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(74.3800 mm, 42.0230 mm): Rectangle of D301 on F.Silkscreen
+    @(77.6430 mm, 43.2766 mm): Reference field of IC301
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(77.6430 mm, 43.2766 mm): Reference field of IC301
+    @(79.2700 mm, 43.1430 mm): Segment of D301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(78.6430 mm, 42.2766 mm): Segment of IC301 on F.Silkscreen
+    @(74.3800 mm, 42.0230 mm): Rectangle of D301 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(32.9375 mm, 10.0510 mm): Segment of R321 on F.Silkscreen
+    @(34.8810 mm, 9.6630 mm): Reference field of R322
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(36.6615 mm, 12.3050 mm): Rectangle of PI2 on F.Silkscreen
+    @(39.5835 mm, 12.3050 mm): Reference field of PI2
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(34.8575 mm, 7.2110 mm): Reference field of R321
+    @(32.8060 mm, 7.5150 mm): Segment of R320 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(32.8420 mm, 4.8960 mm): Segment of R319 on F.Silkscreen
+    @(34.7260 mm, 4.6750 mm): Reference field of R320
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(36.6615 mm, 12.3050 mm): Rectangle of PI2 on F.Silkscreen
+    @(32.9610 mm, 12.5030 mm): Segment of R322 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(13.2620 mm, 15.6190 mm): Circle of CH301 on F.Silkscreen
+    @(13.2620 mm, 14.0190 mm): Reference field of CH301
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(14.1700 mm, 25.5830 mm): Reference field of R333
+    @(13.9255 mm, 23.7110 mm): Segment of R332 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(22.1905 mm, 3.1143 mm): Reference field of VR301
+    @(7.7131 mm, 2.7630 mm): Segment of J1 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(14.1820 mm, 33.0235 mm): Reference field of R335
+    @(13.8300 mm, 30.9730 mm): Segment of R334 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(67.1700 mm, 6.6190 mm): Reference field of R312
+    @(67.7260 mm, 4.1625 mm): PTH pad 1 [Net-(R311-Pad1)] of R311
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(69.6460 mm, 6.7025 mm): Reference field of R311
+    @(70.3690 mm, 8.8260 mm): PTH pad 2 [Net-(IC301B--)] of R310
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(72.2890 mm, 6.2860 mm): Reference field of R310
+    @(72.9405 mm, 3.9480 mm): PTH pad 1 [Net-(IC301B--)] of R309
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(78.9765 mm, 13.0560 mm): Reference field of R303
+    @(76.8650 mm, 11.8690 mm): PTH pad 1 [Net-(PI1D-E1)] of R304
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(79.2735 mm, 15.2940 mm): Reference field of R302
+    @(81.5165 mm, 14.9760 mm): PTH pad 2 [Net-(IC301B-+)] of R303
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(49.3490 mm, 6.7140 mm): Reference field of R315
+    @(49.8021 mm, 8.9513 mm): PTH pad 10 [Net-(IC302C--)] of IC302
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(49.3490 mm, 6.7140 mm): Reference field of R315
+    @(49.8021 mm, 6.4113 mm): PTH pad 9 [Net-(IC302D-+)] of IC302
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(79.4050 mm, 9.9490 mm): Reference field of R304
+    @(80.6670 mm, 8.9330 mm): PTH pad 2 [Net-(R305-Pad2)] of R305
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(79.4050 mm, 9.9490 mm): Reference field of R304
+    @(78.0000 mm, 9.0040 mm): PTH pad 2 [+5V] of R306
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(30.8925 mm, 43.0440 mm): PTH pad 2 [GND] of R330
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(33.2265 mm, 43.0440 mm): PTH pad 2 [GND] of R329
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(35.5965 mm, 37.9640 mm): Reference field of R329
+    @(35.7145 mm, 37.8765 mm): PTH pad 1 [Net-(PI2B-E)] of R328
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(43.2500 mm, 43.0635 mm): PTH pad 2 [GND] of R325
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(45.7620 mm, 43.0875 mm): PTH pad 2 [GND] of R324
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(48.3100 mm, 43.0520 mm): PTH pad 2 [GND] of R323
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(35.7145 mm, 42.9565 mm): PTH pad 2 [GND] of R328
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(79.2975 mm, 20.2105 mm): Reference field of R300
+    @(76.9005 mm, 19.7020 mm): PTH pad 1 [Net-(IC301D-+)] of R301
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(75.8245 mm, 20.8450 mm): Reference field of R308
+    @(76.7575 mm, 22.1305 mm): PTH pad 1 [Net-(IC301B-+)] of R300
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(75.8245 mm, 20.8450 mm): Reference field of R308
+    @(76.9005 mm, 19.7020 mm): PTH pad 1 [Net-(IC301D-+)] of R301
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(72.6900 mm, 41.3430 mm): Footprint text of D301 (K)
+    @(73.8330 mm, 40.9466 mm): PTH pad 14 [ENC_C] of IC301
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(36.6615 mm, 12.3050 mm): Rectangle of PI2 on F.Silkscreen
+    @(37.4210 mm, 11.5830 mm): PTH pad 2 [Net-(IC302C-+)] of R322
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.2620 mm, 15.6190 mm): Circle of CH301 on F.Silkscreen
+    @(13.2620 mm, 17.6670 mm): PTH pad 2 [Net-(IC302C--)] of CH301
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(22.1905 mm, 3.1143 mm): Reference field of VR301
+    @(21.6831 mm, 4.1430 mm): PTH pad 7 [ENC_A] of J1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(22.1905 mm, 3.1143 mm): Reference field of VR301
+    @(24.2231 mm, 4.1430 mm): PTH pad 8 [GND] of J1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(46.0000 mm, 44.2000 mm): PCB text 'BP-111025-7  (KH-910 right sensor, reconstruction)' on F.Silkscreen
+    @(28.2855 mm, 42.9610 mm): PTH pad 2 [GND] of R331
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(16.7655 mm, 25.6310 mm): Reference field of R332
+    @(17.1125 mm, 27.8089 mm): PTH pad 5 [Net-(IC303B-+)] of IC303
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(14.1820 mm, 33.0235 mm): Reference field of R335
+    @(14.7500 mm, 35.4330 mm): PTH pad 2 [HALL_P] of R334
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(16.6700 mm, 32.8930 mm): Reference field of R334
+    @(17.1125 mm, 32.8889 mm): PTH pad 7 [Net-(IC302C--)] of IC303
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(16.6700 mm, 32.8930 mm): Reference field of R334
+    @(17.1125 mm, 30.3489 mm): PTH pad 6 [Net-(IC303B--)] of IC303
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(16.6700 mm, 32.8930 mm): Reference field of R334
+    @(17.1125 mm, 35.4289 mm): PTH pad 8 [+5V] of IC303
+[copper_sliver]: Copper sliver (F.Cu)
+    Local override; warning
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "kh910")(type "KiCad")(uri "${KIPRJMOD}/kh910.kicad_sym")(options "")(descr "KH-910 sensor board parts"))
+)
